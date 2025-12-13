@@ -1,0 +1,2841 @@
+Unity - Scripting API: UnityEngine.UIElementsModule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Manual
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+unity.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                Version: 
+Unity 6.2
+ (6000.2)
+                                
+Supported
+Legacy
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version: Unity 6.2
+
+
+
+
+Select a different version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UnityEngine.UIElementsModule
+
+
+
+
+
+
+
+
+Leave feedback
+
+
+
+
+
+
+
+
+
+
+Suggest a change
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Success!
+
+
+Thank you for helping us improve the quality of Unity Documentation. Although we cannot accept all submissions, we do read each suggested change from our users and will make updates where applicable.
+
+
+Close
+
+
+
+
+
+
+Submission failed
+
+
+For some reason your suggested change could not be submitted. Please <a>try again</a> in a few minutes. And thank you for taking the time to help us improve the quality of Unity Documentation.
+
+
+Close
+
+
+
+
+
+
+Your name
+
+
+
+
+Your email
+
+
+
+
+Suggestion
+*
+
+
+
+                      
+
+
+Submit suggestion
+
+
+
+
+Cancel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+
+
+The UIElements module implements the UIElements retained mode UI framework.
+
+
+
+
+
+
+Classes
+
+
+
+
+
+
+
+
+Class
+
+
+Description
+
+
+
+
+
+
+AbstractProgressBar
+
+ Abstract base class for the ProgressBar.
+ 
+
+
+AlignmentUtils
+
+ Static class containing utility methods for aligning visual elements.
+ 
+
+
+AttachToPanelEvent
+
+ Event sent after an element is added to an element that is a descendant of a panel.
+ 
+
+
+BackgroundPropertyHelper
+
+ Helper to convert between background properties and ScaleMode.
+ 
+
+
+BaseBoolField
+
+ A BaseBoolField is a clickable element that represents a boolean value.
+ 
+
+
+BaseCompositeField<T0,T1,T2>
+
+ This is the base class for the composite fields.
+ 
+
+
+BaseField<T0>
+
+          Abstract base class for controls.A BaseField is a base class for field elements like TextField and IntegerField.
+ To align a BaseField element automatically with other fields in an Inspector window,
+ use the .unity-base-field__aligned USS class. This style class is designed for use with
+ Inspector elements like PropertyField, which has the style class by default.
+ However, if you manually add a child BaseField element to a PropertyField, you must add
+ the style class manually.When the style class is present, the field automatically calculates the label width
+ to align with other fields in the Inspector window. If there are IMGUI fields present,
+ UI Toolkit fields are aligned with them for consistency and compatibility.
+
+
+BaseFieldMouseDragger
+
+ Provides the base class for field mouse draggers.
+ 
+
+
+BaseListView
+
+ Base class for a list view, a vertically scrollable area that links to, and displays, a list of items.
+ 
+
+
+BaseListViewController
+
+ Base collection list view controller. View controllers of this type are meant to take care of data virtualized by any BaseListView inheritor.
+ 
+
+
+BasePopupField<T0,T1>
+
+ This is the base class for all the popup field elements.
+ TValue and TChoice can be different, see MaskField,
+   or the same, see PopupField
+ 
+
+
+BaseSlider<T0>
+
+ This is a base class for the Slider fields.
+ 
+
+
+BaseTreeView
+
+ Base class for a tree view, a vertically scrollable area that links to, and displays, a list of items organized in a tree.
+ 
+
+
+BaseTreeViewController
+
+ Base collection tree view controller. View controllers of this type are meant to take care of data virtualized by any BaseTreeView inheritor.
+ 
+
+
+BaseVerticalCollectionView
+
+ Base class for controls that display virtualized vertical content inside a scroll view.
+ 
+
+
+BindableElement
+
+ Element that can be bound to a property. For more information, refer to UXML element BindableElement.
+ 
+
+
+Binding
+
+ Base class for defining a binding.
+ 
+
+
+BlurEvent
+
+ Event sent immediately after an element has lost focus. This event trickles down and does not bubbles up.
+ 
+
+
+BoundsField
+
+ A Bounds editor field. For more information, refer to UXML element BoundsField.
+ 
+
+
+BoundsIntField
+
+ A BoundsInt field. For more information, refer to UXML element BoundsIntField.
+ 
+
+
+Box
+
+ Styled visual element to match the IMGUI Box Style. For more information, refer to UXML element Box.
+ 
+
+
+Button
+
+ Represents an interactive UI button element.
+ 
+
+
+CallbackEventHandler
+
+ Interface for classes capable of having callbacks to handle events.
+ 
+
+
+ChangeEvent<T0>
+
+ Sends an event when a value in a field changes.
+ 
+
+
+Clickable
+
+ Manipulator that tracks pointer events on an element and callbacks when the elements is clicked.
+ 
+
+
+ClickEvent
+
+ This event is sent when the left mouse button is clicked.
+ 
+
+
+CollectionViewController
+
+ Base collection view controller. View controllers are meant to take care of data virtualized by any BaseVerticalCollectionView inheritor.
+ 
+
+
+Column
+
+ Represents a column in multi-column views such as multi-column list view or multi-column tree view.
+ Provides the properties to define how user interacts with a column in a multi-column view, how its data and the data of each
+ cell in this column are represented.
+ 
+
+
+Columns
+
+ Represents a collection of columns.
+ 
+
+
+CommandEventBase<T0>
+
+ Base class for command events.
+ 
+
+
+ContextClickEvent
+
+ The event sent when clicking the right mouse button.
+ 
+
+
+ContextualMenuManager
+
+ Use this class to display a contextual menu.
+ 
+
+
+ContextualMenuManipulator
+
+ Manipulator that displays a contextual menu when the user clicks the right mouse button or presses the menu key on the keyboard.
+ 
+
+
+ContextualMenuPopulateEvent
+
+ The event sent when a contextual menu requires menu items.
+ The event trickles down and bubbles up.
+ 
+
+
+ConverterGroup
+
+ A type to hold information about a conversion registry used locally on bindings.
+ 
+
+
+ConverterGroups
+
+ Provides a set of static methods to register and use converter groups and registers a set of global converters.
+ ConverterGroup.
+ DataBinding.
+ 
+
+
+CustomBinding
+
+ Base class for general purpose binding extensibility.
+ 
+
+
+CustomStyleResolvedEvent
+
+ Event sent after the custom style properties of a VisualElement have been resolved.
+ 
+
+
+DataBinding
+
+  Binding type that enables data synchronization between a property of a data source and a property of a VisualElement.
+ 
+
+
+DefaultMultiColumnTreeViewController<T0>
+
+ Default implementation of a MultiColumnTreeViewController.
+ 
+
+
+DefaultTreeViewController<T0>
+
+ Default implementation of a TreeViewController.
+ 
+
+
+DetachFromPanelEvent
+
+ Event sent just before an element is detached from its parent, if the parent is the descendant of a panel.
+ 
+
+
+DoubleField
+
+ Makes a text field for entering doubles.
+ 
+
+
+DragAndDropData
+
+ Data stored during drag-and-drop operations, enabling information to be carried throughout the process.
+ 
+
+
+DragAndDropEventBase<T0>
+
+ Base class for drag and drop events.
+ 
+
+
+DragEnterEvent
+
+ Use the DragEnterEvent class to manage events that occur when dragging enters an element or one of its descendants. The DragEnterEvent does not trickle down and does not bubble up.
+ 
+
+
+DragExitedEvent
+
+ The event sent to a dragged element when the drag and drop process ends.
+ 
+
+
+DragLeaveEvent
+
+ Use the DragLeaveEvent class to manage events sent when dragging leaves an element or one of its descendants. The DragLeaveEvent does not trickle down and does not bubble up.
+ 
+
+
+DragPerformEvent
+
+ The event sent to an element when another element is dragged and dropped on the element.
+ 
+
+
+DragUpdatedEvent
+
+ The event sent when the element being dragged enters a possible drop target.
+ 
+
+
+DropdownField
+
+ A control that allows the user to pick a choice from a list of options. For more information, refer to UXML element DropdownField.
+ 
+
+
+DropdownMenu
+
+ Represents a dropdown menu, similar to the menus seen in most Operating Systems (OS) and across the Unity Editor.
+ 
+
+
+DropdownMenuAction
+
+ Represents a menu action item.
+ 
+
+
+DropdownMenuEventInfo
+
+ Provides information about the event that caused the dropdown menu to display.
+ 
+
+
+DropdownMenuItem
+
+ Represents an item in a dropdown menu.
+ 
+
+
+DropdownMenuSeparator
+
+ Provides a separator menu item.
+ 
+
+
+DynamicAtlasSettings
+
+ Contains the settings used by the dynamic atlas system.
+ 
+
+
+Easing
+
+ A collection of easing curves to be used with ValueAnimations.
+ 
+
+
+EnumField
+
+ Makes a dropdown for switching between enum values. For more information, refer to UXML element EnumField.
+ 
+
+
+EventBase
+
+ The base class for all UIElements events.  The class implements IDisposable to ensure proper release of the event from the pool and of any unmanaged resources, when necessary.
+ 
+
+
+EventBase<T0>
+
+ Generic base class for events, implementing event pooling and automatic registration to the event type system.
+ 
+
+
+EventDispatcher
+
+ Dispatches events to a IPanel.
+ 
+
+
+EventInterestAttribute
+
+ Optional attribute on overrides of CallbackEventHandler.HandleEventBubbleUp
+ and CallbackEventHandler.HandleEventTrickleDown.
+ Use this attribute to specify all the event types used by the method override.
+ The event dispatcher can then safely skip events not needed for this method
+ if they are identified internally as valid candidates for performance optimizations.
+ 
+
+
+ExecuteCommandEvent
+
+ This event is sent by the Editor when an element in the panel should execute a command.
+ 
+
+
+FieldMouseDragger<T0>
+
+ Provides dragging on a visual element to change a value field.
+ 
+
+
+FloatField
+
+ Makes a text field for entering a float. For more information, refer to UXML element FloatField.
+ 
+
+
+Focusable
+
+ Base class for objects that can get the focus.
+ 
+
+
+FocusChangeDirection
+
+ Base class for defining in which direction the focus moves in a focus ring.
+ 
+
+
+FocusController
+
+ Class in charge of managing the focus inside a Panel.
+ 
+
+
+FocusEvent
+
+ Event sent immediately after an element has gained focus. This event trickles down and does not bubbles up.
+ 
+
+
+FocusEventBase<T0>
+
+ Base class for focus related events.
+ 
+
+
+FocusInEvent
+
+ Event sent immediately before an element gains focus. This event trickles down and bubbles up.
+ 
+
+
+FocusOutEvent
+
+ Event sent immediately before an element loses focus. This event trickles down and bubbles up.
+ 
+
+
+Foldout
+
+ A Foldout control is a collapsible section of a user interface. When toggled, it expands or collapses, which hides or reveals the elements it contains.
+ 
+
+
+GenericDropdownMenu
+
+ GenericDropdownMenu allows you to display contextual menus with default textual options or any VisualElement.
+ 
+
+
+GeometryChangedEvent
+
+ This event is sent after layout calculations, when the position or the dimension of an element changes.
+ 
+
+
+GroupBox
+
+ This is an enclosing container for a group of IGroupBoxOption. All group options within this
+ container will interact together to allow a single selection, using the DefaultGroupManager.
+ Default options are RadioButton, but users can provide other implementations.
+ If no IGroupBox is found in the hierarchy, the default container will be the panel.
+ 
+
+
+Hash128Field
+
+ Makes a field for editing an Hash128. For more information, refer to UXML element Hash128Field.
+ 
+
+
+HelpBox
+
+ Makes a help box with a message to the user. For more information, refer to UXML element HelpBox.
+ 
+
+
+IBindingExtensions
+
+ Extensions methods to provide additional IBindable functionality.
+ 
+
+
+Image
+
+ A VisualElement representing a source texture.
+ 
+
+
+IMGUIContainer
+
+ Element that draws IMGUI content. For more information, refer to UXML element IMGUIContainer.
+ 
+
+
+IMGUIEvent
+
+ Class used to send a IMGUI event that has no equivalent UIElements event.
+ 
+
+
+ImmediateModeElement
+
+ VisualElement that can implement custom immediate mode rendering.
+ 
+
+
+INotifyValueChangedExtensions
+
+ INotifyValueChangedExtensions is a set of extension methods useful for objects implementing INotifyValueChanged_1.
+ 
+
+
+InputEvent
+
+ Sends an event when text from a TextField changes.
+ 
+
+
+InputSystemEventSystem
+
+ Handles input and sending events to UIElements Panel through use of Unity's Input System package.
+ 
+
+
+IntegerField
+
+ Makes a text field for entering an integer. For more information, refer to UXML element LongField.
+ 
+
+
+KeyboardEventBase<T0>
+
+ This is the base class for keyboard events.
+ 
+
+
+KeyboardNavigationManipulator
+
+ Provides a default implementation for translating input device specific events to higher level navigation operations as commonly possible with a keyboard.
+ 
+
+
+KeyDownEvent
+
+ This event is sent when a key is pressed.
+ 
+
+
+KeyUpEvent
+
+ This event is sent when a pressed key is released.
+ 
+
+
+Label
+
+ Provides an Element displaying text. For more information, refer to UXML element Label.
+ 
+
+
+ListView
+
+ A ListView is a vertically scrollable area that links to, and displays, a list of items.
+ 
+
+
+ListViewController
+
+ List view controller. View controllers of this type are meant to take care of data virtualized by any ListView inheritor.
+ 
+
+
+LongField
+
+ Makes a text field for entering long integers. For more information, refer to UXML element LongField.
+ 
+
+
+Manipulator
+
+ Base class for all Manipulator implementations.
+ 
+
+
+MeshGenerationContext
+
+ Provides methods for generating a visual element's visual content during the VisualElement.generateVisualContent callback.
+ 
+
+
+MeshWriteData
+
+ Represents the vertex and index data allocated for drawing the content of a VisualElement.
+ 
+
+
+MinMaxSlider
+
+ A min/max slider containing a representation of a range. For more information, refer to UXML element MinMaxSlider.
+ 
+
+
+MouseCaptureController
+
+ Class that manages capturing mouse events.
+ 
+
+
+MouseCaptureEvent
+
+ Event sent after a handler starts capturing the mouse.
+ 
+
+
+MouseCaptureEventBase<T0>
+
+ Event sent when the handler capturing the mouse changes.
+ 
+
+
+MouseCaptureOutEvent
+
+ Event sent before a handler stops capturing the mouse.
+ 
+
+
+MouseDownEvent
+
+ This event is sent when a mouse button is pressed.
+ 
+
+
+MouseEnterEvent
+
+ Event sent when the mouse pointer enters an element or one of its descendent elements.
+ The event trickles down but does not bubble up.
+ 
+
+
+MouseEnterWindowEvent
+
+ Event sent when the mouse pointer enters a window.
+ The event bubbles up but does not trickle down.
+ 
+
+
+MouseEventBase<T0>
+
+ The base class for mouse events.
+ 
+
+
+MouseLeaveEvent
+
+ Event sent when the mouse pointer exits an element and all its descendent elements.
+ The event trickles down but does not bubble up.
+ 
+
+
+MouseLeaveWindowEvent
+
+ Event sent when the mouse pointer exits a window.
+ The event bubbles up but does not trickle down.
+ 
+
+
+MouseManipulator
+
+ MouseManipulators have a list of activation filters.
+ 
+
+
+MouseMoveEvent
+
+ This event is sent when the mouse moves.
+ 
+
+
+MouseOutEvent
+
+ Event sent when the mouse pointer exits an element.
+ The event trickles down and bubbles up.
+ 
+
+
+MouseOverEvent
+
+ Event sent when the mouse pointer enters an element.
+ The event trickles down and bubbles up.
+ 
+
+
+MouseUpEvent
+
+ This event is sent when a mouse button is released.
+ 
+
+
+MultiColumnController
+
+ The default controller for a multi column view. Takes care of adding the MultiColumnCollectionHeader and
+ reacting to the various callbacks.
+ 
+
+
+MultiColumnListView
+
+ A list view with multi column support. For more information, refer to MultiColumnListView.
+ 
+
+
+MultiColumnListViewController
+
+ Multi-column list view controller. View controllers of this type are meant to take care of data virtualized by any MultiColumnListView inheritor.
+ 
+
+
+MultiColumnTreeView
+
+ A tree view with multi column support. For more information, refer to MultiColumnTreeView.
+ 
+
+
+MultiColumnTreeViewController
+
+ Multi-column tree view controller. View controllers of this type are meant to take care of data virtualized by any MultiColumnTreeView inheritor.
+ 
+
+
+NavigationCancelEvent
+
+ Event sent when the user presses the cancel button.
+ 
+
+
+NavigationEventBase<T0>
+
+ Navigation events abstract base class. By default, navigation events trickle down and bubble up. Disabled elements won't receive these events.
+ 
+
+
+NavigationMoveEvent
+
+ Event typically sent when the user presses the D-pad, moves a joystick or presses the arrow keys.
+ 
+
+
+NavigationSubmitEvent
+
+ Event sent when the user presses the submit button.
+ 
+
+
+Painter2D
+
+ Object to draw 2D vector graphics.
+ 
+
+
+PanelChangedEventBase<T0>
+
+ Abstract base class for events notifying of a panel change.
+ 
+
+
+PanelInputConfiguration
+
+ Configures how input is routed to Panels in runtime.
+ If no Input Configuration component is active, default configurations are used.
+ 
+
+
+PanelSettings
+
+ Defines a Panel Settings asset that instantiates a panel at runtime. The panel makes it possible for Unity to display
+ UXML-file based UI in the Game view.
+ 
+
+
+PanelTextSettings
+
+ Represents text rendering settings for a specific UI panel.
+ PanelSettings.textSettings
+
+
+PointerCancelEvent
+
+ This event is sent when pointer interaction is cancelled.
+ 
+
+
+PointerCaptureEvent
+
+ Event sent when a pointer is captured by a VisualElement.
+ 
+
+
+PointerCaptureEventBase<T0>
+
+ Base class for pointer capture events and mouse capture events.
+ 
+
+
+PointerCaptureHelper
+
+ A static class to capture and release pointers.
+ 
+
+
+PointerCaptureOutEvent
+
+ Event sent when a VisualElement releases a pointer.
+ 
+
+
+PointerDownEvent
+
+ Sends when a pointer is pressed inside a visual element.
+ 
+
+
+PointerDownLinkTagEvent
+
+ This event is sent when a pointer is pressed on a Link tag.
+ 
+
+
+PointerEnterEvent
+
+ This event is sent when a pointer enters a VisualElement or one of its descendants.
+ The event does not trickle down and does not bubble up.
+ 
+
+
+PointerEventBase<T0>
+
+ Base class for all pointer-related events.
+ 
+
+
+PointerId
+
+ A static class that holds pointer ID values.
+ 
+
+
+PointerLeaveEvent
+
+ This event is sent when a pointer exits an element and all of its descendants.
+ The event does not trickle down and does not bubble up.
+ 
+
+
+PointerManipulator
+
+ PointerManipulators have a list of activation filters.
+ 
+
+
+PointerMoveEvent
+
+ This event is sent when a pointer changes state.
+ 
+
+
+PointerMoveLinkTagEvent
+
+ This event is sent when a pointer changes state on a link tag.
+ 
+
+
+PointerOutEvent
+
+ This event is sent when a pointer exits an element.
+ The event trickles down and bubbles up.
+ 
+
+
+PointerOutLinkTagEvent
+
+ This event is sent when a pointer exits a link tag.
+ 
+
+
+PointerOverEvent
+
+ This event is sent when a pointer enters an element.
+ The event trickles down and bubbles up.
+ 
+
+
+PointerOverLinkTagEvent
+
+ This event is sent when a pointer enters a link tag.
+ 
+
+
+PointerType
+
+ A static class that holds pointer type values.
+ 
+
+
+PointerUpEvent
+
+ This event is sent when a pointer's last pressed button is released.
+ 
+
+
+PointerUpLinkTagEvent
+
+ This event is sent when a pointer's last pressed button is released on a link tag.
+ 
+
+
+PopupField<T0>
+
+ Generic popup selection field.
+ 
+
+
+PopupWindow
+
+ Styled visual text element. This element doesn't have any functionality. It's just a container with a border and a title, rather than a window or popup. For more information, refer to UXML element PopupWindow.
+ 
+
+
+ProgressBar
+
+ A control that displays the progress between a lower and upper bound value. For more information, refer to UXML element ProgressBar.
+ 
+
+
+RadioButton
+
+ A control that allows users to select a single option inside a RadioButtonGroup. For more information, refer to UXML element RadioButton.
+ 
+
+
+RadioButtonGroup
+
+ A control that allows single selection out of a logical group of RadioButton elements. Selecting one will deselect the others. For more information, refer to UXML element RadioButtonGroup.
+ 
+
+
+RectField
+
+ A Rect field. For more information, refer to UXML element RectField.
+ 
+
+
+RectIntField
+
+ A RectInt field. For more information, refer to UXML element RectIntField.
+ 
+
+
+RegisterUxmlCacheAttribute
+
+ Attribute allowing the UXML registry to more efficiently retrieve the UXML description data.
+ 
+
+
+RepeatButton
+
+ A button that executes an action repeatedly while it is pressed. For more information, refer to UXML element RepeatButton.
+ 
+
+
+RuntimePanelUtils
+
+ A collection of static methods that provide simple World, Screen, and Panel coordinate transformations.
+ 
+
+
+Scroller
+
+ A vertical or horizontal scrollbar. For more information, refer to UXML element Scroller.
+ 
+
+
+ScrollView
+
+ Displays its contents inside a scrollable frame. For more information, refer to the ScrollView user manual page.
+ 
+
+
+Slider
+
+ A slider containing floating point values.
+ 
+
+
+SliderInt
+
+ A slider containing Integer discrete values. For more information, refer to UXML element SliderInt.
+ 
+
+
+SortColumnDescription
+
+ This represents a description on what column to sort and in which order.
+ 
+
+
+SortColumnDescriptions
+
+ This represents a collection or SortColumnDescriptions in multi SortColumnDescription views.
+ 
+
+
+StyleSheet
+
+ Style sheets are applied to visual elements in order to control the layout and visual appearance of the user interface.
+ 
+
+
+Tab
+
+ Creates a tab to organize content on different screens.
+ 
+
+
+TabView
+
+ Creates a tab view that groups a one or more Tab elements.
+ 
+
+
+TemplateContainer
+
+ Represents the root VisualElement of UXML file.
+ 
+
+
+TextElement
+
+ Use this as the super class if you are declaring a custom VisualElement that displays text. For example, Button or Label use this as their base class. For more information, refer to UXML element TextElement.
+ 
+
+
+TextField
+
+ A TextField accepts and displays text input. For more information, refer to UXML element TextField.
+ 
+
+
+TextInputBaseField<T0>
+
+ Abstract base class used for all text-based fields.
+ 
+
+
+TextValueField<T0>
+
+ Base class for text fields.
+ 
+
+
+ThemeStyleSheet
+
+ Represents a style sheet that's assembled from other style sheets.
+ 
+
+
+Toggle
+
+ A Toggle is a clickable element that represents a boolean value.
+ 
+
+
+ToggleButtonGroup
+
+ A control that allows single or multiple selection out of a logical group of Button elements.
+ 
+
+
+ToggleButtonGroupStatePropertiesAttribute
+
+ Defines how a serialized ToggleButtonGroupState will be initialized in the inspector.
+ 
+
+
+TooltipEvent
+
+ Event sent to find the first VisualElement that displays a tooltip.
+ 
+
+
+TransitionCancelEvent
+
+ Event sent when a transition is canceled.
+ 
+
+
+TransitionEndEvent
+
+ Event sent at the completion of the transition. In the case where a transition is removed before completion then the event will not fire.
+ 
+
+
+TransitionEventBase<T0>
+
+ Transition events abstract base class.
+ 
+
+
+TransitionRunEvent
+
+ Event sent when a transition is created (i.e. added to the set of running transitions).
+ 
+
+
+TransitionStartEvent
+
+ Event sent when a transition's delay phase ends.
+ 
+
+
+TreeView
+
+ A TreeView is a vertically scrollable area that links to, and displays, a list of items organized in a tree.
+ 
+
+
+TreeViewController
+
+ Tree view controller. View controllers of this type are meant to take care of data virtualized by any TreeView inheritor.
+ 
+
+
+TreeViewExpansionChangedArgs
+
+ A data structure for the tree view item expansion event.
+ 
+
+
+TwoPaneSplitView
+
+ A SplitView that contains two resizable panes. One pane is fixed-size while the other pane has flex-grow style set to 1 to take all remaining space. The border between the panes is draggable to resize both panes. Both horizontal and vertical modes are supported. Requires exactly two child elements to operate.
+ 
+
+
+TypedUxmlAttributeDescription<T0>
+
+ Base class for all the UXML specific attributes.
+ 
+
+
+UIDocument
+
+ Defines a Component that connects VisualElements to GameObjects.
+ 
+
+
+UIRenderer
+
+ A renderer Component that should be added next to a UIDocument Component to allow
+ world-space rendering. This Component is added automatically by the UIDocument when
+ the PanelSettings asset is configured in world-space.
+ 
+
+
+UnsignedIntegerField
+
+ Makes a text field for entering an unsigned integer. For more information, refer to UXML element UnsignedIntegerField.
+ 
+
+
+UnsignedLongField
+
+ Makes a text field for entering unsigned long integers. For more information, refer to UXML element UnsignedLongField.
+ 
+
+
+UQuery
+
+ UQuery is a set of extension methods allowing you to select individual or collection of visualElements inside a complex hierarchy.
+ See UQuery manual page for further information.
+ 
+
+
+UQueryExtensions
+
+ UQuery is a set of extension methods allowing you to select individual or collection of visualElements inside a complex hierarchy.
+ For more information, refer to Find visual elements with UQuery.
+ 
+
+
+UxmlAssetAttributeDescription<T0>
+
+ Describes a UXML Object attribute referencing an asset in the project. In UXML, this is referenced as a string URI.
+ 
+
+
+UxmlAttributeAttribute
+
+ Declares that a field or property is associated with a UXML attribute.
+ Convenience overload, shorthand for Query<T>.Build().First().
+ 
+
+
+UxmlAttributeDescription
+
+ Base class for describing an XML attribute.
+ 
+
+
+UxmlBoolAttributeDescription
+
+ Describes a UXML bool attribute.
+ 
+
+
+UxmlChildElementDescription
+
+ Describe an allowed child element for an element.
+ 
+
+
+UxmlColorAttributeDescription
+
+ Describes a UXML attribute representing a Color as a string.
+ 
+
+
+UxmlDescriptionCache
+
+ Contains pre-processed information about UXML attribute descriptions to avoid relying on reflection.
+ 
+
+
+UxmlDoubleAttributeDescription
+
+ Describes a UXML double attribute.
+ 
+
+
+UxmlElementAttribute
+
+ Declares a custom control.
+ 
+
+
+UxmlEnumAttributeDescription<T0>
+
+ Describes a UXML attribute representing an enum as a string.
+ 
+
+
+UxmlEnumeration
+
+ Restricts the value of an attribute to be taken from a list of values.
+ 
+
+
+UxmlFloatAttributeDescription
+
+ Describes a UXML float attribute.
+ 
+
+
+UxmlHash128AttributeDescription
+
+ Describes a UXML Hash128 attribute.
+ 
+
+
+UxmlIgnoreAttribute
+
+ Used for fields that are serialized but do not come from UXML data, such as UxmlSerializedData.uxmlAssetId.
+ 
+
+
+UxmlIntAttributeDescription
+
+ Describes a UXML int attribute.
+ 
+
+
+UxmlLongAttributeDescription
+
+ Describes a UXML long attribute.
+ 
+
+
+UxmlObjectAttribute
+
+ Declares that a class can be instantiated from UXML and contain UXML attributes.
+ 
+
+
+UxmlObjectReferenceAttribute
+
+ Declares that a field or property is associated with nested UXML objects.
+ 
+
+
+UxmlSerializedData
+
+ Generates an instance of the declaring element when the UxmlElementAttribute is used in a custom control.
+ 
+
+
+UxmlSerializedDataUtility
+
+ This is used by the code generator when a custom control is using the UxmlElementAttribute.
+ 
+
+
+UxmlStringAttributeDescription
+
+ Describes a UXML string attribute.
+ 
+
+
+UxmlTypeAttributeDescription<T0>
+
+ Describes an XML System.Type attribute.
+ 
+
+
+UxmlTypeReferenceAttribute
+
+ Provides information about the expected type when applied to a Type field or property that has the UxmlAttributeAttribute attribute.
+ 
+
+
+UxmlTypeRestriction
+
+ Base class to restricts the value of an attribute.
+ 
+
+
+UxmlUnsignedIntAttributeDescription
+
+ Describes a UXML uint attribute.
+ 
+
+
+UxmlUnsignedLongAttributeDescription
+
+ Describes a UXML ulong attribute.
+ 
+
+
+UxmlValueBounds
+
+ Restricts the value of an attribute to be within the specified bounds.
+ 
+
+
+UxmlValueMatches
+
+ Restricts the value of an attribute to match a regular expression.
+ 
+
+
+ValidateCommandEvent
+
+ This event is sent by the Editor while it determines whether the command will be handled by an element in the panel.
+ 
+
+
+ValueAnimation<T0>
+
+ Implementation object for transition animations.
+ 
+
+
+Vector2Field
+
+ A Vector2 field. For more information, refer to UXML element Vector2Field.
+ 
+
+
+Vector2IntField
+
+ A Vector2Int field. For more information, refer to UXML element Vector2IntField.
+ 
+
+
+Vector3Field
+
+ A Vector3 field. For more information, refer to UXML element Vector3Field.
+ 
+
+
+Vector3IntField
+
+ A Vector3Int field. For more information, refer to UXML element Vector3IntField.
+ 
+
+
+Vector4Field
+
+ A Vector4 field. For more information, refer to UXML element Vector4Field.
+ 
+
+
+VectorImage
+
+ An asset that represents a vector image.
+ 
+
+
+VisualElement
+
+ Base class for objects that are part of the UIElements visual tree.
+ 
+
+
+VisualElementExtensions
+
+ VisualElementExtensions is a set of extension methods useful for VisualElement.
+ 
+
+
+VisualElementFocusChangeDirection
+
+ Define focus change directions for the VisualElementFocusRing.
+ 
+
+
+VisualElementFocusRing
+
+ Implementation of a linear focus ring. Elements are sorted according to their focusIndex.
+ 
+
+
+VisualTreeAsset
+
+ An instance of this class holds a tree of VisualElementAsset's, created from a UXML file. Each node in the file corresponds to a VisualElementAsset. You can clone a VisualTreeAsset to create a tree of VisualElement's. Note: You can't generate a VisualTreeAsset from raw UXML at runtime.
+ 
+
+
+WheelEvent
+
+ This event is sent when the mouse wheel moves.
+ 
+
+
+
+
+
+
+
+
+Structs
+
+
+
+
+
+
+
+
+Struct
+
+
+Description
+
+
+
+
+
+
+Angle
+
+ Represents an angle value.
+ 
+
+
+Background
+
+ Describes a VisualElement background.
+ 
+
+
+BackgroundPosition
+
+ Script interface for VisualElement background-position style property IStyle.BackgroundPosition.
+ 
+
+
+BackgroundRepeat
+
+ Script interface for VisualElement background-repeat style property IStyle.backgroundRepeat.
+ 
+
+
+BackgroundSize
+
+ Script interface for VisualElement background-size style property IStyle.BackgroundSize.
+ 
+
+
+BindablePropertyChangedEventArgs
+
+ Provides information about the property that has changed.
+ 
+
+
+BindingActivationContext
+
+ Contains information passed to binding instances during registration and deregistration.
+ 
+
+
+BindingContext
+
+ Context object containing the necessary information to resolve a binding.
+ 
+
+
+BindingId
+
+ Defines a binding property that serves as an identifier for the binding system.
+ 
+
+
+BindingInfo
+
+ Provides information about a binding.
+ 
+
+
+BindingResult
+
+ Provides information about the binding update.
+ 
+
+
+CanStartDragArgs
+
+ Information about a drag-and-drop operation that is about to start.
+ See BaseVerticalCollectionView.canStartDrag.
+ 
+
+
+CreationContext
+
+ This structure holds information used during UXML template instantiation.
+ 
+
+
+Cursor
+
+ Script interface for VisualElement cursor style property IStyle.cursor.
+ 
+
+
+CustomStyleProperty<T0>
+
+ Define a custom style property for an element to be retrieved with CustomStyleResolvedEvent.
+ 
+
+
+DataSourceContext
+
+ Contains information about the data source and data source path of a binding.
+ 
+
+
+DataSourceContextChanged
+
+ Contains information passed to binding instances when the resolved data source context has changed.
+ 
+
+
+EasingFunction
+
+ Determines how intermediate values are calculated for a transition.
+ 
+
+
+EventDispatcherGate
+
+ Gates control when the dispatcher processes events.
+ 
+
+
+FontDefinition
+
+ Describes a VisualElement font.
+ 
+
+
+HandleDragAndDropArgs
+
+ Information about a drag-and-drop operation in progress.
+ See BaseVerticalCollectionView.dragAndDropUpdate and BaseVerticalCollectionView.handleDrop.
+ 
+
+
+Length
+
+ Represents a distance value.
+ 
+
+
+ManipulatorActivationFilter
+
+ Defines conditions for manipulators to respond to specific events.
+ 
+
+
+MeshGenerationNode
+
+ Contains a part of the draw sequence of a VisualElement. You can use it in a job to add nested draw calls.
+ 
+
+
+Rotate
+
+ Provides rotation information for visual elements that rotates around the TransformOrigin. Positive values represent clockwise rotation.
+ 
+
+
+Scale
+
+ Represents the scale applied as element transformations. The center point that doesn't move when the scaling is applied is the TransformOrigin.
+ 
+
+
+SetupDragAndDropArgs
+
+ Information about a drag-and-drop operation that just started.
+ You can use it to store generic data for the rest of the drag.
+ See BaseVerticalCollectionView.setupDragAndDrop.
+ 
+
+
+StartDragArgs
+
+ Provides entry points to initialize the new drag-and-drop operation.
+ 
+
+
+StyleBackground
+
+ Style value that can be either a Background or a StyleKeyword.
+ 
+
+
+StyleBackgroundPosition
+
+ Represents a style value that can be either a BackgroundPosition or a StyleKeyword.
+ 
+
+
+StyleBackgroundRepeat
+
+ Represents a style value that can be either a BackgroundRepeat or a StyleKeyword.
+ 
+
+
+StyleBackgroundSize
+
+ Represents a style value that can be either a BackgroundSize or a StyleKeyword.
+ 
+
+
+StyleColor
+
+ Style value that can be either a Color or a StyleKeyword.
+ 
+
+
+StyleCursor
+
+ Style value that can be either a Cursor or a StyleKeyword.
+ 
+
+
+StyleEnum<T0>
+
+ Style value that can be either an enum or a StyleKeyword.
+ 
+
+
+StyleFloat
+
+ Style value that can be either a float or a StyleKeyword.
+ 
+
+
+StyleFont
+
+ Style value that can be either a Font or a StyleKeyword.
+ 
+
+
+StyleFontDefinition
+
+ Style value that can be either a FontDefinition or a StyleKeyword.
+ 
+
+
+StyleInt
+
+ Style value that can be either an integer or a StyleKeyword.
+ 
+
+
+StyleLength
+
+ Style value that can be either a Length or a StyleKeyword.
+ 
+
+
+StyleList<T0>
+
+ Style value that can be either a list or a StyleKeyword.
+ 
+
+
+StylePropertyName
+
+ Defines the name of a style property.
+ 
+
+
+StylePropertyNameCollection
+
+ Collection of StylePropertyName.
+ 
+
+
+StyleRotate
+
+ Represents a style value that can be either a Rotate or a StyleKeyword.
+ 
+
+
+StyleScale
+
+ Style value that can be either a Scale or a StyleKeyword.
+ 
+
+
+StyleTextAutoSize
+
+ Style value that can be either a TextAutoSize or a StyleKeyword.
+ 
+
+
+StyleTextShadow
+
+ Style value that can be either a TextShadow or a StyleKeyword.
+ 
+
+
+StyleTransformOrigin
+
+ Represents a style value that can be either a TransformOrigin or a StyleKeyword.
+ 
+
+
+StyleTranslate
+
+ Style value that can be either a Translate or a StyleKeyword.
+ 
+
+
+StyleValues
+
+ Container object used to animate multiple style values at once.
+ 
+
+
+TempMeshAllocator
+
+ Used in jobs to allocate UI Toolkit temporary meshes.
+ 
+
+
+TextAutoSize
+Setting controls automatic font‑size adjustment.
+
+
+TextShadow
+
+ Script interface for VisualElement text-shadow style property IStyle.textShadow.
+ 
+
+
+TimerState
+
+ Contains timing information of IVisualElementScheduler events.
+ 
+
+
+TimeValue
+
+ Represents a time value.
+ 
+
+
+ToggleButtonGroupState
+
+ The structure that keeps track of the Button states inside a ToggleButtonGroup.
+ 
+
+
+TransformOrigin
+
+ Represents the point of origin where the transformations (Scale, Translate, and Rotate) are applied.
+ 
+
+
+Translate
+
+ Represents a translation of the object. Percentage values in X and Y are relative to the width and height of the visual element where the style value is applied.
+ 
+
+
+TreeViewItemData<T0>
+
+ Item structure provided to a TreeView using the default implementation. For more information on usage,
+ refer to TreeView and Create list and tree views.
+ 
+
+
+UQueryBuilder<T0>
+
+ Utility Object that constructs a set of selection rules to be run on a root visual element.
+ 
+
+
+UQueryState<T0>
+
+ Query object containing all the selection rules. The object can be saved and rerun later without re-allocating memory.
+ 
+
+
+UxmlAttributeNames
+
+ Holds the description data of a UXML attribute.
+ 
+
+
+Vertex
+
+ Represents a vertex of geometry for drawing content of VisualElement.
+ 
+
+
+VisualElementStyleSheetSet
+
+ This structure manipulates the set of StyleSheet objects attached to the owner VisualElement.
+ 
+
+
+
+
+
+
+
+
+Enumerations
+
+
+
+
+
+
+
+
+Enumeration
+
+
+Description
+
+
+
+
+
+
+Align
+
+ Defines the alignment behavior along an axis.
+ 
+
+
+AlternatingRowBackground
+
+ Options to display alternating background colors for collection view rows.
+ 
+
+
+AngleUnit
+
+ Unit of measurement used to express the value of an Angle.
+ 
+
+
+ArcDirection
+
+ Direction to use when defining an arc (see Painter2D.Arc).
+ 
+
+
+BackgroundPositionKeyword
+
+ Defines the position of the background.
+ 
+
+
+BackgroundSizeType
+
+ Defines the size of the background.
+ 
+
+
+BindingLogLevel
+
+ Options to change the log level for warnings that occur during the update of data bindings.
+ 
+
+
+BindingMode
+
+ Binding mode to control how a binding is updated.
+ 
+
+
+BindingSourceSelectionMode
+
+ Option to change the data source assignation when using Data Binding in collection views.
+ 
+
+
+BindingStatus
+
+ Status to report the result of a binding update.
+ 
+
+
+BindingUpdateTrigger
+
+ Option to tell a binding when to update.
+ 
+
+
+CollectionVirtualizationMethod
+
+ Options to change the virtualization method used by the collection view to display its content.
+ 
+
+
+ColumnSortingMode
+
+ Defines the sorting mode of a MultiColumnListView or MultiColumnTreeView.
+ 
+
+
+ContextType
+
+ Describes in which context a VisualElement hierarchy is being run.
+ 
+
+
+DeltaSpeed
+
+ Speed at which the value changes for a given input device delta.
+ 
+
+
+DisplayStyle
+
+ Defines how an element is displayed in the layout.
+ 
+
+
+DragAndDropPosition
+
+ Position where the drop operation occurs.
+ 
+
+
+DragVisualMode
+
+ The status of a drag-and-drop operation.
+ 
+
+
+DynamicAtlasFilters
+
+ Options to enable or disable filters for the dynamic atlas.
+ 
+
+
+EasingMode
+
+ Represents a mathematical function that describes the rate at which a numerical value changes.
+ 
+
+
+EditorTextRenderingMode
+
+ Defines how the editor rendering the text by default
+ 
+
+
+EventInterestOptions
+
+ Options used as arguments for EventInterestAttribute when the affected method treats events in a general,
+ non type-specific manner.
+ 
+
+
+FillRule
+
+ The fill rule to use when filling shapes with Painter2D.Fill.
+ 
+
+
+FlexDirection
+
+ Defines the main-axis of the flex layout.
+ 
+
+
+HelpBoxMessageType
+
+ User message types.
+ 
+
+
+Justify
+
+ Defines the alignment along the main axis, how is extra space distributed.
+ 
+
+
+KeyboardNavigationOperation
+
+ Represents an operation that the user is trying to accomplish through a specific input mechanism.
+ 
+
+
+LanguageDirection
+
+ Indicates the directionality of the element's text. The value cascades to child elements.
+ 
+
+
+LengthUnit
+
+ Describes how to interpret a Length value.
+ 
+
+
+LibraryVisibility
+
+ Controls the visibility of the UxmlElement in the UI Builder Library projects tab.
+ 
+
+
+LineCap
+
+ Cap types for the beginning and end of paths (see Painter2D.lineCap).
+ 
+
+
+LineJoin
+
+ Join types connecting two sub-paths (see Painter2D.lineJoin).
+ 
+
+
+ListViewReorderMode
+
+ Options to change the drag-and-drop mode for items in the ListView.
+ 
+
+
+MouseButton
+
+ Enumerates the mouse buttons to identify specific mouse button interactions.
+ 
+
+
+Overflow
+
+ Defines what should happened if content overflows an element bounds.
+ 
+
+
+OverflowClipBox
+
+ Boxes against which the VisualElement content is clipped.
+ 
+
+
+PanelScaleMode
+
+ Options that specify how elements in the panel scale when the screen size changes. See PanelSettings.scaleMode.
+ 
+
+
+PanelScreenMatchMode
+
+ Options that specify how to scale the panel area when the aspect ratio of the current screen resolution
+ does not match the reference resolution. See PanelSettings.screenMatchMode.
+ 
+
+
+PenButton
+
+ Describes a PenButton. Based on W3 conventions: https://www.w3.org/TR/pointerevents2/#the-buttons-property.
+ 
+
+
+PickingMode
+
+ Describes the picking behavior. See VisualElement.pickingMode.
+ 
+
+
+Pivot
+
+ Enum value used to specify the origin point of a UIDocument.
+ 
+
+
+PivotReferenceSize
+
+ Enum value used to specify the size used to compute the Pivot position.
+ 
+
+
+Position
+
+ Defines how the position values are interpreted by the layout engine.
+ 
+
+
+PropagationPhase
+
+ The propagation phases of an event.
+ 
+
+
+Repeat
+
+ Defines how the background is repeated.
+ 
+
+
+ScrollerVisibility
+
+ Options for controlling the visibility of scroll bars in the ScrollView.
+ 
+
+
+ScrollViewMode
+
+ Configurations of the ScrollView to influence the layout of its contents and how scrollbars appear.
+ ScrollView.mode
+
+
+SelectionType
+
+ Controls how many items can be selected at once.
+ 
+
+
+SliceType
+
+ The slice type determines whether the center of the image is scaled or tiled.
+ 
+
+
+SliderDirection
+
+ This is the direction of the Slider and SliderInt.
+ 
+
+
+SortDirection
+
+ The sort direction.
+ 
+
+
+StyleKeyword
+
+ Keyword that can be used on any style value types.
+ 
+
+
+TextAutoSizeMode
+Defines how a text element adapts its font-size.
+
+
+TextOverflow
+
+ Specifies how the text Element treats hidden overflow content.
+ 
+
+
+TextOverflowPosition
+
+ Specifies which part of the text the Element replaces with an ellipsis when textOverflow is set to TextOverflow.Ellipsis.
+ 
+
+
+TimeUnit
+
+ Describes how to interpret a TimeValue.
+ 
+
+
+TransformOriginOffset
+
+ Specifies the alignment keywords for TransformOrigin.
+ 
+
+
+TrickleDown
+
+ Use this enum to specify during which propagation phase the event handler is executed.
+ 
+
+
+TwoPaneSplitViewOrientation
+
+ Determines the orientation of the two resizable panes.
+ 
+
+
+UsageHints
+
+ Offers a set of options that describe the intended usage patterns of a VisualElement.
+ These options serve as guidance for optimizations. You can set multiple
+ usage hints on an element. For example, if both position and color change, you can set both
+ DynamicTransform and DynamicColor.
+ 
+ Note: Set the usage hints at edit time or before you add the VisualElement to a panel.
+ In the case of transition, when it starts, the system might automatically add missing relevant
+ usage hints to avoid regenerating geometry in every frame. However, this causes a one-frame performance penalty
+ because the rendering data for the VisualElement and its descendants is regenerated.
+ 
+
+
+VersionChangeType
+
+ Value used to signify some changes in the VisualElement
+ 
+
+
+Visibility
+
+ Style value that specifies whether or not a VisualElement is visible.
+ 
+
+
+WhiteSpace
+
+ Controls how whitespace and line breaks within an element's text are handled, similar to the CSS white-space property.
+ Unlike the CSS property, only trailing whitespaces are collapsed, and whitespaces within the text are preserved.
+ See white-space
+
+
+Wrap
+
+ By default, items will all try to fit onto one line. You can change that and allow the items to wrap as needed with this property.
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Is something described here not working as you expect it to? It might be a 
+Known Issue
+. Please check with the Issue Tracker at 
+
+
+issuetracker.unity3d.com
+.
+Copyright ©2005-2025 Unity Technologies. All rights reserved. Built from: 6000.2.7f1 (f2ed67b075cf). Built on: 2025-09-18.
+                                        
+
+
+
+
+Tutorials
+
+
+Community Answers
+
+
+Knowledge Base
+
+
+Forums
+
+
+Asset Store
+
+
+Terms of use
+
+
+Legal
+
+
+Privacy Policy
+
+
+Cookies
+
+
+Do Not Sell or Share My Personal Information
+
+
+
+
+Your Privacy Choices (Cookie Settings)

@@ -1,0 +1,4 @@
+node_modules/
+domains/*
+psycho/*
+!domains/.gitkeep

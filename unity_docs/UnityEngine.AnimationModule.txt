@@ -1,0 +1,927 @@
+Unity - Scripting API: UnityEngine.AnimationModule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Manual
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+unity.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                Version: 
+Unity 6.2
+ (6000.2)
+                                
+Supported
+Legacy
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version: Unity 6.2
+
+
+
+
+Select a different version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UnityEngine.AnimationModule
+
+
+
+
+
+
+
+
+Leave feedback
+
+
+
+
+
+
+
+
+
+
+Suggest a change
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Success!
+
+
+Thank you for helping us improve the quality of Unity Documentation. Although we cannot accept all submissions, we do read each suggested change from our users and will make updates where applicable.
+
+
+Close
+
+
+
+
+
+
+Submission failed
+
+
+For some reason your suggested change could not be submitted. Please <a>try again</a> in a few minutes. And thank you for taking the time to help us improve the quality of Unity Documentation.
+
+
+Close
+
+
+
+
+
+
+Your name
+
+
+
+
+Your email
+
+
+
+
+Suggestion
+*
+
+
+
+                      
+
+
+Submit suggestion
+
+
+
+
+Cancel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+
+
+The Animation module implements Unity's animation system.
+
+
+
+
+
+
+Classes
+
+
+
+
+
+
+
+
+Class
+
+
+Description
+
+
+
+
+
+
+AimConstraint
+Constrains the orientation of a GameObject based on the position of one or more sources.
+
+
+Animation
+The animation component is used to play back animations.
+
+
+AnimationClip
+
+Provides an asset that assigns animation curves to animatable properties.
+            
+
+
+AnimationEvent
+AnimationEvent lets you call a script function similar to SendMessage as part of playing back an animation.
+
+
+AnimationPlayableBinding
+A PlayableBinding that contains information representing an AnimationPlayableOutput.
+
+
+AnimationPlayableOutputExtensions
+Static class providing experimental extension methods for AnimationPlayableOutput .
+
+
+AnimationPlayableUtilities
+Implements high-level utility methods to simplify use of the Playable API with Animations.
+
+
+AnimationSceneHandleUtility
+Static class providing utility functions for animation scene handles.
+
+
+AnimationState
+The AnimationState gives full control over animation blending.
+
+
+AnimationStreamHandleUtility
+Static class providing utility functions for animation stream handles.
+
+
+Animator
+Manages, controls, and evaluates the animation of a GameObject.
+
+
+AnimatorControllerParameter
+Used to communicate between scripting and an AnimatorController.
+
+
+AnimatorJobExtensions
+Static class providing extension methods for Animator and the animation C# jobs.
+
+
+AnimatorOverrideController
+Interface to control Animator Override Controller.
+
+
+AnimatorUtility
+Various utilities for animator manipulation.
+
+
+Avatar
+The avatar asset describes the mapping of the character in the Animator.
+
+
+AvatarBuilder
+Class to build avatars from user scripts.
+
+
+AvatarMask
+AvatarMask is used to mask out humanoid body parts and transforms.
+
+
+DiscreteEvaluationAttribute
+Use this attribute to indicate that a property will be evaluated as a discrete value during animation playback.
+
+
+GenericBindingUtility
+Animation utility functions for reading and writing values from Unity components.
+
+
+HumanPoseHandler
+Use this class to create, read, and write the HumanPose for a humanoid avatar skeleton hierarchy or an avatar pose.
+
+
+HumanTrait
+Details of all the human bone and muscle types defined by Mecanim.
+
+
+LookAtConstraint
+Constrains the orientation of a GameObject based on the position of one or more sources.
+
+
+Motion
+Stores a reference to an animation asset associated with a State Machine state.
+
+
+NotKeyableAttribute
+Use this attribute in a script to mark a property as non-animatable.
+
+
+ParentConstraint
+Constrains the transformation of a GameObject based on the position and rotation of one or more sources.
+
+
+PositionConstraint
+Constrains the position of a GameObject based on the position of one or more sources.
+
+
+RotationConstraint
+Constrains the rotation of a GameObject based on the rotation of one or more sources.
+
+
+RuntimeAnimatorController
+A representation of the Animator Controller, optimized for runtime.
+
+
+ScaleConstraint
+Constrains the scale of a GameObject based on the scale of one or more sources.
+
+
+SharedBetweenAnimatorsAttribute
+The SharedBetweenAnimatorsAttribute specifies that this StateMachineBehaviour is instantiated only once and shared by all Animator instances. This attribute reduces the memory footprint for each controller instance.
+
+
+StateMachineBehaviour
+StateMachineBehaviour is a component that you add to a state machine state. It is the base class that a script must derive from.
+
+
+
+
+
+
+
+
+Structs
+
+
+
+
+
+
+
+
+Struct
+
+
+Description
+
+
+
+
+
+
+AnimationClipPlayable
+A Playable that controls an AnimationClip.
+
+
+AnimationHumanStream
+The humanoid stream of animation data passed from one Playable to another.
+
+
+AnimationLayerMixerPlayable
+An implementation of IPlayable that controls an animation layer mixer.
+
+
+AnimationMixerPlayable
+An implementation of IPlayable that controls an animation mixer.
+
+
+AnimationPlayableOutput
+A IPlayableOutput implementation that connects the PlayableGraph to an Animator in the Scene.
+
+
+AnimationScriptPlayable
+A Playable that can run a custom, multi-threaded animation job.
+
+
+AnimationStream
+The stream of animation data passed from one Playable to another.
+
+
+AnimatorClipInfo
+Information about clip being played and blended by the Animator.
+
+
+AnimatorControllerPlayable
+An implementation of IPlayable that controls an animation RuntimeAnimatorController.
+
+
+AnimatorStateInfo
+Runtime information on the current or next animation state, managed by an Animator.
+
+
+AnimatorTransitionInfo
+Information about the current transition on a specific state machine layer.
+
+
+BoundProperty
+A BoundProperty is a safe handle to read and write value in a generic way from any Unity components.
+
+
+ConstraintSource
+Represents a weighted position that can be used in a constraint.
+
+
+GenericBinding
+Defines an animatable property on a Unity Component.
+
+
+HumanBone
+The mapping between a bone in the model and the conceptual bone in the Mecanim human anatomy.
+
+
+HumanDescription
+Class that holds humanoid avatar parameters to pass to the AvatarBuilder.BuildHumanAvatar function.
+
+
+HumanLimit
+This class stores the rotation limits that define the muscle for a single human bone.
+
+
+HumanPose
+Retargetable humanoid pose.
+
+
+MatchTargetWeightMask
+Use this struct to specify the position and rotation weight mask for Animator.MatchTarget.
+
+
+MuscleHandle
+Handle for a muscle in the AnimationHumanStream.
+
+
+PropertySceneHandle
+Handle to read a Component property on an object in the Scene.
+
+
+PropertyStreamHandle
+Handle for a Component property on an object in the AnimationStream.
+
+
+SkeletonBone
+Details of the Transform name mapped to the skeleton bone of a model and its default position and rotation in the T-pose.
+
+
+TransformSceneHandle
+Handle to read position, rotation and scale of an object in the Scene.
+
+
+TransformStreamHandle
+Position, rotation and scale of an object in the AnimationStream.
+
+
+
+
+
+
+
+
+Enumerations
+
+
+
+
+
+
+
+
+Enumeration
+
+
+Description
+
+
+
+
+
+
+AnimationBlendMode
+Used by Animation.Play function.
+
+
+AnimationCullingType
+This enum controlls culling of Animation component.
+
+
+AnimationStreamSource
+Describes how an AnimationStream is initialized
+
+
+AnimationUpdateMode
+The update mode of the Animation component.
+
+
+AnimatorControllerParameterType
+The type of the parameter.
+
+
+AnimatorCullingMode
+The culling mode for an Animator.
+
+
+AnimatorRecorderMode
+The mode of the Animator's recorder.
+
+
+AnimatorUpdateMode
+Controls when and how the Animator component updates animations.
+
+
+ArmDof
+Enumeration of all the muscles in an arm.
+
+
+AvatarIKGoal
+IK Goal.
+
+
+AvatarIKHint
+IK Hint.
+
+
+AvatarMaskBodyPart
+Avatar body part.
+
+
+AvatarTarget
+Target.
+
+
+Axis
+Represents the axes used in 3D space.
+
+
+BodyDof
+Enumeration of all the muscles in the body.
+
+
+CustomStreamPropertyType
+The type of custom stream property to create using BindCustomStreamProperty
+
+
+DurationUnit
+Describe the unit of a duration.
+
+
+FingerDof
+Enumeration of all the muscles in a finger.
+
+
+HeadDof
+Enumeration of all the muscles in the head.
+
+
+HumanBodyBones
+Human Body Bones.
+
+
+HumanPartDof
+Enumeration of all the parts in a human.
+
+
+LegDof
+Enumeration of all the muscles in a leg.
+
+
+PlayMode
+Options that choose which animations to stop when playing an animation.
+
+
+QueueMode
+Used by Animation.Play function.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Is something described here not working as you expect it to? It might be a 
+Known Issue
+. Please check with the Issue Tracker at 
+
+
+issuetracker.unity3d.com
+.
+Copyright ©2005-2025 Unity Technologies. All rights reserved. Built from: 6000.2.7f1 (f2ed67b075cf). Built on: 2025-09-18.
+                                        
+
+
+
+
+Tutorials
+
+
+Community Answers
+
+
+Knowledge Base
+
+
+Forums
+
+
+Asset Store
+
+
+Terms of use
+
+
+Legal
+
+
+Privacy Policy
+
+
+Cookies
+
+
+Do Not Sell or Share My Personal Information
+
+
+
+
+Your Privacy Choices (Cookie Settings)

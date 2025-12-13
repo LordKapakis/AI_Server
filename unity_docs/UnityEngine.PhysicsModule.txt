@@ -1,0 +1,910 @@
+Unity - Scripting API: UnityEngine.PhysicsModule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Manual
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+unity.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                Version: 
+Unity 6.2
+ (6000.2)
+                                
+Supported
+Legacy
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version: Unity 6.2
+
+
+
+
+Select a different version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UnityEngine.PhysicsModule
+
+
+
+
+
+
+
+
+Leave feedback
+
+
+
+
+
+
+
+
+
+
+Suggest a change
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Success!
+
+
+Thank you for helping us improve the quality of Unity Documentation. Although we cannot accept all submissions, we do read each suggested change from our users and will make updates where applicable.
+
+
+Close
+
+
+
+
+
+
+Submission failed
+
+
+For some reason your suggested change could not be submitted. Please <a>try again</a> in a few minutes. And thank you for taking the time to help us improve the quality of Unity Documentation.
+
+
+Close
+
+
+
+
+
+
+Your name
+
+
+
+
+Your email
+
+
+
+
+Suggestion
+*
+
+
+
+                      
+
+
+Submit suggestion
+
+
+
+
+Cancel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+
+
+The Physics module implements 3D physics in Unity.
+
+
+
+
+
+
+Classes
+
+
+
+
+
+
+
+
+Class
+
+
+Description
+
+
+
+
+
+
+ArticulationBody
+A body that forms part of a Physics articulation.
+
+
+BoxCollider
+A box-shaped primitive collider.
+
+
+CapsuleCollider
+A capsule-shaped primitive collider.
+
+
+CharacterController
+A CharacterController allows you to easily do movement constrained by collisions without having to deal with a rigidbody.
+
+
+CharacterJoint
+Character Joints are mainly used for Ragdoll effects.
+
+
+Collider
+A base class of all colliders.
+
+
+Collision
+Describes a collision.
+
+
+ConfigurableJoint
+The configurable joint is an extremely flexible joint giving you complete control over rotation and linear motion.
+
+
+ConstantForce
+A force applied constantly.
+
+
+ControllerColliderHit
+ControllerColliderHit is used by CharacterController.OnControllerColliderHit to give detailed information about the collision and how to deal with it.
+
+
+FixedJoint
+The Fixed joint groups together 2 rigidbodies, making them stick together in their bound position.
+
+
+HingeJoint
+The HingeJoint groups together 2 rigid bodies, constraining them to move like connected by a hinge.
+
+
+ImmediatePhysics
+This class contains methods to run the immediate simulation steps.
+
+
+Joint
+Joint is the base class for all joints.
+
+
+MeshCollider
+A mesh collider allows you to do collision detection between meshes and primitives.
+
+
+Physics
+Global physics properties and helper methods.
+
+
+PhysicsMaterial
+Physics material describes how to handle colliding objects (friction, bounciness).
+
+
+PhysicsSceneExtensions
+Scene extensions to access the underlying physics scene.
+
+
+Rigidbody
+Control of an object's position through physics simulation.
+
+
+SphereCollider
+A sphere-shaped primitive collider.
+
+
+SpringJoint
+The spring joint ties together 2 rigid bodies, spring forces will be automatically applied to keep the object at the given distance.
+
+
+
+
+
+
+
+
+Structs
+
+
+
+
+
+
+
+
+Struct
+
+
+Description
+
+
+
+
+
+
+ArticulationDrive
+Drive applies forces and torques to the connected bodies.
+
+
+ArticulationJacobian
+The floating point dense Jacobian matrix of the articulation body hierarchy.
+
+
+ArticulationReducedSpace
+Coordinates in reduced space.
+
+
+BoxcastCommand
+Use this struct to set up a box cast command to be performed asynchronously during a job.
+
+
+BoxGeometry
+Contains the basic geometric shape of a box.
+
+
+CapsulecastCommand
+Use this struct to set up a capsule cast command that is performed asynchronously during a job.
+
+
+CapsuleGeometry
+Contains the basic geometric shape of a capsule.
+
+
+ClosestPointCommand
+Struct used to set up a closest point command to be performed asynchronously during a job.When you use this struct to schedule a batch of closest commands, they are performed asynchronously and in parallel to each other. The results of the closest points are written to the results buffer. Because the results are written asynchronously, the results buffer cannot be accessed until the job has been completed.The result for a command at index N in the command buffer is stored at index N in the results buffer.
+
+
+ColliderHit
+Struct used to retrieve information from an Overlap batch query.
+
+
+ContactPair
+A pair of Colliders that belong to the bodies in the parent ContactPairHeader struct.
+
+
+ContactPairHeader
+A header struct which contains colliding bodies.
+
+
+ContactPairPoint
+A readonly struct describing a contact point between two Colliders.
+
+
+ContactPoint
+Describes a contact point where the collision occurs.
+
+
+ConvexMeshGeometry
+Contains the basic geometric shape of a convex mesh.
+
+
+GeometryHolder
+Holds the basic information of a geometric shape and its type.
+
+
+ImmediateContact
+Describes a contact where two shapes collide.
+
+
+ImmediateTransform
+A transform, containing a position and rotation.
+
+
+JointDrive
+How the joint's movement will behave along its local X axis.
+
+
+JointLimits
+JointLimits is used by the HingeJoint to limit the joints angle.
+
+
+JointMotor
+The JointMotor is used to motorize a joint.
+
+
+JointSpring
+JointSpring is used add a spring force to HingeJoint and PhysicsMaterial.
+
+
+ModifiableContactPair
+A light-weight proxy that allows to access the contact buffers directly.
+
+
+ModifiableMassProperties
+Mass-related modifiable properties of a contact pair.
+
+
+OverlapBoxCommand
+Struct used to set up an overlap box command to be performed asynchronously during a job.
+
+
+OverlapCapsuleCommand
+Struct used to set up an overlap capsule command to be performed asynchronously during a job.
+
+
+OverlapSphereCommand
+Struct used to setup an overlap sphere command to be performed asynchronously during a job.
+
+
+PhysicsScene
+Represents a single instance of a 3D physics Scene.
+
+
+QueryParameters
+Creates a struct to set up parameters for batch queries: RaycastCommand, BoxcastCommand, CapsulecastCommand, SpherecastCommand.
+
+
+RaycastCommand
+Struct used to set up a raycast command to be performed asynchronously during a job.
+
+
+RaycastHit
+Structure used to get information back from a raycast.
+
+
+SoftJointLimit
+The limits defined by the CharacterJoint.
+
+
+SoftJointLimitSpring
+The configuration of the spring attached to the joint's limits: linear and angular. Used by CharacterJoint and ConfigurableJoint.
+
+
+SpherecastCommand
+Use this struct to set up a sphere cast command that is performed asynchronously during a job.
+
+
+SphereGeometry
+Contains the basic geometric shape of a sphere.
+
+
+TerrainGeometry
+Contains the geometric shape of a Terrain collider.
+
+
+TriangleMeshGeometry
+Contains the basic geometric shape of a non-convex mesh (sometimes known as a triangle mesh).
+
+
+WheelFrictionCurve
+WheelFrictionCurve is used by the WheelCollider to describe friction properties of the wheel tire.
+
+
+
+
+
+
+
+
+Enumerations
+
+
+
+
+
+
+
+
+Enumeration
+
+
+Description
+
+
+
+
+
+
+ArticulationDofLock
+The lock type applied to a particular degree of freedom of an articulation body.
+
+
+ArticulationDriveAxis
+An axis of a drive of an ArticulationBody.
+
+
+ArticulationDriveType
+The drive type applied to a particular drive of an ArticulationBody.
+
+
+ArticulationJointType
+The type of the joint that restricts movement of the two connected articulation bodies.
+
+
+CollisionDetectionMode
+The collision detection mode constants used for Rigidbody.collisionDetectionMode.
+
+
+CollisionFlags
+CollisionFlags is a bitmask returned by CharacterController.Move.
+
+
+ConfigurableJointMotion
+Constrains movement for a ConfigurableJoint along the 6 axes.
+
+
+ForceMode
+Use ForceMode to specify how to apply a force using Rigidbody.AddForce or ArticulationBody.AddForce.
+
+
+GeometryType
+The set of basic geometry shape types that can exist.
+
+
+JointProjectionMode
+Determines how to snap physics joints back to its constrained position when it drifts off too much.
+
+
+MeshColliderCookingOptions
+Cooking options that are available with MeshCollider.
+
+
+PhysicsMaterialCombine
+Describes how physics materials of the colliding objects are combined.The friction force as well as the residual bounce impulse are applied symmetrically to both of the colliders in contact, so each pair of overlapping colliders must have a single set of friction and bouciness settings. However, one can set arbitrary physics materials to any colliders. For that particular reason, there is a mechanism that allows the combination of two different sets of properties that correspond to each of the colliders in contact into one set to be used in the solver.Specifying Average, Maximum, Minimum or Multiply as the physics material combine mode, you directly set the function that is used to combine the settings corresponding to the two overlapping colliders into one set of settings that can be used to apply the material effect.Note that there is a special case when the two overlapping colliders have physics materials with different combine modes set. In this particular case, the function that has the highest priority is used. The priority order is as follows: Average < Minimum < Multiply < Maximum. For example, if one material has Average set but the other one has Maximum, then the combine function to be used is Maximum, since it has higher priority.
+
+
+QueryTriggerInteraction
+Overrides the global Physics.queriesHitTriggers.
+
+
+RigidbodyConstraints
+Use these flags to constrain motion of Rigidbodies.
+
+
+RigidbodyInterpolation
+
+          Rigidbody interpolation mode.
+
+
+RotationDriveMode
+Control ConfigurableJoint's rotation with either X & YZ or Slerp Drive.
+
+
+SimulationMode
+A selection of modes that control when Unity executes the physics simulation.
+
+
+SimulationOption
+An enumerator that specifies physics simulation options.
+
+
+SimulationStage
+A flag enum to determine which simulation stages to run.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Is something described here not working as you expect it to? It might be a 
+Known Issue
+. Please check with the Issue Tracker at 
+
+
+issuetracker.unity3d.com
+.
+Copyright ©2005-2025 Unity Technologies. All rights reserved. Built from: 6000.2.7f1 (f2ed67b075cf). Built on: 2025-09-18.
+                                        
+
+
+
+
+Tutorials
+
+
+Community Answers
+
+
+Knowledge Base
+
+
+Forums
+
+
+Asset Store
+
+
+Terms of use
+
+
+Legal
+
+
+Privacy Policy
+
+
+Cookies
+
+
+Do Not Sell or Share My Personal Information
+
+
+
+
+Your Privacy Choices (Cookie Settings)

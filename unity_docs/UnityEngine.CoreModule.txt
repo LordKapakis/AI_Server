@@ -1,0 +1,3898 @@
+Unity - Scripting API: UnityEngine.CoreModule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Manual
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+unity.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                Version: 
+Unity 6.2
+ (6000.2)
+                                
+Supported
+Legacy
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version: Unity 6.2
+
+
+
+
+Select a different version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UnityEngine.CoreModule
+
+
+
+
+
+
+
+
+Leave feedback
+
+
+
+
+
+
+
+
+
+
+Suggest a change
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Success!
+
+
+Thank you for helping us improve the quality of Unity Documentation. Although we cannot accept all submissions, we do read each suggested change from our users and will make updates where applicable.
+
+
+Close
+
+
+
+
+
+
+Submission failed
+
+
+For some reason your suggested change could not be submitted. Please <a>try again</a> in a few minutes. And thank you for taking the time to help us improve the quality of Unity Documentation.
+
+
+Close
+
+
+
+
+
+
+Your name
+
+
+
+
+Your email
+
+
+
+
+Suggestion
+*
+
+
+
+                      
+
+
+Submit suggestion
+
+
+
+
+Cancel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+
+
+The Core module implements basic classes required for Unity to function.
+
+
+
+
+
+
+This module cannot be disabled.
+
+
+
+
+
+
+Classes
+
+
+
+
+
+
+
+
+Class
+
+
+Description
+
+
+
+
+
+
+AddComponentMenu
+The AddComponentMenu attribute allows you to place a script anywhere in the "Component" menu, instead of just the "Component->Scripts" menu.
+
+
+AlwaysLinkAssemblyAttribute
+Ensure an assembly is always processed during managed code stripping.
+
+
+AnimationCurve
+Represents the variation of a value over time. AnimationCurves are typically used to animate the value of Component properties in AnimationClip, but you can use them to dynamically drive any float value. 
+
+
+Application
+Provides access to application runtime data.
+
+
+Application
+Provides essential methods related to Window Store application.
+
+
+Application
+Access to platform-specific application runtime data.
+
+
+ArchiveFileInterface
+Provides methods for managing Unity archive files.
+
+
+Arguments
+DedicatedServer.Arguments provides accessors for common CLI options
+
+
+AssemblyIsEditorAssembly
+Assembly level attribute. Any classes in an assembly with this attribute will be considered to be Editor Classes.
+
+
+Assert
+The Assert class contains assertion methods for setting invariants in the code.
+
+
+AssertionException
+An exception that is thrown when an assertion fails.
+
+
+AsyncGPUReadback
+Allows the asynchronous read back of GPU resources.
+
+
+AsyncInstantiateOperation
+Asynchronous instantiate operation on UnityEngine.Object type.
+
+
+AsyncInstantiateOperation<T0>
+Provides a generic method to instantiate operations asynchronously on a UnityEngine.Object.
+
+
+AsyncOperation
+Suspends a coroutine until an asynchronous operation completes.
+
+
+AsyncReadManager
+With the AsyncReadManager, you can perform asynchronous I/O operations through Unity's virtual file system. You can perform these operations on any thread or job.
+
+
+AsyncReadManagerMetrics
+Manages the recording and retrieval of metrics from the AsyncReadManager.
+
+
+AsyncReadManagerMetricsFilters
+Defines a filter for selecting specific categories of data when summarizing AsyncReadManager metrics.
+
+
+AsyncReadManagerSummaryMetrics
+A summary of the metrics collected for AsyncReadManager read operations.
+
+
+Awaitable
+Custom Unity type that can be awaited and used as an async return type in the C# asynchronous programming model.
+
+
+Awaitable<T0>
+Custom Unity type that can be awaited and used as an async return type in the C# asynchronous programming model.
+
+
+AwaitableCompletionSource
+Objects allowing to control completion of an Awaitable object from user code.
+
+
+AwaitableCompletionSource<T0>
+Objects allowing to control completion of an Awaitable object from user code.
+
+
+BatchRendererGroup
+A BatchRendererGroup is an object that lets you perform customizable high performance rendering.
+
+
+BeforeRenderOrderAttribute
+Use this BeforeRenderOrderAttribute when you need to specify a custom callback order for Application.onBeforeRender.
+
+
+Behaviour
+Behaviours are Components that can be enabled or disabled.
+
+
+BillboardAsset
+BillboardAsset describes how a billboard is rendered.
+
+
+BillboardRenderer
+Renders a billboard from a BillboardAsset.
+
+
+BurstAuthorizedExternalMethodAttribute
+The BurstAuthorizedExternalMethod attribute lets you mark a function as being authorized for Burst to call from within a static constructor.
+
+
+BurstDiscardAttribute
+Use this attribute to exclude a method or property from being compiled to native code by the Burst compiler.
+
+
+Caching
+The Caching class lets you manage cached AssetBundles, downloaded using UnityWebRequestAssetBundle.GetAssetBundle.
+
+
+Camera
+A Camera is a device through which the player views the world.
+
+
+CategoryInfoAttribute
+Provide a information to order and categorize at category level.
+
+
+CollectionPool<T0,T1>
+A Collection such as List, HashSet, Dictionary etc can be pooled and reused by using a CollectionPool.
+
+
+ColorGamutUtility
+Utility class to query properties of a ColorGamut.
+
+
+ColorUsageAttribute
+Attribute used to configure the usage of the ColorField and Color Picker for a color.
+
+
+ColorUtility
+A collection of common color functions.
+
+
+CommandBuffer
+List of graphics commands to execute.
+
+
+CommandBufferExtensions
+Static class providing extension methods for CommandBuffer.
+
+
+Component
+Base class for everything attached to a GameObject.
+
+
+ComputeBuffer
+GPU data buffer, mostly for use with compute shaders.
+
+
+ComputeShader
+Compute Shader asset.
+
+
+ContextMenu
+Use the ContextMenu attribute to add commands to the context menu of the Inspector window.
+
+
+ContextMenuItemAttribute
+Use this attribute to add a context menu to a field that calls a  named method.
+
+
+Coroutine
+
+          MonoBehaviour.StartCoroutine returns a Coroutine. Instances of this class are only used to reference these coroutines, and do not hold any exposed properties or functions.
+
+
+Coverage
+Describes the interface for the code coverage data exposed by mono.
+
+
+CrashReport
+Holds data for a single application crash event and provides access to all gathered crash reports.
+
+
+CrashReporting
+Provides information specific to crash reporting on Windows platforms.
+
+
+CreateAssetMenuAttribute
+Mark a ScriptableObject-derived type to be automatically listed in the Assets/Create submenu, so that instances of the type can be easily created and stored in the project as ".asset" files.
+
+
+Crypto
+Class representing cryptography algorithms.
+
+
+Cubemap
+Class for handling cube maps, Use this to create or modify existing cube map assets.
+
+
+CubemapArray
+Class for handling Cubemap arrays.
+
+
+CullingGroup
+Describes a set of bounding spheres that should have their visibility and distances maintained.
+
+
+Cursor
+Cursor API for setting the cursor (mouse pointer).
+
+
+Cursor
+Cursor API for Windows Store Apps.
+
+
+CustomRenderTexture
+Custom Render Textures are an extension to Render Textures that allow you to render directly to the Texture using a Shader.
+
+
+CustomRenderTextureManager
+Custom Render Texture Manager.
+
+
+CustomSampler
+Custom CPU Profiler label used for profiling arbitrary code blocks.
+
+
+CustomYieldInstruction
+Base class for custom yield instructions to suspend coroutines.
+
+
+D3D12DeviceFilterLists
+Set of parameters used to define a Windows device or group of Windows devices.
+
+
+DataUtility
+Helper utilities for accessing Sprite data.
+
+
+DeallocateOnJobCompletionAttribute
+Automatically deallocates a native container when a job is finished.
+
+
+Debug
+Class containing methods to ease debugging while developing a game.
+
+
+DefaultExecutionOrder
+Specifies the script execution order for a MonoBehaviour-derived class relative to other MonoBehaviour-derived types.
+
+
+DelayedAttribute
+Attribute used to make a float, int, or string variable in a script be delayed.
+
+
+Device
+Interface into tvOS specific functionality.
+
+
+Device
+Interface into iOS specific functionality.
+
+
+DictationRecognizer
+DictationRecognizer listens to speech input and attempts to determine what phrase was uttered.
+
+
+DictionaryPool<T0,T1>
+A version of CollectionPool<T0,T1> for Dictionaries.
+
+
+Directory
+Exposes static methods for directory operations.
+
+
+DisallowMultipleComponent
+Prevents MonoBehaviour of same type (or subtype) to be added more than once to a GameObject.
+
+
+DiscreteTimeTimeExtensions
+Extension methods for the DiscreteTime.
+
+
+Display
+Provides access to a display / screen for rendering operations.
+
+
+DisposeSentinel
+Contains methods that automatically detect memory leaks.
+
+
+DynamicGI
+Query and control Enlighten Realtime Global Illumination.
+
+
+ElementInfoAttribute
+Provide a information to order and categorize at element level (in a category).
+
+
+EnumButtonsAttribute
+Attribute to enable editing an enum with a ToggleButtonGroup.
+
+
+ExcludeFromCoverageAttribute
+Allows you to exclude an Assembly, Class, Constructor, Method or Struct from Coverage.
+
+
+ExcludeFromObjectFactoryAttribute
+Add this attribute to a class to prevent the class and its inherited classes from being created with ObjectFactory methods.
+
+
+ExcludeFromPresetAttribute
+Add this attribute to a class to prevent creating a Preset from the instances of the class.
+
+
+ExecuteAlways
+Causes a MonoBehaviour-derived class to execute in Edit mode and prefab editing mode in addition to at runtime.
+
+
+ExecuteInEditMode
+Causes a MonoBehaviour-derived class to execute in Edit mode in addition to at runtime.
+
+
+ExpressionEvaluator
+Evaluates simple math expressions; supports int / float and operators: + - * / % ^ ( ).
+
+
+ExternalGPUProfiler
+The ExternalGPUProfiler API allows developers to programatically take GPU frame captures in conjunction with supported external GPU profilers.
+GPU frame captures can be used to both analyze performance and debug graphics related issues.
+
+
+File
+Provides static methods for file operations.
+
+
+Flare
+A flare asset. Read more about flares in the components reference.
+
+
+FlareLayer
+FlareLayer component.
+
+
+FloatComparer
+A float comparer used by Assert performing approximate comparison.
+
+
+FormerlySerializedAsAttribute
+Use this attribute to rename a field without losing its serialized value.
+
+
+FrameCapture
+Interface to control XCode Frame Capture.
+
+
+FrameDebugger
+Controls the Frame Debugger from a script.
+
+
+FrameTimingManager
+The FrameTimingManager provides frame-level CPU and GPU time measurements.
+
+
+GameObject
+Base class for all objects that can exist in a scene. Add components to a GameObject to control its appearance and behavior.
+
+
+GarbageCollector
+API to control the garbage collector on the Mono and IL2CPP scripting backends.
+
+
+GenericPool<T0>
+Provides a static implementation of ObjectPool<T0>.
+
+
+GeometryUtility
+Utility class for common geometric functions.
+
+
+Gizmos
+Gizmos are used to give visual debugging or setup aids in the Scene view.
+
+
+GL
+Low-level graphics library.
+
+
+Gradient
+Represents a Gradient used for animating colors.
+
+
+GradientUsageAttribute
+Controls how the Gradient inspector editor treats the color values.
+
+
+GrammarRecognizer
+The GrammarRecognizer is a complement to the KeywordRecognizer. In many cases developers will find the KeywordRecognizer fills all their development needs. However, in some cases, more complex grammars will be better expressed in the form of an xml file on disk.
+The GrammarRecognizer uses Extensible Markup Language (XML) elements and attributes, as specified in the World Wide Web Consortium (W3C) Speech Recognition Grammar Specification (SRGS) Version 1.0. These XML elements and attributes represent the rule structures that define the words or phrases (commands) recognized by speech recognition engines.
+
+
+Graphics
+Raw interface to Unity's drawing functions.
+
+
+GraphicsBuffer
+GPU graphics data buffer, for working with geometry or compute shader data.
+
+
+GraphicsFormatUtility
+This utility class contains helper functions that enable you to query properties of a TextureFormat, RenderTextureFormat, or GraphicsFormat. This class also includes format conversion and size calculation functions.
+
+
+GraphicsSettings
+Script interface for Graphics Settings.
+
+
+GraphicsStateCollection
+Collection of shader variants and associated graphics states.
+
+
+GraphicsTexture
+Represents the view on a single texture resource that is uploaded to the graphics device.
+
+
+Handheld
+Interface into functionality unique to handheld devices.
+
+
+HashSetPool<T0>
+A version of CollectionPool<T0,T1> for HashSets.
+
+
+HashUnsafeUtilities
+Utilities to compute hashes with unsafe code.
+
+
+HashUtilities
+Utilities to compute hashes.
+
+
+HDROutputSettings
+Provides access to HDR display settings and information.
+
+
+HeaderAttribute
+Use this PropertyAttribute to add a header above some fields in the Inspector.
+
+
+HelpURLAttribute
+Provide a custom documentation URL for a class.
+
+
+HideInCallstackAttribute
+Marks the methods you want to hide from the Console window callstack. When you hide these methods they are removed from the detail area of the selected message in the Console window.
+
+
+HideInInspector
+Flags a variable to not appear in the Inspector.
+
+
+IconAttribute
+Attribute to specify an icon for a MonoBehaviour or ScriptableObject.
+
+
+IgnoredByDeepProfilerAttribute
+IgnoredByDeepProfilerAttribute prevents Unity Profiler from capturing method calls.
+
+
+IJobExtensions
+Contains extension methods for jobs implementing the IJob interface.
+
+
+IJobForExtensions
+Contains extension methods for jobs implementing the IJobFor interface.
+
+
+IJobParallelForExtensions
+Contains extension methods for jobs implementing the IJobParallelFor interface.
+
+
+IJobParallelForTransformExtensions
+Contains extension methods for IJobParallelForTransform.
+
+
+ImageEffectAfterScale
+Any Image Effect with this attribute will be rendered after Dynamic Resolution stage.
+
+
+ImageEffectAllowedInSceneView
+Any Image Effect with this attribute can be rendered into the Scene view camera.
+
+
+ImageEffectOpaque
+Any Image Effect with this attribute will be rendered after opaque geometry but before transparent geometry.
+
+
+ImageEffectTransformsToLDR
+When using HDR rendering it can sometime be desirable to switch to LDR rendering during ImageEffect rendering.
+
+
+ImageEffectUsesCommandBuffer
+Use this attribute when image effects are implemented using Command Buffers.
+
+
+Input
+Provides static methods for Windows specific input manipulation.
+
+
+InspectorNameAttribute
+Use this attribute on enum value declarations to change the display name shown in the Inspector.
+
+
+InspectorOrderAttribute
+Shows sorted enum values in the Inspector enum UI dropdowns i.e. EditorGUI.EnumPopup, PropertyField etc. This attribute can be applied to enum types only.
+
+
+InvalidImportException
+Exception raised by the Resource Loader on SRP's.
+
+
+JobHandleUnsafeUtility
+Contains unsafe utility methods for JobHandle instances.
+
+
+JobProducerTypeAttribute
+Indicates that a job interface's Execute method can be Burst compiled.
+
+
+JobsUtility
+Provides methods for creating, running, and debugging jobs.
+
+
+KeywordRecognizer
+KeywordRecognizer listens to speech input and attempts to match uttered phrases to a list of registered keywords.
+
+
+Launcher
+Class which is capable of launching user's default app for file type or a protocol. See also PlayerSettings where you can specify file or URI associations.
+
+
+LensFlare
+Script interface for a Lens flare component.
+
+
+LicenseInformation
+This class provides information regarding application's trial status and allows initiating application purchase.
+
+
+Light
+Script interface for light components.
+
+
+Light2DBase
+Provides a base class for 2D lights.
+
+
+LightingSettings
+An object containing settings for precomputing lighting data, that Unity can serialize as a Lighting Settings Asset.
+
+
+LightmapData
+Data of a lightmap.
+
+
+LightmapperUtils
+Utility class for converting Unity Lights to light types recognized by the baking backends.
+
+
+Lightmapping
+Interface to the light baking backends.
+
+
+LightmapSettings
+Stores lightmaps of the Scene.
+
+
+LightProbeGroup
+Specifies where and how to bake a list of light probes.
+
+
+LightProbeProxyVolume
+The Light Probe Proxy Volume component offers the possibility to use higher resolution lighting for large non-static GameObjects.
+
+
+LightProbes
+Stores light probe data for all currently loaded Scenes.
+
+
+LineRenderer
+The line renderer is used to draw free-floating lines in 3D space.
+
+
+LineUtility
+A collection of common line functions.
+
+
+LinkedPool<T0>
+A linked list version of IObjectPool<T0>.
+
+
+ListPool<T0>
+A version of CollectionPool<T0,T1> for Lists.
+
+
+LoadStoreActionDebugModeSettings
+Whether to show undefined areas of the display that might cause rendering problems in your built application.
+
+
+LODGroup
+LODGroup lets you group multiple Renderers into LOD levels.
+
+
+Logger
+Initializes a new instance of the Logger.
+
+
+MachineLearningContext
+Represents a machine learning context used for lifetime control and pooling of the compiled MachineLearningOperator.
+
+
+MachineLearningOperatorDispatcher
+Static dispatcher class for executing machine learning operators.
+
+
+MachineLearningOperatorFactory
+Static factory class for creating machine learning operators.
+
+
+ManagedReferenceUtility
+Utility functions related to SerializeReference manipulation and access.
+
+
+Material
+The material class.
+
+
+MaterialPropertyBlock
+A block of material values to apply.
+
+
+MemoryProfiler
+The memory profiler API provides functionality for taking memory snapshots or adding metadata to them.
+
+
+MemorySnapshotMetadata
+Container for memory snapshot metadata.
+
+
+Mesh
+A class that allows you to create or modify meshes.
+
+
+MeshFilter
+A class to access the Mesh of the mesh filter.
+
+
+MeshRenderer
+Renders the mesh from the MeshFilter component on the same GameObject.
+
+
+MessageEventArgs
+Arguments passed to Action callbacks registered in PlayerConnection.
+
+
+MinAttribute
+Attribute used to make a float or int variable in a script be restricted to a specific minimum value.
+
+
+MonoBehaviour
+MonoBehaviour is a base class that many Unity scripts derive from.
+
+
+MultilineAttribute
+Attribute to make a string be edited with a multi-line textfield.
+
+
+NativeArrayUnsafeUtility
+Contains unsafe methods for 
+working with  NativeArray instances.
+
+
+NativeContainerAttribute
+Allows you to create your own custom native container.
+
+
+NativeContainerIsAtomicWriteOnlyAttribute
+Indicates that the native container only allows writing, and can only be written to in safe, parallel contexts.
+
+
+NativeContainerIsReadOnlyAttribute
+Marks a native container type as read only.
+
+
+NativeContainerSupportsDeallocateOnJobCompletionAttribute
+Indicates that a NativeContainer can be automatically deallocated when a job is complete.
+
+
+NativeContainerSupportsDeferredConvertListToArray
+Indicates that the native container type can be passed to the Schedule method of an IJobParallelForDefer job.
+
+
+NativeContainerSupportsMinMaxWriteRestrictionAttribute
+Indicates that a native container type can restrict its writable ranges to be between a min and a max index.
+
+
+NativeDisableContainerSafetyRestrictionAttribute
+Explicitly disable the safety system for a NativeContainer.
+
+
+NativeDisableParallelForRestrictionAttribute
+Indicates that multiple jobs can safely access the same NativeContainer at the same time.
+
+
+NativeDisableUnsafePtrRestrictionAttribute
+Enable the use of unsafe pointers in jobs.
+
+
+NativeFixedLengthAttribute
+Indicates that a native container has a size that will never change.
+
+
+NativeLeakDetection
+Contains settings for native leak detection.
+
+
+NativeSetClassTypeToNullOnScheduleAttribute
+Sets the managed reference to a class to null on a copy of the job struct that is passed to a job.
+
+
+NativeSetThreadIndexAttribute
+Inject a worker thread index into an int on the job struct.
+
+
+NativeSliceUnsafeUtility
+Contains unsafe methods for working with NativeSlice instances.
+
+
+NonReorderableAttribute
+Disables reordering of an array or list in the Inspector window.
+
+
+Notification
+Default implementation for Playable notifications.
+
+
+Object
+Base class for all objects Unity can reference.
+
+
+ObjectIdRequest
+ObjectId request that can be used to determine the object corresponding to each pixel. Can be submitted using either Camera.SubmitRenderRequest or RenderPipeline.SubmitRenderRequest, and the results can be used either on the CPU in C# or the GPU in a shader.
+
+
+ObjectIdResult
+The results of an ObjectIdRequest, stored in ObjectIdRequest._result, containing the ObjectIdResult.idToObjectMapping that is needed to interpret the color-encoded object IDs that are rendered in the ObjectIdRequest._destination RenderTexture.
+
+
+ObjectPool<T0>
+A stack based IObjectPool<T0>.
+
+
+OcclusionArea
+OcclusionArea is an area in which occlusion culling is performed.
+
+
+OcclusionPortal
+The portal for dynamically changing occlusion at runtime.
+
+
+OnDemandRendering
+Use the OnDemandRendering class to control and query information about your application's rendering speed independent from all other subsystems (such as physics, input, or animation).
+
+
+
+OnDemandResources
+On Demand Resources API.
+
+
+OnDemandResourcesRequest
+Represents a request for On Demand Resources (ODR). It's an AsyncOperation and can be yielded in a coroutine.
+
+
+PhotoCapture
+Captures a photo from the web camera and stores it in memory or on disk.
+
+
+PhotoCaptureFrame
+Contains information captured from the web camera.
+
+
+PhraseRecognitionSystem
+Phrase recognition system is responsible for managing phrase recognizers and dispatching recognition events to them.
+
+
+PhraseRecognizer
+A common base class for both keyword recognizer and grammar recognizer.
+
+
+Ping
+Ping any given IP address (given in dot notation).
+
+
+PIX
+Provides an interface to control GPU frame capture in Microsoft's PIX software.
+
+
+PixelPerfectRendering
+A collection of APIs that facilitate pixel perfect rendering of sprite-based renderers.
+
+
+PlayableAsset
+A base class for assets that can be used to instantiate a Playable at runtime.
+
+
+PlayableBehaviour
+PlayableBehaviour is the base class from which every custom playable script derives.
+
+
+PlayableExtensions
+Extensions for all the types that implements IPlayable.
+
+
+PlayableOutputExtensions
+Extensions for all the types that implements IPlayableOutput.
+
+
+PlayerConnection
+Used for handling the network connection from the Player to the Editor.
+
+
+PlayerLoop
+Provides static methods for retrieving and modifying the Unity Player loop.
+
+
+PlayerPrefs
+
+          PlayerPrefs is a class that stores Player preferences between game sessions. It can store string, float and integer values into the user’s platform registry.
+
+
+PlayerPrefsException
+An exception thrown by the PlayerPrefs class in a  web player build.
+
+
+PreferBinarySerialization
+Prefer ScriptableObject derived type to use binary serialization regardless of project's asset serialization mode.
+
+
+PreserveAttribute
+PreserveAttribute prevents byte code stripping from removing a class, method, field, or property.
+
+
+Profiler
+Controls the Profiler from script.
+
+
+ProfilerUnsafeUtility
+Utility class which provides access to low level Profiler API.
+
+
+Projector
+A script interface for a projector component.
+
+
+PropertyAttribute
+Base class to derive custom property attributes from. Use this to create custom attributes for script variables.
+
+
+QualitySettings
+This represents the script interface for Quality Settings.
+
+
+Random
+Easily generate random data for games.
+
+
+RangeAttribute
+Attribute used to make a float or int variable in a script be restricted to a specific range.
+
+
+RationalTimeExtensions
+Extension method operations for RationalTime.
+
+
+RayTracingAccelerationStructure
+Spatial data structure optimized for efficient ray tracing on the GPU.
+
+
+RayTracingShader
+A shader for GPU ray tracing.
+
+
+ReadOnlyAttribute
+Marks a member of a struct used in a job as read-only.
+
+
+Recorder
+Records profiling data produced by a specific Sampler.
+
+
+RecreatePipelineOnChangeAttribute
+This attribute is used on field of a IRenderPipelineGraphicsSettings to ensure pipeline would be recreated if the value is changed.
+
+
+RectOffset
+Offsets for rectangles, borders, etc.
+
+
+RectTransform
+Position, size, anchor and pivot information for a rectangle.
+
+
+ReflectionProbe
+The reflection probe is used to capture the surroundings into a texture which is passed to the shaders and used for reflections.
+
+
+Remote
+A class for Apple TV remote input configuration.
+
+
+Renderer
+General functionality for all renderers.
+
+
+RendererExtensions
+Extension methods to the Renderer class, used only for the UpdateGIMaterials method used by the Global Illumination System.
+
+
+RenderPipeline
+Provides a way to implement rendering logic for a Scriptable Render Pipeline.
+
+
+RenderPipelineAsset
+An asset that produces a specific IRenderPipeline.
+
+
+RenderPipelineAsset<T0>
+An asset that produces a specific IRenderPipeline.
+
+
+RenderPipelineGlobalSettings
+A ScriptableObject to associate with a RenderPipeline and store project-wide settings for that Pipeline.
+
+
+RenderPipelineGraphicsSettingsCollection
+Container class for a list of IRenderPipelineGraphicsSettings objects.
+
+
+RenderPipelineGraphicsSettingsExtensions
+Class that contains extensions for 
+
+
+RenderPipelineManager
+Static class that manages the currently active Render Pipeline.
+
+
+RenderSettings
+Experimental render settings features.
+
+
+RenderSettings
+The Render Settings contain values for a range of visual elements in your Scene, like fog and ambient light.
+
+
+RenderSettings
+Render settings related to Global Illumination.
+
+
+RenderTexture
+Render textures are textures that can be rendered to.
+
+
+RequireAttributeUsagesAttribute
+Only allowed on attribute types. If the attribute type is marked, then so too will all CustomAttributes of that type.
+
+
+RequireComponent
+The RequireComponent attribute automatically adds required components as dependencies.
+
+
+RequireDerivedAttribute
+When the type is marked, all types derived from that type will also be marked.
+
+
+RequiredInterfaceAttribute
+When a type is marked, all interface implementations of the specified types will be marked.
+
+
+RequiredMemberAttribute
+When a type is marked, all of its members with [RequiredMember] are marked.
+
+
+RequireImplementorsAttribute
+When the interface type is marked, all types implementing that interface will be marked.
+
+
+ResourceFormattedPathsAttribute
+Attribute specifying information about the paths where these resources are located.
+
+
+ResourcePathAttribute
+This attribute is used to describe what path to the asset should be used.
+
+
+ResourcePathsAttribute
+Attribute specifying information about the paths where these resources are located.
+
+
+ResourcePathsBaseAttribute
+This abstract attribute is used to describe what path to the asset should be used.
+
+
+ResourceRequest
+Asynchronous load request from the Resources bundle.
+
+
+Resources
+The Resources class allows you to find and access Objects including assets.
+
+
+ResourcesAPI
+Derive from this base class to provide alternative implementations to the C# behavior of specific Resources methods.
+
+
+RuntimeInitializeOnLoadMethodAttribute
+Use this attribute to get a callback when the runtime is starting up and loading the first scene.
+
+
+Sampler
+Provides control over a CPU Profiler label.
+
+
+ScalableBufferManager
+Scales render textures to support dynamic resolution if the target platform/graphics API supports it.
+
+
+SceneManager
+Manage scenes in the Player and in Play mode in the Editor.
+
+
+SceneManagerAPI
+Provides a mechanism to override specific SceneManager methods.
+
+
+SceneUtility
+Scene and Build Settings related utilities.
+
+
+Screen
+Provides access to display information.
+
+
+Screen
+Access platform-specific display information.
+
+
+ScriptableObject
+A class you can derive from if you want to create objects that live independently of GameObjects.
+
+
+ScriptableRuntimeReflectionSystem
+Empty implementation of IScriptableRuntimeReflectionSystem.
+
+
+ScriptableRuntimeReflectionSystemSettings
+Global settings for the scriptable runtime reflection system.
+
+
+ScriptPlayableBinding
+A PlayableBinding that contains information representing a ScriptingPlayableOutput.
+
+
+SearchContextAttribute
+This attribute can be attached to a component object field in order to have the ObjectField use the advanced Object Picker.
+
+
+Security
+Webplayer security related class. Not supported from 5.4.0 onwards.
+
+
+SelectionBaseAttribute
+Add this attribute to a script class to mark its GameObject as a selection base object for Scene View picking.
+
+
+SerializeField
+Force Unity to serialize a private field.
+
+
+SerializeReference
+A scripting attribute that instructs Unity to serialize a field as a reference instead of as a value.
+
+
+Shader
+Shader scripts used for all rendering.
+
+
+ShaderVariantCollection
+ShaderVariantCollection records which shader variants are actually used in each shader.
+
+
+ShaderWarmup
+Prewarms shaders in a way that is supported by all graphics APIs.
+
+
+ShadingRateImage
+Encapsulate the informations and capabilities related to variable rate shading images.
+
+
+ShadingRateInfo
+Encapsulate the informations and capabilities related to variable rate shading.Additional resources: Variable Rate Shading.
+
+
+SkinnedMeshRenderer
+The Skinned Mesh filter.
+
+
+Skybox
+A script interface for the skybox component.
+
+
+SleepTimeout
+Constants for special values of Screen.sleepTimeout.
+
+
+Snapping
+Snap values to rounded increments.
+
+
+SortingGroup
+Adding a SortingGroup component to a GameObject will ensure that all Renderers within the GameObject's descendants will be sorted and rendered together.
+
+
+SpaceAttribute
+Use this PropertyAttribute to add some spacing in the Inspector.
+
+
+SparseTexture
+Class for handling Sparse Textures.
+
+
+SplashScreen
+Provides an interface to the Unity splash screen.
+
+
+Sprite
+Represents a Sprite object for use in 2D gameplay.
+
+
+SpriteAtlas
+Sprite Atlas is an asset created within Unity. It is part of the built-in sprite packing solution.
+
+
+SpriteAtlasManager
+Manages SpriteAtlas during runtime.
+
+
+SpriteDataAccessExtensions
+A list of methods designed for reading and writing to the rich internal data of a Sprite.
+
+
+SpriteRenderer
+A component that renders a Sprite.If a GameObject has a SpriteRenderer component, the component renders the assigned Sprite asset on the screen using the position, rotation and scale from the Transform component.You can use this to draw characters, items, backgrounds, and other visual elements in a 2D game.
+
+
+SpriteRendererDataAccessExtensions
+A list of methods that allow the caller to override what the SpriteRenderer renders.
+
+
+StaticBatchingUtility
+StaticBatchingUtility can prepare your objects to take advantage of Unity's static batching.
+
+
+SupportedOnRenderPipelineAttribute
+Set which render pipelines make a class active.
+
+
+SupportedRenderingFeatures
+Describes the rendering features supported by a given render pipeline.
+
+
+SystemInfo
+Access system and hardware information.
+
+
+SystemInfo
+Access platform-specific system and hardware information.
+
+
+TextAreaAttribute
+Attribute to make a string be edited with a height-flexible and scrollable text area.
+
+
+TextAsset
+Represents a raw text or binary file asset.
+
+
+Texture
+Base class for Texture handling.
+
+
+Texture2D
+Class that represents textures in C# code.
+
+
+Texture2DArray
+Class for handling 2D texture arrays.
+
+
+Texture3D
+Class for handling 3D Textures, Use this to create 3D texture assets.
+
+
+TextureMipmapLimitGroups
+Script interface for texture mipmap limit groups.
+
+
+TexturePlayableBinding
+A PlayableBinding that contains information representing a TexturePlayableOutput.
+
+
+Tile
+Represents tile on Windows start screen
+
+
+
+Time
+Provides an interface to get time information from Unity.
+
+
+Toast
+Represents a toast notification in Windows Store Apps.
+
+
+
+TooltipAttribute
+Specify a tooltip for a field in the Inspector window.
+
+
+TouchScreenKeyboard
+Interface for on-screen keyboards. Only native iPhone, Android, and Windows Store Apps are supported.
+
+
+TrailRenderer
+Creates a visual trail of polygons that follows a GameObject's movement, useful for emphasizing motion or creating dynamic visual effects.
+
+
+Transform
+Position, rotation and scale of an object.
+
+
+UnityAPICompatibilityVersionAttribute
+Declares an assembly to be compatible (API wise) with a specific Unity API. Used by internal tools to avoid processing the assembly in order to decide whether assemblies may be using old Unity API.
+
+
+UnityEvent
+A zero-argument event callback that persists with the Scene and allows the registration of runtime and persistent listeners.
+
+
+UnityEvent<T0,T1,T2,T3>
+Four argument version of UnityEvent.
+
+
+UnityEvent<T0,T1,T2>
+Three argument version of UnityEvent.
+
+
+UnityEvent<T0,T1>
+Two argument version of UnityEvent.
+
+
+UnityEvent<T0>
+One argument version of UnityEvent.
+
+
+UnityEventBase
+Abstract base class for UnityEvents.
+
+
+UnsafeGenericPool<T0>
+Provides a static implementation of ObjectPool<T0>.
+
+
+UnsafeUtility
+Provides a collection of low-level, unsafe utility methods for memory operations in Unity.
+
+
+Utils
+A utility class that you can use for diagnostic purposes.
+
+
+VideoCapture
+Records a video from the web camera directly to disk.
+
+
+VirtualFileSystem
+Class that provides access to some of the Unity low level virtual file system APIs.
+
+
+VulkanDeviceFilterLists
+Set of parameters used to define an Android device or group of Android devices.
+
+
+WaitForEndOfFrame
+Suspends a coroutine until the end of the frame after Unity has rendered every Camera and GUI, just before displaying the frame on screen.
+
+
+WaitForFixedUpdate
+Suspends coroutine execution until the next fixed update.
+
+
+WaitForSeconds
+Suspends the coroutine execution for the specified scaled time in seconds.
+
+
+WaitForSecondsRealtime
+Suspends the coroutine execution for the specified real (unscaled) time in seconds.
+            
+
+
+WaitUntil
+Suspends the coroutine execution until the supplied delegate evaluates to true.
+
+
+WaitWhile
+Suspends the coroutine execution until the supplied delegate evaluates to false.
+
+
+Watermark
+Provides an interface to the system that draws the Unity trial version and development build watermarks in screen space.
+
+
+WebCam
+Contains general information about the current state of the web camera.
+
+
+WriteAccessRequiredAttribute
+Specify which struct method and property requires write access to be invoked.
+
+
+WriteOnlyAttribute
+Marks a member of a struct used in a job as write-only.
+
+
+YieldInstruction
+Base class for all yield instructions.
+
+
+
+
+
+
+
+
+Structs
+
+
+
+
+
+
+
+
+Struct
+
+
+Description
+
+
+
+
+
+
+ApplicationMemoryUsageChange
+Contains information about a change in the application's memory usage.
+
+
+ArchiveFileInfo
+Represents information about a file included in an archive.
+
+
+ArchiveHandle
+Represents an asynchronous operation handle that references an archive.
+
+
+AsyncGPUReadbackRequest
+Represents an asynchronous request for a GPU resource.
+
+
+AsyncReadManagerRequestMetric
+Metrics for an individual read request.
+
+
+AtomicSafetyHandle
+Coordinate safe access to native container memory inside the job system.
+
+
+AttachmentDescriptor
+A declaration of a single color or depth rendering surface to be attached into a RenderPass.
+
+
+AttachmentIndexArray
+Struct encapsulating a fixed list of attachment indices used when declaring native render passes.
+
+
+BatchCullingContext
+Culling context for a batch.
+
+
+BatchCullingOutput
+Contains the output data where OnPerformCulling will write draw commands into.
+
+
+BatchCullingOutputDrawCommands
+Draw commands generated by the culling request.
+
+
+BatchDrawCommand
+The Rendering.BatchDrawCommand struct defines instructions for drawing multiple objects in a single instanced draw call. It specifies parameters like meshes, materials, transforms, and shader properties for rendering.
+            
+
+
+BatchDrawCommandIndirect
+Represents an indirect draw command for a BatchRendererGroup. 
+
+
+BatchDrawCommandProcedural
+Represents a procedural draw command for a BatchRendererGroup. 
+
+
+BatchDrawCommandProceduralIndirect
+Represents a procedural indirect draw command for a BatchRendererGroup. 
+
+
+BatchDrawRange
+Specifies a draw range of draw commands.
+
+
+BatchFilterSettings
+Represents settings that Unity applies to draw commands in this draw range.
+
+
+BatchID
+The batch ID.
+
+
+BatchMaterialID
+The batch Material ID.
+
+
+BatchMeshID
+The batch mesh ID.
+
+
+BatchPackedCullingViewID
+The ID of the view from which Unity invoked the culling.
+
+
+BatchQueryJob<T0,T1>
+Provides an implementation for batch query jobs.
+
+
+BatchQueryJobStruct<T0>
+Provides an implementation for batch query jobs.
+
+
+BatchRendererGroupCreateInfo
+Struct is used to initialize BatchRendererGroup.
+
+
+BlendShapeBufferRange
+Describes the location of blend shape vertex data in a GraphicsBuffer.
+
+
+BlendState
+Values for the blend state.
+
+
+BoneWeight
+Describes 4 skinning bone weights that affect a vertex in a mesh.
+
+
+BoneWeight1
+Describes a bone weight that affects a vertex in a mesh.
+
+
+BoundingSphere
+Describes a single bounding sphere for use by a CullingGroup.
+
+
+Bounds
+Represents an axis aligned bounding box.
+
+
+BoundsInt
+Represents an axis aligned bounding box with all values as integers.
+
+
+BuildCompression
+Contains information about compression methods, compression levels and block sizes that are supported by Asset Bundle compression at build time and recompression at runtime.
+
+
+Cache
+Data structure for cache. For more information, see Caching.AddCache.
+
+
+CachedAssetBundle
+Data structure for downloading AssetBundles to a customized cache path. Additional resources:UnityWebRequestAssetBundle.GetAssetBundle for more information.
+
+
+CameraParameters
+When calling PhotoCapture.StartPhotoModeAsync, you must pass in a CameraParameters object that contains the various settings that the web camera will use.
+
+
+CameraPlayable
+An implementation of IPlayable that produces a Camera texture.
+
+
+CameraProperties
+Camera related properties in CullingParameters.
+
+
+Color
+Representation of RGBA colors.
+
+
+Color32
+Representation of RGBA colors in 32 bit format.
+
+
+CombineInstance
+A struct that describes a single mesh to be merged with other instances into a combined mesh.
+
+
+ContentNamespace
+Provides functionality for grouping loaded Archive files into separate namespaces.
+
+
+Cookie
+A helper structure used to initialize a LightDataGI structure with cookie information.
+
+
+CoveredMethodStats
+Describes the summary of the code coverage for the specified method used by Coverage. For an example of typical usage, see Coverage.GetStatsFor.
+
+
+CoveredSequencePoint
+Describes a covered sequence point used by Coverage. For an example of typical usage, see Coverage.GetSequencePointsFor.
+
+
+CreateSceneParameters
+This struct collects all the CreateScene parameters in to a single place.
+
+
+CullingGroupEvent
+Provides information about the current and previous states of one sphere in a CullingGroup.
+
+
+CullingResults
+A struct containing the results of a culling operation.
+
+
+CullingSplit
+This struct contains the properties of a culling split.
+
+
+CustomRenderTextureUpdateZone
+Structure describing an Update Zone.
+
+
+D3D12DeviceFilterData
+Set of parameters used to define a Windows device or group of Windows devices.
+
+
+D3D12GraphicsJobsDeviceFilterData
+Set of parameters used to define Windows device criteria for selecting specified Graphics Jobs modes.
+
+
+DebugScreenCapture
+A raw data representation of a screenshot.
+
+
+DepthState
+Values for the depth state.
+
+
+DirectionalLight
+A helper structure used to initialize a LightDataGI structure as a directional light.
+
+
+DiscLight
+A helper structure used to initialize a LightDataGI structure as a disc light.
+
+
+DiscreteTime
+Data-type representing a discrete time value.
+
+
+DisplayInfo
+Represents a connected display.
+
+
+DrawingSettings
+Settings for ScriptableRenderContext.DrawRenderers.
+
+
+DrivenRectTransformTracker
+A component can be designed to drive a RectTransform. The DrivenRectTransformTracker struct is used to specify which RectTransforms it is driving.
+
+
+EarlyUpdate
+Update phase in the native player loop.
+
+
+ExposedPropertyResolver
+Object that is used to resolve references to an ExposedReference field.
+
+
+ExposedReference<T0>
+Creates a type whos value is resolvable at runtime.
+
+
+FileHandle
+A handle to an asynchronously opened file.
+
+
+FileInfoResult
+The results of an asynchronous AsyncReadManager.GetFileInfo call.
+
+
+FilteringSettings
+A struct that represents filtering settings for ScriptableRenderContext.DrawRenderers.
+
+
+FixedUpdate
+Update phase in the native player loop.
+
+
+FrameData
+This structure contains the frame information a Playable receives in Playable.PrepareFrame.
+
+
+FrameTiming
+Struct containing high level CPU and GPU frame timings and accompanying relevant data.
+
+
+FrustumPlanes
+This struct contains the view space coordinates of the near projection plane.
+
+
+GlobalKeyword
+Represents a global shader keyword.
+
+
+GradientAlphaKey
+Alpha key used by Gradient.
+
+
+GradientColorKey
+Color key used by Gradient.
+
+
+GraphicsBufferHandle
+Stores the internal handle of a GraphicsBuffer using a plain integer value.
+
+
+GraphicsFence
+Used to manage synchronisation between tasks on async compute queues and the graphics queue.
+
+
+GraphicsTextureDescriptor
+Contains all the information Unity uses to create a GraphicsTexture.
+
+
+Hash128
+Represents  a 128-bit hash value.
+
+
+Initialization
+Update phase in the native player loop.
+
+
+InstantiateParameters
+Parameters for Object.Instantiate and Object.InstantiateAsync.
+
+
+JobHandle
+Represents a handle to a job, which uniquely identifies a job scheduled in the job system.
+
+
+JobRanges
+Provides information about a range that a job is allowed to work on.
+
+
+Keyframe
+A keyframe that can be injected into an AnimationCurve.
+
+
+LayerMask
+Specifies Layers to use in a Physics.Raycast.
+
+
+LazyLoadReference<T0>
+Serializable lazy reference to a UnityEngine.Object contained in an asset file.
+
+
+LightBakingOutput
+Struct describing the result of a Global Illumination bake for a given light.
+
+
+LightDataGI
+The interop structure to pass light information to the light baking backends. There are helper structures for Directional, Point, Spot and Rectangle lights to correctly initialize this structure.
+
+
+LightProbesQuery
+Thread-safe struct for batch sampling Light Probes in a Scene.
+
+
+LightShadowCasterCullingInfo
+This structure contains the information to perform shadow caster culling for a given light.
+
+
+LinearColor
+Contains normalized linear color values for red, green, blue in the range of 0 to 1, and an additional intensity value.
+
+
+LoadSceneParameters
+This struct collects all the LoadScene parameters in to a single place.
+
+
+LocalKeyword
+Represents a shader keyword declared in a shader source file.
+
+
+LocalKeywordSpace
+Represents the local keyword space of a Shader or ComputeShader.
+
+
+LOD
+A structure that you can pass to LODGroup.SetLODs to configure a particular LOD level on a LODGroup.
+
+
+LODParameters
+
+          LODGroup culling parameters.
+
+
+MachineLearningOperator
+Represents a compiled machine learning operator handle.
+
+
+MachineLearningTensorDescriptor
+This struct contains all the information required to describe an input or output tensor for a machine learning operator.
+
+
+MachineLearningTensorShape
+Represents the shape of a tensor.
+
+
+MaterialEffectPlayable
+An implementation of IPlayable that allows application of a Material shader to one or many texture inputs to produce a texture output.
+
+
+Mathf
+A collection of common math functions.
+
+
+Matrix4x4
+A standard 4x4 transformation matrix.
+
+
+MeshLodRange
+Index range (start index and index count) describing a single Mesh LOD within a Mesh.The index range is relative to the sub-mesh holding the LOD. Add SubMeshDescriptor.indexStart to this range to calculate the absolute position of the LOD within the whole index buffer.Additional resources: Mesh.SetLod, Mesh.SetLods.
+
+
+MetadataValue
+Contains a single metadata value for a batch.
+
+
+MipmapLimitDescriptor
+Determines whether a texture uses a mipmap limit, and which mipmap limit the texture uses, when you create the texture using a constructor.
+
+
+NativeArray<T0>
+Provides a buffer of native memory to managed code, making it possible to share data between managed and native code without marshalling costs.
+
+
+NativeSlice<T0>
+Provides a view on a buffer of native memory most commonly acquired from a NativeArray<T0>.
+
+
+PassIdentifier
+Represents an identifier of a specific Pass in a Shader.
+
+
+PhraseRecognizedEventArgs
+Provides information about a phrase recognized event.
+
+
+Plane
+Representation of a plane in 3D space.
+
+
+PlatformKeywordSet
+A collection of ShaderKeyword that represents a specific platform variant.
+
+
+Playable
+Playables are customizable runtime objects that can be connected together and are contained in a PlayableGraph to create complex behaviours.
+
+
+PlayableBinding
+Struct that holds information regarding an output of a PlayableAsset.
+
+
+PlayableGraph
+Use the PlayableGraph to manage Playable creations and destructions.
+
+
+PlayableOutput
+See: IPlayableOutput.
+
+
+PlayerLoopSystem
+The representation of a single system that updates as part of the Player loop in Unity.
+
+
+PointLight
+A helper structure used to initialize a LightDataGI structure as a point light.
+
+
+PooledObject<T0>
+
+            A pooled object wraps a reference to an instance returned to the pool when the pooled object is disposed of.
+            
+
+
+Pose
+Representation of a Position, and a Rotation in 3D Space
+
+
+PostLateUpdate
+Update phase in the native player loop.
+
+
+PreLateUpdate
+Update phase in the native player loop.
+
+
+PreUpdate
+Update phase in the native player loop.
+
+
+ProfilerCategory
+Use to specify category for instrumentation Profiler markers.
+
+
+ProfilerCategoryDescription
+Provides information about Profiler category.
+
+
+ProfilerMarker
+Performance marker used for profiling arbitrary code blocks.
+
+
+ProfilerMarkerData
+Describes Profiler metadata parameter that can be associated with a sample.
+
+
+ProfilerRecorder
+Records the Profiler metric data that a Profiler marker or counter produces.
+
+
+ProfilerRecorderDescription
+Gets the description of a Profiler metric.
+
+
+ProfilerRecorderHandle
+Gets the handle of a Profiler metric.
+
+
+ProfilerRecorderSample
+ProfilerRecorder sample data structure.
+
+
+PropertyName
+Represents a string as an int for efficient lookup and comparison. Use this for common PropertyNames.Internally stores just an int to represent the string. A PropertyName can be created from a string but can not be converted back to a string. The same string always results in the same int representing that string. Thus this is a very efficient string representation in both memory and speed when all you need is comparison.PropertyName is serializable.ToString() is only implemented for debugging purposes in the editor it returns "theName:3737" in the player it returns "Unknown:3737".
+
+
+Quaternion
+Quaternions are used to represent rotations.
+
+
+RangeInt
+Describes an integer range.
+
+
+RasterState
+Values for the raster state.
+
+
+RationalTime
+Data type that represents time as an integer count of a rational number.
+
+
+Ray
+Representation of rays.
+
+
+Ray2D
+A ray in 2D space.
+
+
+RayTracingAABBsInstanceConfig
+The parameters you use to add an instance of ray tracing axis-aligned bounding boxes (AABBs) to a RayTracingAccelerationStructure.
+
+
+RayTracingGeometryInstanceConfig
+Parameters you can use to configure ray tracing triangle geometry instances that are part of a RayTracingAccelerationStructure.
+
+
+RayTracingInstanceCullingConfig
+Parameters for culling and filtering ray tracing instances in RayTracingAccelerationStructure.CullInstances.
+
+
+RayTracingInstanceCullingMaterialTest
+This structure is used by RayTracingAccelerationStructure.CullInstances function to avoid adding Renderers to the acceleration structure or to ignore individual sub-meshes in a Mesh based on Shaders used by Materials when building the acceleration structure.
+
+
+RayTracingInstanceCullingResults
+A structure containing results of the culling operation performed by RayTracingAccelerationStructure.CullInstances.
+
+
+RayTracingInstanceCullingShaderTagConfig
+A Shader Tag configuration used by RayTracingAccelerationStructure.CullInstances to filter and classify Materials.
+
+
+RayTracingInstanceCullingTest
+A testing configuration used in RayTracingAccelerationStructure.CullInstances for adding Renderers to an acceleration structure based on their layer, ShadowCastingMode and Material type.
+
+
+RayTracingInstanceMaterialConfig
+This structure is used by RayTracingAccelerationStructure.CullInstances function to determine which types of Materials are used by Renderers when populating the acceleration structure with ray tracing instances.
+
+
+RayTracingInstanceMaterialCRC
+A Material instance id and CRC hash value pair. This information is returned by a RayTracingAccelerationStructure.CullInstances call.
+
+
+RayTracingInstanceTriangleCullingConfig
+This structure is used by RayTracingAccelerationStructure.CullInstances function to determine triangle culling and vertex winding order for ray tracing instances.
+
+
+RayTracingMeshInstanceConfig
+Parameters you can use to configure ray tracing Mesh instances that are part of a RayTracingAccelerationStructure.
+
+
+RayTracingSubMeshFlagsConfig
+A structure used by RayTracingAccelerationStructure.CullInstances that defines the RayTracingSubMeshFlags values for different Material types.
+
+
+ReadCommand
+Describes the offset, size, and destination buffer of a single read operation.
+
+
+ReadCommandArray
+An array of ReadCommand instances to pass to AsyncReadManager.Read and AsyncReadManager.ReadDeferred.
+
+
+ReadHandle
+You can use this handle to query the status of an asynchronous read operation. Note: To avoid a memory leak, you must call Dispose.
+
+
+Rect
+A 2D Rectangle defined by X and Y position, width and height.
+
+
+RectangleLight
+A helper structure used to initialize a LightDataGI structure as a rectangle light.
+
+
+RectInt
+A 2D Rectangle defined by x, y, width, height with integers.
+
+
+ReflectionProbeBlendInfo
+ReflectionProbeBlendInfo contains information required for blending probes.
+
+
+RefreshRate
+Represents the display refresh rate. This is how many frames the display can show per second.
+
+
+RenderBuffer
+Color or depth buffer part of a RenderTexture.
+
+
+RendererList
+Represents a set of visible GameObjects.
+
+
+RendererListDesc
+A high-level struct holding the arguments needed to create a RendererList.
+
+
+RendererListParams
+A low-level struct holding the arguments needed to create a RendererList.
+
+
+RenderingLayerMask
+The Render Pipeline allows you to use Rendering Layers, which are LayerMasks to make Lights or effects only affect specific Renderers.
+
+
+RenderParams
+Rendering parameters used by various rendering functions.
+
+
+RenderQueueRange
+Describes a material render queue range.
+
+
+RenderStateBlock
+A set of values that Unity uses to override the GPU's render state.
+
+
+RenderTargetBinding
+Describes a render target with one or more color buffers, a depth/stencil buffer and the associated load/store-actions that are applied when the render target is active.
+
+
+RenderTargetBlendState
+Values for the blend state.
+
+
+RenderTargetIdentifier
+Identifies a RenderTexture for a CommandBuffer.
+
+
+RenderTargetSetup
+Fully describes setup of RenderTarget.
+
+
+RenderTextureDescriptor
+This struct contains all the information required to create a RenderTexture. It can be copied, cached, and reused to easily create RenderTextures that all share the same properties. Avoid using the default constructor as it does not initialize some flags with the recommended values.
+
+
+Resolution
+Represents a display resolution.
+
+
+Scene
+The runtime data structure for a scene.
+
+
+ScopedRenderPass
+Represents an active render pass until disposed.
+
+
+ScopedSubPass
+Represents an active sub pass until disposed.
+
+
+ScriptableCullingParameters
+Parameters that configure a culling operation in the Scriptable Render Pipeline.
+
+
+ScriptableRenderContext
+Defines state and drawing commands that custom render pipelines use.
+
+
+ScriptPlayable<T0>
+A IPlayable implementation that contains a PlayableBehaviour for the PlayableGraph. PlayableBehaviour can be used to write custom Playable that implement their own PrepareFrame callback.
+
+
+ScriptPlayableOutput
+A IPlayableOutput implementation that contains a script output for the a PlayableGraph.
+
+
+SecondarySpriteTexture
+Encapsulates a Texture2D and its shader property name to give Sprite-based renderers access to a secondary texture, in addition to the main Sprite texture.
+
+
+SecondaryTileData
+Defines the default look of secondary tile.
+
+
+
+SemanticMeaning
+Semantic meaning is a collection of semantic properties of a recognized phrase. These semantic properties can be specified in SRGS grammar files.
+
+
+ShaderKeyword
+Represents an identifier for a specific code path in a shader.
+
+
+ShaderKeywordSet
+A collection of ShaderKeyword that represents a specific shader variant.
+
+
+ShaderTagId
+Unique identifier for a shader tag name or value.
+
+
+ShaderWarmupSetup
+The rendering configuration to use when prewarming shader variants.
+
+
+ShadowCastersCullingInfos
+This structure contains the information to perform shadow casters culling for one camera.
+
+
+ShadowDrawingSettings
+Settings for ScriptableRenderContext.DrawShadows.
+
+
+ShadowSplitData
+Describes the culling information for a given shadow split (e.g. directional cascade).
+
+
+SortingLayer
+SortingLayer allows you to set the render order of multiple sprites easily. There is always a default SortingLayer named "Default" which all sprites are added to initially. Added more SortingLayers to easily control the order of rendering of groups of sprites. Layers can be ordered before or after the default layer.
+
+
+SortingLayerRange
+Describes a renderer's sorting layer range.
+
+
+SortingSettings
+This struct describes the methods to sort objects during rendering.
+
+
+SphericalHarmonicsL2
+Spherical harmonics up to the second order (3 bands, 9 coefficients).
+
+
+SpotLight
+A helper structure used to initialize a LightDataGI structure as a spot light.
+
+
+SpotLightBoxShape
+Use this Struct to help initialize a LightDataGI structure as a box-shaped spot light.
+
+
+SpotLightPyramidShape
+Use this Struct to help initialize a LightDataGI structure as a pyramid-shaped spot light.
+
+
+SpriteBone
+Stores a set of information that describes the bind pose of this Sprite.
+
+
+StencilState
+Values for the stencil state.
+
+
+SubMeshDescriptor
+Contains information about a single sub-mesh of a Mesh.
+
+
+SubPassDescriptor
+Structure discribing a single native subpass.
+
+
+TagHandle
+A handle to one of the tag values that can be applied to a GameObject.
+
+
+TextureMipmapLimitSettings
+Structure that represents texture mipmap limit settings.
+
+
+TextureMixerPlayable
+An implementation of IPlayable that allows mixing two textures.
+
+
+TexturePlayableOutput
+An IPlayableOutput implementation that will be used to manipulate textures.
+
+
+ThreadedBatchContext
+Thread-safe and Burst-safe API for interacting with a BatchRendererGroup from Burst jobs.
+
+
+TimeUpdate
+Update phase in the native player loop that waits for the operating system (OS) to flip the back buffer to the display and update the time in the engine.
+
+
+TransformAccess
+Represents the position, rotation and scale of an object.
+
+
+TransformAccessArray
+TransformAccessArray. 
+
+
+Update
+Update phase in the native player loop.
+
+
+Vector2
+Representation of 2D vectors and points.
+
+
+Vector2Int
+Representation of 2D vectors and points using integers.
+
+
+Vector3
+Representation of 3D vectors and points.
+
+
+Vector3Int
+Representation of 3D vectors and points using integers.
+
+
+Vector4
+Representation of four-dimensional vectors.
+
+
+VertexAttributeDescriptor
+Information about a single VertexAttribute of a Mesh vertex.
+
+
+VisibleLight
+Holds data of a visible light.
+
+
+VisibleReflectionProbe
+Holds data of a visible reflection reflectionProbe.
+
+
+VulkanDeviceFilterData
+Set of parameters used to define an Android device or group of Android devices.
+
+
+VulkanGraphicsJobsDeviceFilterData
+Set of parameters used to define Android device criteria for selecting specified Graphics Jobs modes.
+
+
+
+
+
+
+
+
+Enumerations
+
+
+
+
+
+
+
+
+Enumeration
+
+
+Description
+
+
+
+
+
+
+ActivityIndicatorStyle
+ActivityIndicator Style (iOS Specific).
+
+
+Allocator
+Sets which allocation type to use for a NativeArray.
+
+
+AmbientMode
+Ambient lighting mode.
+
+
+AndroidActivityIndicatorStyle
+ActivityIndicator Style (Android Specific).
+
+
+AngularFalloffType
+Sets the method to use to compute the angular attenuation of spot lights.
+
+
+AnisotropicFiltering
+Anisotropic filtering mode.
+
+
+ApplicationInstallMode
+Application installation mode (Read Only).
+
+
+ApplicationMemoryUsage
+Describes the application memory usage level.
+
+
+ApplicationSandboxType
+Application sandbox type.
+
+
+ArchiveStatus
+Options for tracking the status of the archive operation.
+
+
+AssetLoadingSubsystem
+Subsystem tags for the read request, describing broad asset type or subsystem that triggered the read request.
+
+
+AtomicSafetyErrorType
+Error code for errors related to accessing native container instances in different situations.
+
+
+AudioType
+The format type of the imported (native) data.
+
+
+BatchBufferTarget
+Expected target for the buffer passed to BatchRendererGroup.AddBatch.
+
+
+BatchCullingFlags
+Additional parameters for the current culling context
+
+
+BatchCullingProjectionType
+The projection type of a view that is being culled.
+
+
+BatchCullingViewType
+The type of an object that is requesting culling.
+
+
+BatchDrawCommandFlags
+Rendering options for the BatchDrawCommand struct.
+
+
+BatchDrawCommandType
+Enumerates the different draw command types a BatchRendererGroup can draw.
+
+
+BatteryStatus
+Enumeration for SystemInfo.batteryStatus which represents the current status of the device's battery.
+
+
+BlendMode
+Blend mode for controlling the blending.
+
+
+BlendOp
+Blend operation.
+
+
+BlendShapeBufferLayout
+Determines the data that Unity returns when you call Mesh.GetBlendShapeBuffer.
+
+
+BuiltinRenderTextureType
+Built-in temporary render textures produced during camera's rendering.
+
+
+BuiltinShaderDefine
+Defines set by editor when compiling shaders, based on the target platform and GraphicsTier.
+
+
+BuiltinShaderMode
+Built-in shader modes used by GraphicsSettings.
+
+
+BuiltinShaderType
+Built-in shader types used by GraphicsSettings.
+
+
+CameraClearFlags
+Values for Camera.clearFlags, determining what to clear when rendering a Camera.
+
+
+CameraEvent
+Defines a place in camera's rendering to attach CommandBuffer objects to.
+
+
+CameraHDRMode
+The HDR mode to use for rendering.
+
+
+CameraLateLatchMatrixType
+The types of camera matrices that support late latching.
+
+
+CameraType
+Describes different types of camera.
+
+
+CaptureFlags
+Flags that specify what kind of data to capture in a snapshot.
+
+
+CapturePixelFormat
+The encoded image or video pixel format to use for PhotoCapture and VideoCapture.
+
+
+ColorGamut
+Represents a color gamut.
+
+
+ColorPrimaries
+Represents a color space based on its set of red, green, and blue color primaries.
+
+
+ColorSpace
+Color space for player settings.
+
+
+ColorWriteMask
+Specifies which color components will get written into the target framebuffer.
+
+
+CommandBufferExecutionFlags
+Flags describing the intention for how the command buffer will be executed. Set these via CommandBuffer.SetExecutionFlags.
+
+
+CompareFunction
+Depth or stencil comparison function.
+
+
+CompressionLevel
+Compression Levels relate to how much time should be spent compressing Assets into an Asset Bundle.
+
+
+CompressionType
+Compression Method for Asset Bundles.
+
+
+ComputeBufferMode
+Intended usage of the buffer.
+
+
+ComputeBufferType
+
+          ComputeBuffer type.
+
+
+ComputeQueueType
+Describes the desired characteristics with respect to prioritisation and load balancing of the queue that a command buffer being submitted via Graphics.ExecuteCommandBufferAsync or [[ScriptableRenderContext.ExecuteCommandBufferAsync] should be sent to.
+
+
+ConfidenceLevel
+Used by KeywordRecognizer, GrammarRecognizer, DictationRecognizer. Phrases under the specified minimum level will be ignored.
+
+
+ConnectionTarget
+The type of the connected target.
+
+
+CopyTextureSupport
+Support for various Graphics.CopyTexture cases.
+
+
+CubemapFace
+
+          Cubemap face.
+
+
+CullingOptions
+Flags used by ScriptableCullingParameters.cullingOptions to configure a culling operation.
+
+
+CullMode
+Determines which faces Unity culls.
+
+
+CursorLockMode
+How the cursor should behave.
+
+
+CursorMode
+Determines whether the mouse cursor is rendered using software rendering or, on supported platforms, hardware rendering.
+
+
+CustomMarkerCallbackFlags
+Flags that determine what custom events get called when native plugin callback is issued.
+
+
+CustomRenderTextureInitializationSource
+Specify the source of a Custom Render Texture initialization.
+
+
+CustomRenderTextureUpdateMode
+Frequency of update or initialization of a Custom Render Texture.
+
+
+CustomRenderTextureUpdateZoneSpace
+Space in which coordinates are provided for Update Zones.
+
+
+D3D12Comparator
+The comparison operator to be used.
+
+
+D3D12GraphicsDeviceType
+Graphics device underlying backend API type.
+
+
+DefaultFormat
+
+                Use a default format to create either Textures or RenderTextures from scripts based on platform specific capability.
+            
+
+
+DefaultReflectionMode
+Default reflection mode.
+
+
+DepthTextureMode
+Depth texture generation mode for Camera.
+
+
+DeviceGeneration
+tvOS device generation.
+
+
+DeviceGeneration
+iOS device generation.
+
+
+DeviceType
+Enumeration for SystemInfo.deviceType, denotes a coarse grouping of kinds of devices.
+
+
+DictationCompletionCause
+Represents the reason why dictation session has completed.
+
+
+DictationTopicConstraint
+DictationTopicConstraint enum specifies the scenario for which a specific dictation recognizer should optimize.
+
+
+DirectorUpdateMode
+Defines what time source is used to update a Director graph.
+
+
+DirectorWrapMode
+Wrap mode for Playables.
+
+
+DistanceMetric
+Type of sorting to use while rendering.
+
+
+DrivenTransformProperties
+An enumeration of transform properties that can be driven on a RectTransform by an object.
+
+
+EnforceJobResult
+Enumerates the possible values returned by AtomicSafetyHandle methods that wait for all jobs accessing the native container associated with the handle to finish.
+
+
+FalloffType
+The falloff models to use for a light baking backend.
+
+
+FastMemoryFlags
+Control Fast Memory render target layout.
+
+
+FileReadType
+The type of file read requested from the AsyncReadManager.
+
+
+FileState
+Defines the possible existential states of a file.
+
+
+FileStatus
+The possible statuses of a FileHandle.
+
+
+FilterMode
+Filtering mode for textures. Corresponds to the settings in a texture inspector.
+
+
+FindObjectsInactive
+Options to control whether object find functions return inactive objects.
+
+
+FindObjectsSortMode
+Options to specify if and how to sort objects returned by a function.
+
+
+FogMode
+Fog mode to use.
+
+
+Folder
+List of accessible folders on Windows Store Apps.
+
+
+ForcedCrashCategory
+Specifies the category of crash to cause when calling ForceCrash().
+
+
+FormatSwizzle
+Graphics Format Swizzle.
+
+
+FoveatedRenderingCaps
+Capabilities of the foveated rendering implementation.
+
+
+FoveatedRenderingMode
+Operation mode for the foveated rendering system.
+
+
+FrameCaptureDestination
+Destination of Frame Capture
+This is a wrapper for MTLCaptureDestination.
+
+
+FullScreenMode
+Sets the full-screen mode. For information on platform compatibility, refer to the description of each mode.
+
+
+FullScreenMovieControlMode
+Describes options for displaying movie playback controls.
+
+
+FullScreenMovieScalingMode
+Describes scaling modes for displaying movies.
+
+
+GizmoSubset
+Specifies whether gizmos render before or after postprocessing for a camera render.
+
+
+GradientMode
+Color interpolation mode used by Gradient.
+
+
+GraphicsDeviceType
+Graphics device underlying backend API type.
+
+
+GraphicsFenceType
+The type of GraphicFence.
+
+
+GraphicsFormat
+Use this format to create Textures or RenderTextures from scripts.
+
+
+GraphicsFormatUsage
+Use this format usages to figure out the capabilities of specific GraphicsFormat
+
+
+GraphicsJobsFilterMode
+Enumerates Graphics Jobs modes to use when device filtering.
+
+
+GraphicsTextureDescriptorFlags
+The rendering and read/write access mode of a GraphicsTexture.
+
+
+GraphicsTextureState
+The state of a GraphicsTexture.
+
+
+GraphicsTier
+An enum that represents graphics tiers.
+
+
+HDRDisplayBitDepth
+Options for the number of bits for HDR output in each color channel of swap chain buffers. Applicable when an HDR display is active.
+
+
+HDRDisplaySupportFlags
+A set of flags that describe the level of HDR display support available on the GPU and driver.
+
+
+HideFlags
+Bit mask that controls object destruction, saving and visibility in inspectors.
+
+
+IndexFormat
+Format of the mesh index buffer data.
+
+
+InspectorSort
+Defines if enum should be shown sorted by name or by value.
+
+
+InspectorSortDirection
+Defines if enum should be shown in ascending or descending order.
+
+
+IntegrityCheckLevel
+
+                Enumeration specifying a integrity check level.Additional resources: Debug.CheckIntegrity
+
+
+KeyCode
+The code to use for identifying input. These codes map directly to a physical key on the keyboard or language-dependent keys.
+
+
+LightEvent
+Defines a place in light's rendering to attach CommandBuffer objects to.
+
+
+LightmapBakeType
+Enum describing what part of a light contribution can be baked.
+
+
+LightmapCompression
+A set of options for the level of compression the Editor uses for lightmaps.
+
+
+LightmapsMode
+Lightmap (and lighting) configuration mode, controls how lightmaps interact with lighting and what kind of information they store.
+
+
+LightmapsModeLegacy
+Single, dual, or directional lightmaps rendering mode, used only in GIWorkflowMode.Legacy
+
+
+LightMode
+The light mode a light baking backend uses.
+
+
+LightProbeOutsideHullStrategy
+Defines the way Unity chooses a probe to light a Renderer that is lit by Light Probes but positioned outside the bounds of the Light Probe tetrahedral hull.
+
+
+LightProbeUsage
+Light probe interpolation type.
+
+
+LightRenderMode
+How the Light is rendered.
+
+
+LightShadowCasterMode
+Allows mixed lights to control shadow caster culling when Shadowmasks are present.
+
+
+LightShadowResolution
+Shadow resolution options for a Light.
+
+
+LightShadows
+Shadow casting options for a Light.
+
+
+LightType
+The type of a Light.
+
+
+LightType
+The light type.
+
+
+LightUnit
+The unit of a Light's intensity.
+
+
+LineAlignment
+Control the direction lines face, when using the LineRenderer or TrailRenderer.
+
+
+LineTextureMode
+Choose how textures are applied to Lines and Trails.
+
+
+LoadSceneMode
+Used when loading a Scene in a player.
+
+
+LocalPhysicsMode
+Provides options for 2D and 3D local physics.
+
+
+LODFadeMode
+The LOD (level of detail) fade modes. Modes other than LODFadeMode.None will result in Unity calculating a blend factor for blending/interpolating between two neighbouring LODs and pass it to your shader.
+
+
+LogOption
+Option flags for specifying special treatment of a log message.
+
+
+LogType
+The type of the log message in Debug.unityLogger.Log or delegate registered with Application.RegisterLogCallback.
+
+
+MachineLearningDataType
+Format of a machine learning tensor data.
+
+
+MachineLearningOperatorType
+Type of a machine learning operator.
+
+
+MarkerFlags
+Profiler marker usage flags.
+
+
+MaterialGlobalIlluminationFlags
+How the material interacts with lightmaps and lightprobes.
+
+
+MaterialPropertyType
+The type of a given material property.
+
+
+MeshTopology
+Specifies how the indices in a mesh's index buffer are used to construct geometry.
+
+
+MeshUpdateFlags
+Mesh data update flags.
+
+
+MixedLightingMode
+Enum describing what lighting mode to be used with Mixed lights.
+
+
+MotionVectorGenerationMode
+The type of motion vectors that should be generated.
+
+
+NativeArrayOptions
+Options for controlling how memory is cleared.
+
+
+NativeLeakDetectionMode
+Sets which native leak memory leak detection mode to use.
+
+
+NetworkReachability
+Describes network reachability options.
+
+
+NPOTSupport
+NPOT textures support.
+
+
+OpaqueSortMode
+Opaque object sorting mode of a Camera.
+
+
+OpenGLESVersion
+Specifies the OpenGL ES version.
+
+
+OperatingSystemFamily
+Enumeration for SystemInfo.operatingSystemFamily.
+
+
+PassType
+Shader pass type for Unity's lighting pipeline.
+
+
+PerObjectData
+What kind of per-object data to setup during rendering.
+
+
+PersistentListenerMode
+The mode that a listener is operating in.
+
+
+PhotoCaptureFileOutputFormat
+Image Encoding Format.
+
+
+PlayableTraversalMode
+Traversal mode for Playables.
+
+
+PlayState
+Status of a Playable.
+
+
+PrimitiveType
+The various primitives that can be created using the GameObject.CreatePrimitive function.
+
+
+Priority
+The priority level attached to the AsyncReadManager read request.
+
+
+ProcessingState
+The state of the read request at the time of retrieval of AsyncReadManagerMetrics.
+
+
+ProfilerArea
+The different areas of profiling, corresponding to the charts in ProfilerWindow.
+
+
+ProfilerCategoryColor
+Profiler category colors enum.
+
+
+ProfilerCategoryFlags
+Options for determining if a Profiler category is built into Unity by default.
+
+
+ProfilerCounterOptions
+Use ProfilerCounterOptions to specify configuration options when creating a ProfilerCounter or ProfilerCounterValue.
+
+
+ProfilerFlowEventType
+Defines Profiler flow event type.
+
+
+ProfilerMarkerDataType
+Options for the Profiler metadata type.
+
+
+ProfilerMarkerDataUnit
+Options for Profiler marker data unit types.
+
+
+ProfilerRecorderOptions
+ProfilerRecorder lifecycle and collection options.
+
+
+RayTracingAccelerationStructureBuildFlags
+Specifies how Unity builds the acceleration structure on the GPU.
+
+
+RayTracingInstanceCullingFlags
+Flags used by RayTracingAccelerationStructure.CullInstances.
+
+
+RayTracingMode
+Options for updating a ray tracing instance added to a RayTracingAccelerationStructure.
+
+
+RayTracingSubMeshFlags
+Flags that determine how rays intersect the geometry for each submesh relative to Material type during ray tracing.
+
+
+ReadStatus
+The state of an asynchronous file request.
+
+
+RealtimeGICPUUsage
+How much CPU usage to assign to the final lighting calculations at runtime.
+
+
+ReceiveGI
+This property only takes effect if you enable a global illumination setting such as Baked Global Illumination or Enlighten Realtime Global Illumination for the target Scene. When you enable ReceiveGI, you can determine whether illumination data at runtime will come from Light Probes or Lightmaps. When you set ReceiveGI to Lightmaps, the Mesh Renderer receives global illumination from lightmaps. That means the Renderer is included in lightmap atlases, possibly increasing their size, memory consumption and storage costs. Calculating global illumination values for texels in this Renderer also adds to bake times. When you set ReceiveGI to Light Probes, the Mesh Renderer is not assigned space in lightmap atlases. Instead it receives global illumination stored by Light Probes in the target Scene. This can reduce bake times by avoiding the memory consumption and storage cost associated with lightmaps. ReceiveGI is only editable if you enable StaticEditorFlags.ContributeGI for the GameObject associated with the target Mesh Renderer. Otherwise this property defaults to the Light Probes setting.
+
+
+ReflectionCubemapCompression
+Determines how Unity will compress baked reflection cubemap.
+
+
+ReflectionProbeClearFlags
+Values for ReflectionProbe.clearFlags, determining what to clear when rendering a ReflectionProbe.
+
+
+ReflectionProbeMode
+Reflection probe's update mode.
+
+
+ReflectionProbeRefreshMode
+An enum describing the way a real-time reflection probe refreshes in the Player.
+
+
+ReflectionProbeSortingCriteria
+Visible reflection probes sorting options.
+
+
+ReflectionProbeTimeSlicingMode
+Options for distributing the update workload of a reflection probe, if ReflectionProbe.mode is set to ReflectionProbeMode.Realtime and ReflectionProbe.refreshMode is set to  ReflectionProbeRefreshMode.EveryFrame.
+
+
+ReflectionProbeUsage
+Reflection Probe usage.
+
+
+RenderBufferLoadAction
+This enum describes what should be done on the render target when it is activated (loaded).
+
+
+RenderBufferStoreAction
+This enum describes what should be done on the render target when the GPU is done rendering into it.
+
+
+RendererListStatus
+Options that represent the result of a ScriptableRenderContext.QueryRendererList operation.
+
+
+RenderingPath
+Rendering path of a Camera.
+
+
+RenderingThreadingMode
+Options for the application's actual rendering threading mode.
+
+
+RenderQueue
+The order in which Unity renders objects.
+
+
+RenderStateMask
+Specifies which parts of the render state that is overriden.
+
+
+RenderTargetFlags
+This enum describes optional flags for the RenderTargetBinding structure.
+
+
+RenderTextureCreationFlags
+Set of flags that control the state of a newly-created RenderTexture.
+
+
+RenderTextureFormat
+Format of a RenderTexture.
+
+
+RenderTextureMemoryless
+Flags enumeration of the render texture memoryless modes.
+
+
+RenderTextureReadWrite
+Color space conversion mode of a RenderTexture.
+
+
+RenderTextureSubElement
+Types of data that you can encapsulate within a render texture.
+
+
+RTClearFlags
+Flags that determine which render targets Unity clears when you use CommandBuffer.ClearRenderTarget.
+
+
+RuntimeInitializeLoadType
+Specifies when to get a callback during the startup of the runtime or when entering play mode in the Editor. Used with RuntimeInitializeOnLoadMethodAttribute.
+
+
+RuntimePlatform
+The platform application is running. Returned by Application.platform.
+
+
+ScheduleMode
+Options for scheduling a managed job.
+
+
+ScreenOrientation
+Describes screen orientation.
+
+
+SearchType
+Describe how to use the path in ResourcePathsBaseAttribute.
+
+
+SearchViewFlags
+Search view flags used to open the Object Picker in various states.
+
+
+SendMessageOptions
+Options for how to send a message.
+
+
+ShaderConstantType
+Options for the shader constant value type.
+
+
+ShaderKeywordType
+Type of a shader keyword, eg: built-in or user defined.
+
+
+ShaderParamType
+Options for the data type of a shader constant's members.
+
+
+ShaderPropertyFlags
+Flags that control how a shader property behaves.
+
+
+ShaderPropertyType
+Type of a given shader property.
+
+
+ShadingRateCombiner
+Constants that specify the shading rate combiner.
+
+
+ShadingRateCombinerStage
+Constants that specify the shading rate combiner stage.
+
+
+ShadingRateFragmentSize
+Constants that specify the shading rate. Not all values are supported by all hardware. Avaibility should be queried first. See ShadingRateInfo.availableFragmentSizes for details.Additional resources: ShadingRateInfo.supportsPerImageTile, ShadingRateInfo.QueryNativeValue
+
+
+ShadowCastingMode
+How shadows are cast from this object.
+
+
+ShadowMapPass
+Allows precise control over which shadow map passes to execute CommandBuffer objects attached using Light.AddCommandBuffer.
+
+
+ShadowmaskMode
+The rendering mode of Shadowmask.
+
+
+ShadowObjectsFilter
+The filters that Unity can use when it renders GameObjects in the shadow pass.
+
+
+ShadowProjection
+Shadow projection type for Quality Settings.
+
+
+ShadowQuality
+Determines which type of shadows should be used.
+
+
+ShadowResolution
+Default shadow resolution. Each decrease in quality level halves the resolution of shadows.
+
+
+ShadowSamplingMode
+Used by CommandBuffer.SetShadowSamplingMode.
+
+
+SinglePassStereoMode
+Enum type defines the different stereo rendering modes available.
+
+
+SkinQuality
+The maximum number of bones affecting a single vertex.
+
+
+SkinWeights
+Skin weights.
+
+
+SnapAxis
+Defines the axes that can be snapped.
+
+
+SortingCriteria
+How to sort objects during rendering.
+
+
+Space
+The coordinate spaces in which to apply transformation to a GameObject.
+
+
+SpeechError
+Represents an error in a speech recognition system.
+
+
+SpeechSystemStatus
+Represents the current status of the speech recognition system or a dictation recognizer.
+
+
+SpriteAlignment
+How a Sprite's graphic rectangle is aligned with its pivot point.
+
+
+SpriteDrawMode
+
+          SpriteRenderer draw mode.
+
+
+SpriteMaskInteraction
+This enum controls the mode under which the sprite will interact with the masking system.
+
+
+SpriteMeshType
+Defines the type of mesh generated for a sprite.
+
+
+SpritePackingMode
+Sprite packing modes for the Sprite Packer.
+
+
+SpritePackingRotation
+Sprite rotation modes for the Sprite Packer.
+
+
+SpriteSortPoint
+Determines the position of the Sprite used for sorting the Renderer.
+
+
+SpriteTileMode
+Tiling mode for SpriteRenderer.tileMode.
+
+
+StackTraceLogType
+Stack trace logging options.
+
+
+StencilOp
+Specifies the operation that's performed on the stencil buffer when rendering.
+
+
+StereoTargetEyeMask
+Enum values for the Camera's targetEye property.
+
+
+SubPassFlags
+Flags to indicate specialized native subpass behaviour.
+
+
+SynchronisationStage
+The stages of the draw call processing on the GPU.
+
+
+SynchronisationStageFlags
+Describes the various stages of GPU processing against which the GraphicsFence can be set and waited against.
+
+
+SystemGestureDeferMode
+Bit-mask used to control the deferring of system gestures on iOS.
+
+
+SystemLanguage
+The language the user's operating system is running in. Returned by Application.systemLanguage.
+
+
+TerrainQualityOverrides
+Flags used by QualitySettings to specify which Terrain fields the quality settings should override. 
+
+
+TextureDimension
+Texture "dimension" (type).
+
+
+TextureFormat
+Format used when creating textures from scripts.
+
+
+TextureMipmapLimitBiasMode
+An enumeration that represents the bias mode to use for TextureMipmapLimitSettings.limitBias.
+
+
+TextureWrapMode
+Wrap mode for textures.
+
+
+ThreadPriority
+Priority of a thread.
+
+
+TileForegroundText
+Style for foreground text on a secondary tile.
+
+
+TileTemplate
+Templates for various tile styles.
+
+
+
+ToastTemplate
+Templates for various toast styles.
+
+
+
+TouchScreenKeyboardType
+Enumeration of the different types of supported touchscreen keyboards.
+
+
+TransferFunction
+Contains electro-optical transfer function (EOTF) options, which describe how the final rendered video signal is converted to physical light intensity on display devices.
+
+
+TransparencySortMode
+Transparent object sorting mode of a Camera.
+
+
+UISubset
+Bit mask that specifies which UI subset to render when calling ScriptableRenderContext.CreateUIOverlayRendererList. For any frame, UI subsets must be rendered in the following order: UIToolkit_UGUI, LowLevel.
+
+
+UnityEventCallState
+Controls the scope of UnityEvent callbacks.
+
+
+UnloadSceneOptions
+Scene unloading options passed to SceneManager.UnloadScene.
+
+
+UserAuthorization
+Use this enum to request permission from the user’s device for access to system features.
+
+
+ValidationLevel
+
+                Enumeration specifying a validation level.Additional resources: Debug.IsValidationLevelEnabled
+
+
+VertexAttribute
+Options for the attributes a vertex can store in a mesh.
+
+
+VertexAttributeFormat
+Data type of a VertexAttribute.
+
+
+VideoShadersIncludeMode
+Video shaders mode used by GraphicsSettings.
+
+
+VRTextureUsage
+This enum describes how the RenderTexture is used as a VR eye texture. Instead of using the values of this enum manually, use the value returned by eyeTextureDesc or other VR functions returning a RenderTextureDescriptor.
+
+
+WaitTimeoutMode
+
+            Determines which mode of time measurement to use in wait operations.
+        
+
+
+WebCamMode
+Describes the active mode of the Web Camera resource.
+
+
+WeightedMode
+Sets which weights to use when calculating curve segments.
+
+
+WhitePoint
+The reference white point of a color space.
+
+
+WindowActivationState
+Specifies the set of reasons that a windowActivated event was raised.
+
+
+WrapMode
+Determines how time is treated outside of the keyframed range of an AnimationClip or AnimationCurve.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Is something described here not working as you expect it to? It might be a 
+Known Issue
+. Please check with the Issue Tracker at 
+
+
+issuetracker.unity3d.com
+.
+Copyright ©2005-2025 Unity Technologies. All rights reserved. Built from: 6000.2.7f1 (f2ed67b075cf). Built on: 2025-09-18.
+                                        
+
+
+
+
+Tutorials
+
+
+Community Answers
+
+
+Knowledge Base
+
+
+Forums
+
+
+Asset Store
+
+
+Terms of use
+
+
+Legal
+
+
+Privacy Policy
+
+
+Cookies
+
+
+Do Not Sell or Share My Personal Information
+
+
+
+
+Your Privacy Choices (Cookie Settings)

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "faiss": "^1.0.0",
+    "flask": "^0.2.10"
+  }
+}

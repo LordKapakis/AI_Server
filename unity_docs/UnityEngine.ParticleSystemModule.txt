@@ -1,0 +1,813 @@
+Unity - Scripting API: UnityEngine.ParticleSystemModule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Manual
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+unity.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                Version: 
+Unity 6.2
+ (6000.2)
+                                
+Supported
+Legacy
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Scripting API
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version: Unity 6.2
+
+
+
+
+Select a different version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Language
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+English
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UnityEngine.ParticleSystemModule
+
+
+
+
+
+
+
+
+Leave feedback
+
+
+
+
+
+
+
+
+
+
+Suggest a change
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Success!
+
+
+Thank you for helping us improve the quality of Unity Documentation. Although we cannot accept all submissions, we do read each suggested change from our users and will make updates where applicable.
+
+
+Close
+
+
+
+
+
+
+Submission failed
+
+
+For some reason your suggested change could not be submitted. Please <a>try again</a> in a few minutes. And thank you for taking the time to help us improve the quality of Unity Documentation.
+
+
+Close
+
+
+
+
+
+
+Your name
+
+
+
+
+Your email
+
+
+
+
+Suggestion
+*
+
+
+
+                      
+
+
+Submit suggestion
+
+
+
+
+Cancel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+
+
+The ParticleSystem module implements Unity's Particle System.
+
+
+
+
+
+
+Classes
+
+
+
+
+
+
+
+
+Class
+
+
+Description
+
+
+
+
+
+
+IJobParticleSystemExtensions
+Extension methods for Jobs using the IJobParticleSystem interface.
+
+
+IJobParticleSystemParallelForBatchExtensions
+Extension methods for Jobs using the IJobParticleSystemParallelForBatch interface.
+
+
+IJobParticleSystemParallelForExtensions
+Extension methods for Jobs using the IJobParticleSystemParallelFor interface.
+
+
+ParticlePhysicsExtensions
+Method extension for Physics in Particle System.
+
+
+ParticleSystem
+Script interface for the Built-in Particle System. Unity's powerful and versatile particle system implementation.
+
+
+ParticleSystemForceField
+Script interface for Particle System Force Fields.
+
+
+ParticleSystemRenderer
+Use this class to render particles on to the screen.
+
+
+
+
+
+
+
+
+Structs
+
+
+
+
+
+
+
+
+Struct
+
+
+Description
+
+
+
+
+
+
+ParticleCollisionEvent
+Information about a particle collision.
+
+
+ParticleSystemJobData
+This struct specifies all the per-particle data.
+
+
+ParticleSystemNativeArray3
+A container to hold x, y, and z-axis data for particles.
+
+
+ParticleSystemNativeArray4
+A container to hold 4 arrays of data for particles.
+
+
+
+
+
+
+
+
+Enumerations
+
+
+
+
+
+
+
+
+Enumeration
+
+
+Description
+
+
+
+
+
+
+ParticleSystemAnimationMode
+The animation mode.
+
+
+ParticleSystemAnimationRowMode
+The mode used for selecting rows of an animation in the Texture Sheet Animation Module.
+
+
+ParticleSystemAnimationTimeMode
+Control how animation frames are selected.
+
+
+ParticleSystemAnimationType
+The animation type.
+
+
+ParticleSystemBakeMeshOptions
+Configure how a Particle System is baked into a mesh.
+
+
+ParticleSystemBakeTextureOptions
+Configure how a Particle System is baked into a texture.
+
+
+ParticleSystemColliderQueryMode
+Whether collider information is available when using the [[ParticleSystem::GetTriggerParticles]] method.
+
+
+ParticleSystemCollisionMode
+Whether to use 2D or 3D colliders for particle collisions.
+
+
+ParticleSystemCollisionQuality
+Quality of world collisions. Medium and low quality are approximate and may leak particles.
+
+
+ParticleSystemCollisionType
+The type of collisions to use for a given Particle System.
+
+
+ParticleSystemCullingMode
+The action to perform when the Particle System is offscreen.
+
+
+ParticleSystemCurveMode
+The particle curve mode.
+
+
+ParticleSystemCustomData
+Which stream of custom particle data to set.
+
+
+ParticleSystemCustomDataMode
+Which mode CustomDataModule uses to generate its data.
+
+
+ParticleSystemEmitterVelocityMode
+Control how a Particle System calculates its velocity.
+
+
+ParticleSystemForceFieldShape
+The type of shape used for influencing particles in the Force Field Component.
+
+
+ParticleSystemGameObjectFilter
+The particle GameObject filtering mode that specifies which objects are used by specific Particle System modules.
+
+
+ParticleSystemGradientMode
+The particle gradient mode.
+
+
+ParticleSystemGravitySource
+Options for which physics system to use the gravity setting from.
+
+
+ParticleSystemInheritVelocityMode
+How to apply emitter velocity to particles.
+
+
+ParticleSystemMeshDistribution
+Sets which method Unity uses to randomly assign Meshes to particles.
+
+
+ParticleSystemMeshShapeType
+The mesh emission type.
+
+
+ParticleSystemNoiseQuality
+The quality of the generated noise.
+
+
+ParticleSystemOverlapAction
+What action to perform when the particle trigger module passes a test.
+
+
+ParticleSystemRenderMode
+The rendering mode for particle systems.
+
+
+ParticleSystemRenderSpace
+How particles are aligned when rendered.
+
+
+ParticleSystemRingBufferMode
+Control how particles are removed from the Particle System.
+
+
+ParticleSystemScalingMode
+Control how particle systems apply transform scale.
+
+
+ParticleSystemShapeMultiModeValue
+The mode used to generate new points in a shape.
+
+
+ParticleSystemShapeTextureChannel
+The texture channel.
+
+
+ParticleSystemShapeType
+The emission shape.
+
+
+ParticleSystemSimulationSpace
+Defines the coordinate space in which particles are simulated.
+
+
+ParticleSystemSortMode
+The sorting mode for particle systems.
+
+
+ParticleSystemStopAction
+The action to perform when the Particle System stops.
+
+
+ParticleSystemStopBehavior
+The behavior to apply when calling Stop.
+
+
+ParticleSystemSubEmitterProperties
+The properties of sub-emitter particles.
+
+
+ParticleSystemSubEmitterType
+The events that cause new particles to be spawned.
+
+
+ParticleSystemTrailMode
+Choose how Particle Trails are generated.
+
+
+ParticleSystemTrailTextureMode
+Choose how textures are applied to Particle Trails.
+
+
+ParticleSystemTriggerEventType
+The different types of particle triggers.
+
+
+ParticleSystemVertexStream
+All possible Particle System vertex shader inputs.
+
+
+UVChannelFlags
+A flag representing each UV channel.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Is something described here not working as you expect it to? It might be a 
+Known Issue
+. Please check with the Issue Tracker at 
+
+
+issuetracker.unity3d.com
+.
+Copyright ©2005-2025 Unity Technologies. All rights reserved. Built from: 6000.2.7f1 (f2ed67b075cf). Built on: 2025-09-18.
+                                        
+
+
+
+
+Tutorials
+
+
+Community Answers
+
+
+Knowledge Base
+
+
+Forums
+
+
+Asset Store
+
+
+Terms of use
+
+
+Legal
+
+
+Privacy Policy
+
+
+Cookies
+
+
+Do Not Sell or Share My Personal Information
+
+
+
+
+Your Privacy Choices (Cookie Settings)
