@@ -25,7 +25,7 @@ BASE_FOLDER = os.getenv("BASE_FOLDER", DEFAULT_BASE)
 os.makedirs(BASE_FOLDER, exist_ok=True)
 
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-MODEL_NAME = os.getenv("MODEL_NAME", "llama3")
+MODEL_NAME = os.getenv("MODEL_NAME", "llama3.1")
 API_KEY = os.getenv("API_KEY", "changeme")  # set a strong secret before exposing
 
 NUM_CTX = int(os.getenv("NUM_CTX", "4096"))
