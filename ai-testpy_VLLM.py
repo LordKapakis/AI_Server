@@ -46,7 +46,9 @@ CORS(app)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # === Core Config (keep compatible) ===
-BASE_FOLDER = os.getenv("BASE_FOLDER", r"C:\Users\kotso\OneDrive\Documents\AI\domains")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_BASE = os.path.join(SCRIPT_DIR, "domains")
+BASE_FOLDER = os.getenv("BASE_FOLDER", DEFAULT_BASE)
 os.makedirs(BASE_FOLDER, exist_ok=True)
 
 API_KEY = os.getenv("API_KEY", "changeme")
