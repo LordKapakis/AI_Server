@@ -3,6 +3,7 @@
 # - legacy flat domains supported
 # - nested Courses/<Course>/YEAR_X/SEM_Y/<Lesson> supported
 # - year-scope escalation via scope="year"
+# - ✅ accepts year alias: Courses__<Course>__YEAR_X
 # - safe file serving for nested domain folders
 
 from flask import Flask, request, jsonify, abort, send_from_directory, send_file
@@ -13,7 +14,6 @@ import numpy as np
 import requests
 import PyPDF2
 
-# Optional libs (same spirit as your original)
 try:
     import faiss
 except Exception:
@@ -46,14 +46,13 @@ CORS(app)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # === Core Config (keep compatible) ===
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_BASE = os.path.join(SCRIPT_DIR, "domains")
 BASE_FOLDER = os.getenv("BASE_FOLDER", DEFAULT_BASE)
 os.makedirs(BASE_FOLDER, exist_ok=True)
 
 API_KEY = os.getenv("API_KEY", "changeme")
 
-# ✅ NEW: courses root folder name (as you requested)
+# ✅ Courses root folder name
 COURSES_ROOT = os.getenv("COURSES_ROOT", "Courses")
 
 # vLLM config
@@ -66,8 +65,8 @@ MODEL_NAME = os.getenv("MODEL_NAME", "vLLM-chat")
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
 TOP_P = float(os.getenv("TOP_P", "0.9"))
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "350"))
+
 # vLLM token budgeting (prevents 400s when prompt is large)
-# NOTE: these are heuristic token estimates; adjust if you change max_model_len on vLLM.
 VLLM_MAX_CONTEXT = int(os.getenv("VLLM_MAX_CONTEXT", "4096"))
 VLLM_SAFETY_MARGIN = int(os.getenv("VLLM_SAFETY_MARGIN", "256"))
 VLLM_MIN_COMPLETION = int(os.getenv("VLLM_MIN_COMPLETION", "96"))
@@ -104,6 +103,8 @@ if not EMBEDDING_DEVICE:
 
 if SentenceTransformer is None:
     raise RuntimeError("sentence-transformers is required")
+if faiss is None:
+    raise RuntimeError("faiss is required")
 
 embedding_model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2", device=EMBEDDING_DEVICE)
 
@@ -111,10 +112,6 @@ PROMPT_LANG = (
     "Απάντησε πάντα στα Ελληνικά, με φυσική και κατανοητή γλώσσα. "
     "Αν η ερώτηση είναι σε άλλη γλώσσα, μετέφρασέ την συνοπτικά και απάντησε στα Ελληνικά."
 )
-
-if faiss is None:
-    raise RuntimeError("faiss is required")
-
 
 # =========================
 # In-memory indexes
@@ -128,8 +125,12 @@ domain_data = {}
 # domainId -> folder path
 domain_folders = {}
 
-# leaf lesson domain -> year aggregate domain
+# leaf lesson domain -> year aggregate domain (YEAR__Course__YEAR_X)
 lesson_to_year = {}
+
+# ✅ NEW: year alias -> year aggregate domain
+# e.g. "Courses__Psychology__YEAR_1" -> "YEAR__Psychology__YEAR_1"
+year_alias_to_year = {}
 
 
 # =========================
@@ -366,18 +367,12 @@ def save_cached_file(domain: str, path: str, chunk_size: int, overlap: int, chun
 # Domain discovery / IDs
 # =========================
 def _safe_id_from_relpath(rel: str) -> str:
-    """
-    Stable domain id from relative folder path.
-    Example:
-      Courses/Psychology/YEAR_1/SEM_1/LessonA
-        -> Courses__Psychology__YEAR_1__SEM_1__LessonA
-    """
     rel = rel.replace("\\", "/").strip("/")
     parts = [p.strip().replace(" ", "_") for p in rel.split("/") if p.strip()]
     return "__".join(parts)
 
 
-def _find_courses_root_index(parts: list[str]) -> int | None:
+def _find_courses_root_index(parts):
     for i, p in enumerate(parts):
         if p.lower() == COURSES_ROOT.lower():
             return i
@@ -385,11 +380,6 @@ def _find_courses_root_index(parts: list[str]) -> int | None:
 
 
 def _extract_course_year_from_rel(rel: str):
-    """
-    rel like:
-      Courses/Psychology/YEAR_1/SEM_1/LessonA
-    returns (course="Psychology", year="YEAR_1") if inside Courses structure.
-    """
     rel = rel.replace("\\", "/").strip("/")
     parts = [p for p in rel.split("/") if p]
     i = _find_courses_root_index(parts)
@@ -402,11 +392,15 @@ def _extract_course_year_from_rel(rel: str):
     return course, year
 
 
+def _is_year_alias(domain_id: str) -> bool:
+    # "Courses__Psychology__YEAR_1"
+    if not isinstance(domain_id, str):
+        return False
+    parts = domain_id.split("__")
+    return len(parts) == 3 and parts[0] == "Courses" and parts[2].upper().startswith("YEAR_")
+
+
 def discover_domain_folders():
-    """
-    Domain = any directory that contains supported files DIRECTLY inside it.
-    Works for legacy flat domains and nested Courses/... structure.
-    """
     found = []
     base_abs = os.path.abspath(BASE_FOLDER)
     cache_abs = os.path.abspath(INDEX_CACHE_DIR)
@@ -428,7 +422,7 @@ def discover_domain_folders():
 
 
 # =========================
-# Index building (legacy-safe)
+# Index building
 # =========================
 def build_domain_index(domain: str, folder: str):
     t0 = time.time()
@@ -444,7 +438,6 @@ def build_domain_index(domain: str, folder: str):
     all_embeddings_parts = []
 
     misses = []
-    # load cache hits
     for f in files:
         path = os.path.join(folder, f)
         ch, metas, emb = load_cached_file(domain, path, CHUNK_TOKENS, CHUNK_OVERLAP)
@@ -455,14 +448,12 @@ def build_domain_index(domain: str, folder: str):
         else:
             misses.append(f)
 
-    # parse misses
     parsed = []
     for f in misses:
         fname, path, chunks, metas = parse_file_to_chunks(f, folder)
         if chunks and metas:
             parsed.append((path, chunks, metas))
 
-    # embed misses
     if parsed:
         flat_chunks = []
         boundaries = []
@@ -513,7 +504,7 @@ def build_domain_index(domain: str, folder: str):
     domain_data[domain] = {
         "chunks": all_chunks,
         "meta": all_metas,
-        "embeddings": embeddings,   # keep to build YEAR aggregate without re-embedding
+        "embeddings": embeddings,
         "index": index,
         "folder": folder,
         "kind": "lesson",
@@ -526,12 +517,15 @@ def build_domain_index(domain: str, folder: str):
 
 def build_year_aggregates():
     """
-    Create YEAR__<Course>__YEAR_X aggregates for any lesson domains under:
-      Courses/<Course>/YEAR_X/...
+    Builds YEAR__<Course>__YEAR_X aggregates from lesson domains under Courses/<Course>/YEAR_X/...
+    Also builds alias map:
+      Courses__<Course>__YEAR_X  ->  YEAR__<Course>__YEAR_X
     """
-    year_map: dict[str, list[str]] = {}
+    year_map = {}
 
-    # map leaf lessons -> year aggregate
+    # reset maps (safe)
+    year_alias_to_year.clear()
+
     for d, info in list(domain_data.items()):
         if info.get("kind") != "lesson":
             continue
@@ -545,11 +539,16 @@ def build_year_aggregates():
         if not course or not year:
             continue
 
-        year_domain = f"YEAR__{course.replace(' ', '_')}__{year.replace(' ', '_')}"
+        course_id = course.replace(" ", "_")
+        year_id = year.replace(" ", "_")
+
+        year_domain = f"YEAR__{course_id}__{year_id}"
+        year_alias = f"Courses__{course_id}__{year_id}"  # ✅ what frontend sends
+
         year_map.setdefault(year_domain, []).append(d)
         lesson_to_year[d] = year_domain
+        year_alias_to_year[year_alias] = year_domain
 
-    # build aggregate indices
     for year_domain, children in year_map.items():
         chunks_all = []
         meta_all = []
@@ -573,28 +572,15 @@ def build_year_aggregates():
         index = faiss.IndexFlatIP(dim)
         index.add(embeddings)
 
-        # derive year folder from first child
-        first_child_folder = domain_data[children[0]].get("folder")
-        year_folder = None
-        if first_child_folder:
-            rel_first = os.path.relpath(first_child_folder, BASE_FOLDER).replace("\\", "/")
-            course, year = _extract_course_year_from_rel(rel_first)
-            if course and year:
-                year_folder = os.path.join(BASE_FOLDER, COURSES_ROOT, course, year)
-                if not os.path.isdir(year_folder):
-                    year_folder = None
-
         domain_data[year_domain] = {
             "chunks": chunks_all,
             "meta": meta_all,
             "embeddings": embeddings,
             "index": index,
-            "folder": year_folder,   # used ONLY if you later want year-level file browsing
+            "folder": None,
             "kind": "year",
             "children": children,
         }
-        if year_folder:
-            domain_folders[year_domain] = year_folder
 
         print(f"🧩 YEAR index '{year_domain}' built from {len(children)} lesson domains.")
 
@@ -603,6 +589,7 @@ def load_domains():
     domain_data.clear()
     domain_folders.clear()
     lesson_to_year.clear()
+    year_alias_to_year.clear()
 
     discovered = discover_domain_folders()
 
@@ -615,40 +602,34 @@ def load_domains():
 # =========================
 # LLM
 # =========================
-
 def _approx_token_count(text: str) -> int:
-    # Heuristic: ~4 chars/token for English; Greek tends to be a bit denser; keep conservative.
     if not text:
         return 0
     return max(1, int(len(text) / 4))
 
+
 def _truncate_text_to_token_budget(text: str, max_tokens: int) -> str:
-    # Keep the END of the text (instructions + quotes are usually near the end).
     if max_tokens <= 0:
         return ""
     approx_tokens = _approx_token_count(text)
     if approx_tokens <= max_tokens:
         return text
-    # Scale characters proportionally; add a small cushion.
     keep_chars = int(len(text) * (max_tokens / max(approx_tokens, 1)) * 0.98)
     keep_chars = max(0, min(len(text), keep_chars))
     if keep_chars <= 0:
         return text[-min(len(text), 2000):]
     return text[-keep_chars:]
 
+
 def query_model(prompt: str) -> str:
     full_prompt = f"{PROMPT_LANG}\n\n{prompt}"
 
-    # ---- Token budgeting (avoid vLLM 400 errors for context overflow) ----
-    # Estimate input tokens from the user message only; add a fixed overhead for the system message + chat template.
     input_tokens = _approx_token_count(full_prompt) + 64
     budget = VLLM_MAX_CONTEXT - VLLM_SAFETY_MARGIN
     remaining_for_completion = max(0, budget - input_tokens)
 
-    # Cap and floor completion tokens.
     max_completion = min(VLLM_MAX_COMPLETION_CAP, max(VLLM_MIN_COMPLETION, remaining_for_completion))
 
-    # If we still don't have room for the minimum completion, truncate the prompt (keep the tail).
     if remaining_for_completion < VLLM_MIN_COMPLETION:
         max_input_allowed = max(128, budget - VLLM_MIN_COMPLETION)
         full_prompt = _truncate_text_to_token_budget(full_prompt, max_input_allowed)
@@ -668,7 +649,6 @@ def query_model(prompt: str) -> str:
     resp.raise_for_status()
     data = resp.json()
     return (data.get("choices", [{}])[0].get("message", {}).get("content") or "").strip()
-
 
 
 def generate_alternate_queries(user_q: str, n: int = NUM_ALTERNATE_QUERIES):
@@ -699,7 +679,7 @@ def generate_alternate_queries(user_q: str, n: int = NUM_ALTERNATE_QUERIES):
 
 
 # =========================
-# Strict citation/extractive logic (same behavior)
+# Strict citation/extractive logic
 # =========================
 def _norm(s: str) -> str:
     if not s:
@@ -906,9 +886,9 @@ QUOTES:
 
 
 # =========================
-# Domain folder resolving for nested folders
+# Domain folder resolving
 # =========================
-def _resolve_domain_folder(domain: str) -> str | None:
+def _resolve_domain_folder(domain: str):
     if domain in domain_folders:
         return domain_folders[domain]
     d2 = next((k for k in domain_folders.keys() if k.lower() == (domain or "").lower()), None)
@@ -986,8 +966,9 @@ def health():
         "model": MODEL_NAME,
         "embedding_device": EMBEDDING_DEVICE,
         "domains_count": len(domain_data),
-        "domains": list(domain_data.keys())[:200],  # avoid huge payload
+        "domains": list(domain_data.keys())[:200],
         "year_domains": [d for d, v in domain_data.items() if v.get("kind") == "year"],
+        "year_aliases_sample": list(year_alias_to_year.items())[:50],
         "courses_root": COURSES_ROOT,
     })
 
@@ -1008,11 +989,22 @@ def ask():
     # match domain case-insensitively
     matched_domain = next((d for d in domain_data.keys() if d.lower() == domain_in.lower()), domain_in)
 
-    # ✅ scope escalation
+    # ✅ scope escalation (supports BOTH lesson id and year-alias id)
     if scope == "year":
-        yd = lesson_to_year.get(matched_domain)
-        if yd and yd in domain_data:
-            matched_domain = yd
+        # 1) if frontend sends "Courses__Course__YEAR_X", map to year aggregate
+        alias_key = domain_in.replace(" ", "_")
+        if alias_key in year_alias_to_year and year_alias_to_year[alias_key] in domain_data:
+            matched_domain = year_alias_to_year[alias_key]
+        else:
+            # 2) if it's a lesson id, map to its year aggregate
+            yd = lesson_to_year.get(matched_domain)
+            if yd and yd in domain_data:
+                matched_domain = yd
+            else:
+                # 3) if frontend already sent YEAR__..., keep it
+                yd2 = next((d for d in domain_data.keys() if d.lower() == domain_in.lower()), None)
+                if yd2 and domain_data.get(yd2, {}).get("kind") == "year":
+                    matched_domain = yd2
 
     print(f"Question for domain [{matched_domain}] (scope={scope}): {question}")
     answer, sources = answer_question(matched_domain, question, chat_messages=chat_messages)
@@ -1041,7 +1033,7 @@ def cache_clear():
     return jsonify(summary)
 
 
-def clear_cache(domain: str | None = None) -> dict:
+def clear_cache(domain=None):
     removed_files = 0
     removed_bytes = 0
     removed_domains = 0
