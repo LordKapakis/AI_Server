@@ -1,420 +1,221 @@
-
-# ai-testpy_NEW_INDEXING.py
-# Faster, cached, incremental indexing for PDF/TXT/DOCX/PPTX domains.
+# ai-testpy_VLLM.py
+# Stable server with:
+# - legacy flat domains supported
+# - nested Courses/<Course>/YEAR_X/SEM_Y/<Lesson> supported
+# - year-scope escalation via scope="year"
+# - safe file serving for nested domain folders
 
 from flask import Flask, request, jsonify, abort, send_from_directory, send_file
-import os
-import io
-import re
-import json
-import hashlib
-import unicodedata
-import time
-import shutil
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
-
-import PyPDF2
-import faiss
-import numpy as np
-from sentence_transformers import SentenceTransformer
-import requests
 from flask_cors import CORS
-from werkzeug.utils import safe_join  # correct import
+from werkzeug.utils import safe_join
+import os, io, re, time, json, hashlib, shutil, unicodedata
+import numpy as np
+import requests
+import PyPDF2
 
-# DOCX & PPTX
-from docx import Document
-from pptx import Presentation
-
-# Optional: device detection
+# Optional libs (same spirit as your original)
 try:
-    import torch  # type: ignore
+    import faiss
+except Exception:
+    faiss = None
+
+try:
+    import torch
 except Exception:
     torch = None
+
+try:
+    from sentence_transformers import SentenceTransformer
+except Exception:
+    SentenceTransformer = None
+
+try:
+    import docx
+except Exception:
+    docx = None
+
+try:
+    from pptx import Presentation
+except Exception:
+    Presentation = None
+
 
 app = Flask(__name__)
 CORS(app)
 
-# === Core Config ===
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_BASE = os.path.join(SCRIPT_DIR, "domains")
-BASE_FOLDER = os.getenv("BASE_FOLDER", DEFAULT_BASE)
+
+# === Core Config (keep compatible) ===
+BASE_FOLDER = os.getenv("BASE_FOLDER", r"C:\Users\kotso\OneDrive\Documents\AI\domains")
 os.makedirs(BASE_FOLDER, exist_ok=True)
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-VLLM_URL = os.getenv("VLLM_URL", "http://127.0.0.1:8000/v1/chat/completions")
-VLLM_MODEL = os.getenv("VLLM_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct")
-VLLM_TIMEOUT = int(os.getenv("VLLM_TIMEOUT", "60"))
-MAX_TOKENS = int(os.getenv("MAX_TOKENS", os.getenv("NUM_PREDICT", "200")))
+API_KEY = os.getenv("API_KEY", "changeme")
 
-MODEL_NAME = os.getenv("MODEL_NAME", "llama3.1")
-API_KEY = os.getenv("API_KEY", "changeme")  # set a strong secret before exposing
-CACHE_ADMIN_KEY = os.getenv("CACHE_ADMIN_KEY", "")  # set to enable cache admin endpoints
+# ✅ NEW: courses root folder name (as you requested)
+COURSES_ROOT = os.getenv("COURSES_ROOT", "Courses")
 
-NUM_CTX = int(os.getenv("NUM_CTX", "4096"))
-NUM_PREDICT = int(os.getenv("NUM_PREDICT", "400"))
+# vLLM config
+VLLM_URL = os.getenv("VLLM_URL", "http://localhost:8000/v1/chat/completions")
+VLLM_MODEL = os.getenv("VLLM_MODEL", "llama3")
+VLLM_TIMEOUT = int(os.getenv("VLLM_TIMEOUT", "120"))
+
+MODEL_NAME = os.getenv("MODEL_NAME", "vLLM-chat")
+
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
 TOP_P = float(os.getenv("TOP_P", "0.9"))
+MAX_TOKENS = int(os.getenv("MAX_TOKENS", "350"))
 
-# === Retrieval / Index Tuning ===
-CHUNK_TOKENS = int(os.getenv("CHUNK_TOKENS", "280"))   # increased default for fewer chunks
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "20"))  # reduced default overlap
+# Retrieval tuning
+CHUNK_TOKENS = int(os.getenv("CHUNK_TOKENS", "280"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "20"))
 R_TOP_K = int(os.getenv("R_TOP_K", "4"))
 NUM_ALTERNATE_QUERIES = int(os.getenv("NUM_ALTERNATE_QUERIES", "1"))
-MIN_SIM_THRESHOLD = float(os.getenv("MIN_SIM_THRESHOLD", "0.30"))  # used in post-filter
+MIN_SIM_THRESHOLD = float(os.getenv("MIN_SIM_THRESHOLD", "0.30"))
 
-# Be strict about missing citations
 STRICT_MODE = os.getenv("STRICT_MODE", "true").lower() in ("1", "true", "yes")
 EXTRACTIVE_ONLY = os.getenv("EXTRACTIVE_ONLY", "false").lower() in ("1", "true", "yes")
 
-# Indexing speed controls
 EMBED_BATCH_SIZE = int(os.getenv("EMBED_BATCH_SIZE", "64"))
-PARSE_WORKERS = int(os.getenv("PARSE_WORKERS", "1"))  # >1 enables parallel file parsing
 MIN_WORDS_TO_INDEX = int(os.getenv("MIN_WORDS_TO_INDEX", "20"))
 
-# FAISS threads (optional)
-FAISS_THREADS = os.getenv("FAISS_THREADS")
-try:
-    if FAISS_THREADS:
-        faiss.omp_set_num_threads(int(FAISS_THREADS))
-except Exception:
-    pass
+# Index cache
+INDEX_CACHE_DIR = os.getenv("INDEX_CACHE_DIR", os.path.join(SCRIPT_DIR, ".index_cache"))
+os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
 
-# Embedding model (multilingual; handles Greek well)
-EMBEDDING_DEVICE = os.getenv("EMBEDDING_DEVICE", "").strip().lower()  # "", "cpu", "cuda"
+CACHE_ADMIN_KEY = os.getenv("CACHE_ADMIN_KEY", "").strip()
+
+SUPPORTED_EXTS = (".pdf", ".txt", ".docx", ".pptx")
+
+# Embedding model
+EMBEDDING_DEVICE = os.getenv("EMBEDDING_DEVICE", "").strip().lower()
 if not EMBEDDING_DEVICE:
     if torch is not None and getattr(torch, "cuda", None) is not None and torch.cuda.is_available():
         EMBEDDING_DEVICE = "cuda"
     else:
         EMBEDDING_DEVICE = "cpu"
 
+if SentenceTransformer is None:
+    raise RuntimeError("sentence-transformers is required")
+
 embedding_model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2", device=EMBEDDING_DEVICE)
 
-# Greek output by default
 PROMPT_LANG = (
     "Απάντησε πάντα στα Ελληνικά, με φυσική και κατανοητή γλώσσα. "
     "Αν η ερώτηση είναι σε άλλη γλώσσα, μετέφρασέ την συνοπτικά και απάντησε στα Ελληνικά."
 )
 
-# Cache folder for incremental indexing
-INDEX_CACHE_DIR = os.getenv("INDEX_CACHE_DIR", os.path.join(SCRIPT_DIR, ".index_cache"))
-os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
+if faiss is None:
+    raise RuntimeError("faiss is required")
 
-# domain_data = { domain: { "chunks": [...], "index": faiss.IndexFlatIP, "meta": [...] } }
+
+# =========================
+# In-memory indexes
+# =========================
+# domain_data:
+# { domainId: { "chunks": [...], "index": faiss.IndexFlatIP, "meta": [...],
+#              "embeddings": np.ndarray, "folder": "...", "kind": "lesson|year",
+#              "children": [...]} }
 domain_data = {}
 
-# -----------------------------
-# Helpers: chunking and loading
-# -----------------------------
-def sliding_word_chunks(words, size=CHUNK_TOKENS, overlap=CHUNK_OVERLAP):
-    """Return overlapping word chunks to improve recall."""
-    if size <= 0:
-        return []
-    step = max(1, size - overlap)
+# domainId -> folder path
+domain_folders = {}
+
+# leaf lesson domain -> year aggregate domain
+lesson_to_year = {}
+
+
+# =========================
+# Helpers
+# =========================
+def require_api_key():
+    key = request.headers.get("x-api-key")
+    if not API_KEY or API_KEY == "changeme":
+        print("⚠️ WARNING: API_KEY is default. Set API_KEY env var before public exposure!")
+    elif key != API_KEY:
+        abort(401, description="Unauthorized")
+
+
+def sliding_word_chunks(words, chunk_size, overlap):
     out = []
-    for i in range(0, len(words), step):
-        piece = words[i: i + size]
-        if not piece:
-            break
-        out.append(" ".join(piece))
-        if i + size >= len(words):
-            break
+    step = max(1, chunk_size - overlap)
+    i = 0
+    while i < len(words):
+        out.append(" ".join(words[i:i + chunk_size]))
+        i += step
     return out
 
 
-def pdf_to_chunks_with_meta(pdf_path, chunk_size=CHUNK_TOKENS, overlap=CHUNK_OVERLAP):
-    """
-    Returns: (chunks, metas)
-    metas: list of dicts: {"file": <name>, "page_start": int, "page_end": int, "snippet": str}
-    Robust mapping: builds a word_to_page list so chunks always map to correct pages,
-    even when some PDF pages extract as empty.
-    """
-    chunks, metas = [], []
-    try:
-        reader = PyPDF2.PdfReader(pdf_path)
-        per_page_text = []
-        for pageno in range(len(reader.pages)):
-            t = reader.pages[pageno].extract_text() or ""
-            per_page_text.append(" ".join(t.split()))  # light normalization
-
-        # Flat words array + word->page lookup
-        words = []
-        word_to_page = []  # same length as words; stores 0-based page number
-        for pageno, text in enumerate(per_page_text):
-            if text:
-                w = text.split()
-                words.extend(w)
-                word_to_page.extend([pageno] * len(w))
-
-        if not words:
-            # If the PDF has no extractable text at all, skip it
-            return [], []
-
-        step = max(1, chunk_size - overlap)
-        i = 0
-        basename = os.path.basename(pdf_path)
-
-        while i < len(words):
-            j = min(i + chunk_size, len(words))
-            piece_words = words[i:j]
-            if not piece_words:
-                break
-
-            pages_in_slice = word_to_page[i:j]
-            page_start0 = min(pages_in_slice) if pages_in_slice else 0
-            page_end0 = max(pages_in_slice) if pages_in_slice else 0
-
-            text_chunk = " ".join(piece_words)
-            chunks.append(text_chunk)
-            metas.append({
-                "file": basename,
-                "page_start": int(page_start0 + 1),  # 1-based for UI
-                "page_end": int(page_end0 + 1),
-                "snippet": (text_chunk[:240] + "…") if len(text_chunk) > 240 else text_chunk
-            })
-
-            if j >= len(words):
-                break
-            i += step
-
-    except Exception as e:
-        print(f"❌ Could not read {pdf_path}: {e}")
-    return chunks, metas
-
-
 def docx_to_text(docx_path):
-    """Extract plain text from a .docx file."""
-    doc = Document(docx_path)
+    if docx is None:
+        return ""
+    d = docx.Document(docx_path)
     parts = []
-
-    for para in doc.paragraphs:
-        if para.text:
-            parts.append(para.text)
-
-    for table in doc.tables:
+    for p in d.paragraphs:
+        t = p.text.strip()
+        if t:
+            parts.append(t)
+    for table in d.tables:
         for row in table.rows:
             for cell in row.cells:
-                text = cell.text.strip()
-                if text:
-                    parts.append(text)
-
+                t = cell.text.strip()
+                if t:
+                    parts.append(t)
     return "\n".join(parts)
 
 
 def pptx_to_text(pptx_path):
-    """Extract plain text from a .pptx file."""
+    if Presentation is None:
+        return ""
     pres = Presentation(pptx_path)
     parts = []
-
     for slide in pres.slides:
         for shape in slide.shapes:
             if hasattr(shape, "text_frame") and shape.text_frame is not None:
-                text = shape.text_frame.text
-                if text:
-                    parts.append(text)
-
+                t = shape.text_frame.text
+                if t:
+                    parts.append(t)
             if getattr(shape, "has_table", False):
                 table = shape.table
                 for row in table.rows:
                     for cell in row.cells:
-                        text = cell.text.strip()
-                        if text:
-                            parts.append(text)
-
+                        t = cell.text.strip()
+                        if t:
+                            parts.append(t)
     return "\n".join(parts)
 
 
-# -----------------------------
-# Cache utilities
-# -----------------------------
-
-def _require_cache_admin():
-    """
-    Cache-admin guard.
-
-    Requires:
-      - CACHE_ADMIN_KEY env var to be set (non-empty)
-      - header "x-cache-admin-key" to match CACHE_ADMIN_KEY
-    """
-    if not CACHE_ADMIN_KEY:
-        abort(403, description="Cache admin is disabled (set CACHE_ADMIN_KEY).")
-    key = request.headers.get("x-cache-admin-key", "")
-    if key != CACHE_ADMIN_KEY:
-        abort(401, description="Unauthorized")
-
-def _file_signature(path: str):
-    """Return a stable signature used to detect changes."""
-    try:
-        st = os.stat(path)
-        return {"size": int(st.st_size), "mtime_ns": int(getattr(st, "st_mtime_ns", int(st.st_mtime * 1e9)))}
-    except Exception:
-        return {"size": None, "mtime_ns": None}
-
-
-def _cache_key(path: str, chunk_size: int, overlap: int):
-    """
-    Cache key includes file content fingerprint + chunk params.
-    We avoid hashing full content for very large files by hashing (size, mtime_ns).
-    If you prefer strict content hashing, set INDEX_STRICT_CONTENT_HASH=true.
-    """
-    strict = os.getenv("INDEX_STRICT_CONTENT_HASH", "false").lower() in ("1", "true", "yes")
-    sig = _file_signature(path)
-    base = f"{os.path.basename(path)}|{sig.get('size')}|{sig.get('mtime_ns')}|{chunk_size}|{overlap}|v2"
-    if not strict:
-        return hashlib.sha256(base.encode("utf-8")).hexdigest()
-
-    # strict content hash (slower, but safest)
-    h = hashlib.sha256()
-    h.update(base.encode("utf-8"))
-    try:
-        with open(path, "rb") as f:
-            for block in iter(lambda: f.read(1024 * 1024), b""):
-                h.update(block)
-    except Exception:
-        pass
-    return h.hexdigest()
-
-
-def _domain_cache_dir(domain: str):
-    d = os.path.join(INDEX_CACHE_DIR, domain)
-    os.makedirs(d, exist_ok=True)
-    return d
-
-
-def clear_cache(domain: str | None = None) -> dict:
-    """
-    Delete cached embeddings/chunks.
-
-    If domain is None: clears all domains under INDEX_CACHE_DIR.
-    Returns summary dict with counts.
-    """
-    removed_files = 0
-    removed_bytes = 0
-    removed_domains = 0
-
-    targets = []
-    if domain:
-        targets = [os.path.join(INDEX_CACHE_DIR, domain)]
-    else:
-        targets = [os.path.join(INDEX_CACHE_DIR, d) for d in os.listdir(INDEX_CACHE_DIR)]
-
-    for t in targets:
-        if not os.path.isdir(t):
-            continue
-        removed_domains += 1
-        for root, _, files in os.walk(t):
-            for fn in files:
-                fp = os.path.join(root, fn)
-                try:
-                    st = os.stat(fp)
-                    removed_bytes += int(st.st_size)
-                    os.remove(fp)
-                    removed_files += 1
-                except Exception:
-                    pass
-        # remove empty dirs
-        try:
-            shutil.rmtree(t, ignore_errors=True)
-        except Exception:
-            pass
-
-    # recreate base cache dir if needed
-    os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
-    return {
-        "domain": domain or "*",
-        "removed_domains": removed_domains,
-        "removed_files": removed_files,
-        "removed_bytes": removed_bytes,
-    }
-
-
-def reload_domain(domain: str):
-    """Rebuild a single domain index from BASE_FOLDER (using cache if present)."""
-    folder = os.path.join(BASE_FOLDER, domain)
-    if not os.path.isdir(folder):
-        abort(404, description="Domain folder not found")
-    build_domain_index(domain, folder)
-
-
-def _cache_paths(domain: str, key: str):
-    d = _domain_cache_dir(domain)
-    npz_path = os.path.join(d, f"{key}.npz")
-    meta_path = os.path.join(d, f"{key}.json")
-    return npz_path, meta_path
-
-
-def load_cached_file(domain: str, path: str, chunk_size: int, overlap: int):
-    """
-    If cache hit: returns (chunks, metas, embeddings) else (None, None, None).
-    """
-    key = _cache_key(path, chunk_size, overlap)
-    npz_path, meta_path = _cache_paths(domain, key)
-    if not (os.path.isfile(npz_path) and os.path.isfile(meta_path)):
-        return None, None, None
-
-    try:
-        with open(meta_path, "r", encoding="utf-8") as f:
-            meta = json.load(f)
-        sig_now = _file_signature(path)
-        if meta.get("file") != os.path.basename(path):
-            return None, None, None
-        if meta.get("sig") != sig_now:
-            return None, None, None
-
-        data = np.load(npz_path, allow_pickle=True)
-        embeddings = data["embeddings"]
-        chunks = data["chunks"].tolist()
-        metas = data["metas"].tolist()
-        return chunks, metas, embeddings
-    except Exception as e:
-        print(f"⚠️ Cache load failed for {path}: {e}")
-        return None, None, None
-
-
-def save_cached_file(domain: str, path: str, chunk_size: int, overlap: int, chunks, metas, embeddings):
-    key = _cache_key(path, chunk_size, overlap)
-    npz_path, meta_path = _cache_paths(domain, key)
-    try:
-        meta = {
-            "file": os.path.basename(path),
-            "sig": _file_signature(path),
-            "chunk_size": int(chunk_size),
-            "overlap": int(overlap),
-            "created_utc": datetime.now(timezone.utc).isoformat(),
-            "embedding_model": str(getattr(embedding_model, "model_name_or_path", "paraphrase-multilingual-MiniLM-L12-v2")),
-            "device": EMBEDDING_DEVICE,
-        }
-        with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(meta, f, ensure_ascii=False, default=str)
-
-        # store chunks/metas as object arrays
-        np.savez_compressed(
-            npz_path,
-            embeddings=np.asarray(embeddings, dtype=np.float32),
-            chunks=np.asarray(chunks, dtype=object),
-            metas=np.asarray(metas, dtype=object),
-        )
-    except Exception as e:
-        print(f"⚠️ Cache save failed for {path}: {e}")
-
-
-# -----------------------------
-# File -> chunks/metas (no embeddings)
-# -----------------------------
-def parse_file_to_chunks(domain: str, folder: str, fname: str):
-    """
-    Returns:
-      fname, path, chunks, metas
-    """
+def parse_file_to_chunks(fname, folder):
     path = os.path.join(folder, fname)
-    basename = os.path.basename(path)
+    basename = fname.replace("\\", "/")
 
-    # --- PDF ---
+    # PDF
     if fname.lower().endswith(".pdf"):
-        chunks, metas = pdf_to_chunks_with_meta(path, CHUNK_TOKENS, CHUNK_OVERLAP)
+        try:
+            reader = PyPDF2.PdfReader(path)
+        except Exception as e:
+            print(f"❌ Could not read PDF {path}: {e}")
+            return fname, path, [], []
+        chunks, metas = [], []
+        for i, page in enumerate(reader.pages):
+            try:
+                text = page.extract_text() or ""
+            except Exception:
+                text = ""
+            words = text.split()
+            if len(words) < MIN_WORDS_TO_INDEX:
+                continue
+            page_chunks = sliding_word_chunks(words, CHUNK_TOKENS, CHUNK_OVERLAP)
+            for ch in page_chunks:
+                chunks.append(ch)
+                metas.append({
+                    "file": basename,
+                    "page_start": i + 1,
+                    "page_end": i + 1,
+                    "snippet": (ch[:240] + "…") if len(ch) > 240 else ch
+                })
         return fname, path, chunks, metas
 
-    # --- TXT ---
+    # TXT
     if fname.lower().endswith(".txt"):
         try:
             with open(path, "r", encoding="utf-8", errors="ignore") as f:
@@ -434,7 +235,7 @@ def parse_file_to_chunks(domain: str, folder: str, fname: str):
         } for ch in chunks]
         return fname, path, chunks, metas
 
-    # --- DOCX ---
+    # DOCX
     if fname.lower().endswith(".docx"):
         try:
             text = docx_to_text(path)
@@ -453,7 +254,7 @@ def parse_file_to_chunks(domain: str, folder: str, fname: str):
         } for ch in chunks]
         return fname, path, chunks, metas
 
-    # --- PPTX ---
+    # PPTX
     if fname.lower().endswith(".pptx"):
         try:
             text = pptx_to_text(path)
@@ -475,75 +276,196 @@ def parse_file_to_chunks(domain: str, folder: str, fname: str):
     return fname, path, [], []
 
 
-# -----------------------------
-# Domain indexing (incremental + cached)
-# -----------------------------
-def build_domain_index(domain, folder):
+# =========================
+# Cache
+# =========================
+def _require_cache_admin():
+    if not CACHE_ADMIN_KEY:
+        abort(403, description="Cache admin is disabled (set CACHE_ADMIN_KEY).")
+    key = request.headers.get("x-cache-admin-key", "")
+    if key != CACHE_ADMIN_KEY:
+        abort(401, description="Unauthorized")
+
+
+def _file_signature(path: str):
+    try:
+        st = os.stat(path)
+        return {
+            "size": int(st.st_size),
+            "mtime_ns": int(getattr(st, "st_mtime_ns", int(st.st_mtime * 1e9))),
+        }
+    except Exception:
+        return {"size": None, "mtime_ns": None}
+
+
+def _cache_key(path: str, chunk_size: int, overlap: int):
+    strict = os.getenv("INDEX_STRICT_CONTENT_HASH", "false").lower() in ("1", "true", "yes")
+    sig = _file_signature(path)
+    base = f"{os.path.basename(path)}|{sig.get('size')}|{sig.get('mtime_ns')}|{chunk_size}|{overlap}|v2"
+    if not strict:
+        return hashlib.sha256(base.encode("utf-8")).hexdigest()
+    h = hashlib.sha256()
+    h.update(base.encode("utf-8"))
+    try:
+        with open(path, "rb") as f:
+            for block in iter(lambda: f.read(1024 * 1024), b""):
+                h.update(block)
+    except Exception:
+        pass
+    return h.hexdigest()
+
+
+def _domain_cache_dir(domain: str):
+    d = os.path.join(INDEX_CACHE_DIR, domain)
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def _cache_paths(domain: str, key: str):
+    d = _domain_cache_dir(domain)
+    npz_path = os.path.join(d, f"{key}.npz")
+    meta_path = os.path.join(d, f"{key}.json")
+    return npz_path, meta_path
+
+
+def load_cached_file(domain: str, path: str, chunk_size: int, overlap: int):
+    key = _cache_key(path, chunk_size, overlap)
+    npz_path, meta_path = _cache_paths(domain, key)
+    if not (os.path.isfile(npz_path) and os.path.isfile(meta_path)):
+        return None, None, None
+    try:
+        arr = np.load(npz_path)
+        emb = arr["embeddings"].astype(np.float32)
+        with open(meta_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+        return meta.get("chunks"), meta.get("metas"), emb
+    except Exception:
+        return None, None, None
+
+
+def save_cached_file(domain: str, path: str, chunk_size: int, overlap: int, chunks, metas, embeddings):
+    key = _cache_key(path, chunk_size, overlap)
+    npz_path, meta_path = _cache_paths(domain, key)
+    try:
+        np.savez_compressed(npz_path, embeddings=np.asarray(embeddings, dtype=np.float32))
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump({"chunks": chunks, "metas": metas}, f, ensure_ascii=False)
+    except Exception as e:
+        print("⚠️ cache write failed:", e)
+
+
+# =========================
+# Domain discovery / IDs
+# =========================
+def _safe_id_from_relpath(rel: str) -> str:
     """
-    Builds (or refreshes) a domain index using:
-      - Per-file caching (chunks+metas+embeddings)
-      - Incremental embedding for new/changed files
-      - Batched embedding encode for speed
-      - Optional parallel parsing for I/O bound workloads
+    Stable domain id from relative folder path.
+    Example:
+      Courses/Psychology/YEAR_1/SEM_1/LessonA
+        -> Courses__Psychology__YEAR_1__SEM_1__LessonA
     """
+    rel = rel.replace("\\", "/").strip("/")
+    parts = [p.strip().replace(" ", "_") for p in rel.split("/") if p.strip()]
+    return "__".join(parts)
+
+
+def _find_courses_root_index(parts: list[str]) -> int | None:
+    for i, p in enumerate(parts):
+        if p.lower() == COURSES_ROOT.lower():
+            return i
+    return None
+
+
+def _extract_course_year_from_rel(rel: str):
+    """
+    rel like:
+      Courses/Psychology/YEAR_1/SEM_1/LessonA
+    returns (course="Psychology", year="YEAR_1") if inside Courses structure.
+    """
+    rel = rel.replace("\\", "/").strip("/")
+    parts = [p for p in rel.split("/") if p]
+    i = _find_courses_root_index(parts)
+    if i is None:
+        return None, None
+    course = parts[i + 1] if len(parts) > i + 1 else None
+    year = parts[i + 2] if len(parts) > i + 2 else None
+    if year and not year.upper().startswith("YEAR_"):
+        return course, None
+    return course, year
+
+
+def discover_domain_folders():
+    """
+    Domain = any directory that contains supported files DIRECTLY inside it.
+    Works for legacy flat domains and nested Courses/... structure.
+    """
+    found = []
+    base_abs = os.path.abspath(BASE_FOLDER)
+    cache_abs = os.path.abspath(INDEX_CACHE_DIR)
+
+    for root, dirs, files in os.walk(BASE_FOLDER):
+        root_abs = os.path.abspath(root)
+        if root_abs.startswith(cache_abs):
+            continue
+
+        usable = [f for f in files if f.lower().endswith(SUPPORTED_EXTS)]
+        if not usable:
+            continue
+
+        rel = os.path.relpath(root, BASE_FOLDER).replace("\\", "/")
+        domain_id = _safe_id_from_relpath(rel)
+        found.append((domain_id, root, rel))
+
+    return found
+
+
+# =========================
+# Index building (legacy-safe)
+# =========================
+def build_domain_index(domain: str, folder: str):
     t0 = time.time()
-    all_chunks = []
-    all_metas = []
-    all_embeddings = []
 
-    files = [f for f in os.listdir(folder) if f.lower().endswith((".pdf", ".txt", ".docx", ".pptx"))]
+    files = [f for f in os.listdir(folder) if f.lower().endswith(SUPPORTED_EXTS)]
     files.sort()
-
     if not files:
-        print(f"⚠️ No usable data for '{domain}' in {folder}")
+        print(f"⚠️ No usable files for '{domain}' in {folder}")
         return
 
-    # 1) Try cache hits first; parse + embed only misses
+    all_chunks = []
+    all_metas = []
+    all_embeddings_parts = []
+
     misses = []
-
-    for fname in files:
-        path = os.path.join(folder, fname)
-        cached_chunks, cached_metas, cached_emb = load_cached_file(domain, path, CHUNK_TOKENS, CHUNK_OVERLAP)
-        if cached_chunks is not None and cached_metas is not None and cached_emb is not None:
-            all_chunks.extend(cached_chunks)
-            all_metas.extend(cached_metas)
-            all_embeddings.append(np.asarray(cached_emb, dtype=np.float32))
+    # load cache hits
+    for f in files:
+        path = os.path.join(folder, f)
+        ch, metas, emb = load_cached_file(domain, path, CHUNK_TOKENS, CHUNK_OVERLAP)
+        if ch is not None and metas is not None and emb is not None:
+            all_chunks.extend(ch)
+            all_metas.extend(metas)
+            all_embeddings_parts.append(np.asarray(emb, dtype=np.float32))
         else:
-            misses.append(fname)
+            misses.append(f)
 
-    # 2) Parse misses (optionally in parallel)
+    # parse misses
     parsed = []
-    if misses:
-        print(f"📖 Indexing domain '{domain}': {len(files)} files, {len(misses)} changed/new (cache miss).")
-        if PARSE_WORKERS and PARSE_WORKERS > 1 and len(misses) > 1:
-            with ThreadPoolExecutor(max_workers=PARSE_WORKERS) as ex:
-                futs = {ex.submit(parse_file_to_chunks, domain, folder, fname): fname for fname in misses}
-                for fut in as_completed(futs):
-                    fname, path, chunks, metas = fut.result()
-                    if chunks:
-                        parsed.append((fname, path, chunks, metas))
-        else:
-            for fname in misses:
-                _, path, chunks, metas = parse_file_to_chunks(domain, folder, fname)
-                if chunks:
-                    parsed.append((fname, path, chunks, metas))
+    for f in misses:
+        fname, path, chunks, metas = parse_file_to_chunks(f, folder)
+        if chunks and metas:
+            parsed.append((path, chunks, metas))
 
-    # Keep parsed in deterministic order
-    parsed.sort(key=lambda x: x[0])
-
-    # 3) Embed parsed misses in one (or few) batches and cache per file
+    # embed misses
     if parsed:
-        # Flatten for embedding (but keep file boundaries)
         flat_chunks = []
-        boundaries = []  # list of (path, start, end, metas)
+        boundaries = []
         cursor = 0
-        for fname, path, chunks, metas in parsed:
+
+        for path, chunks, metas in parsed:
             start = cursor
             flat_chunks.extend(chunks)
             cursor += len(chunks)
             boundaries.append((path, start, cursor, metas))
 
-        # Embed
         try:
             emb = embedding_model.encode(
                 flat_chunks,
@@ -553,7 +475,6 @@ def build_domain_index(domain, folder):
                 show_progress_bar=(os.getenv("EMBED_PROGRESS", "false").lower() in ("1", "true", "yes"))
             )
         except TypeError:
-            # Older sentence-transformers: show_progress_bar may not exist
             emb = embedding_model.encode(
                 flat_chunks,
                 batch_size=EMBED_BATCH_SIZE,
@@ -563,39 +484,131 @@ def build_domain_index(domain, folder):
 
         emb = np.asarray(emb, dtype=np.float32)
 
-        # Split and cache per file
         for (path, start, end, metas) in boundaries:
             file_chunks = flat_chunks[start:end]
             file_emb = emb[start:end]
-            # Cache writes
             save_cached_file(domain, path, CHUNK_TOKENS, CHUNK_OVERLAP, file_chunks, metas, file_emb)
 
             all_chunks.extend(file_chunks)
             all_metas.extend(metas)
-            all_embeddings.append(file_emb)
+            all_embeddings_parts.append(file_emb)
 
-    # 4) Build FAISS index
-    if not all_chunks or not all_embeddings:
-        print(f"⚠️ No usable chunks for '{domain}' after parsing/caching.")
+    if not all_chunks or not all_embeddings_parts:
+        print(f"⚠️ No usable chunks for '{domain}'")
         return
 
-    embeddings = np.vstack(all_embeddings).astype(np.float32)
+    embeddings = np.vstack(all_embeddings_parts).astype(np.float32)
     dim = embeddings.shape[1]
-    index = faiss.IndexFlatIP(dim)  # cosine on normalized vectors via dot product
+    index = faiss.IndexFlatIP(dim)
     index.add(embeddings)
 
-    domain_data[domain] = {"chunks": all_chunks, "index": index, "meta": all_metas}
+    domain_data[domain] = {
+        "chunks": all_chunks,
+        "meta": all_metas,
+        "embeddings": embeddings,   # keep to build YEAR aggregate without re-embedding
+        "index": index,
+        "folder": folder,
+        "kind": "lesson",
+    }
+    domain_folders[domain] = folder
+
     dt = time.time() - t0
-    print(f"✅ Indexed {len(all_chunks)} chunks for '{domain}' on {EMBEDDING_DEVICE} in {dt:.2f}s (batch={EMBED_BATCH_SIZE}).")
+    print(f"✅ Indexed {len(all_chunks)} chunks for '{domain}' in {dt:.2f}s.")
 
 
-# -----------------------------
-# LLM call
-# -----------------------------
+def build_year_aggregates():
+    """
+    Create YEAR__<Course>__YEAR_X aggregates for any lesson domains under:
+      Courses/<Course>/YEAR_X/...
+    """
+    year_map: dict[str, list[str]] = {}
+
+    # map leaf lessons -> year aggregate
+    for d, info in list(domain_data.items()):
+        if info.get("kind") != "lesson":
+            continue
+
+        folder = info.get("folder")
+        if not folder:
+            continue
+
+        rel = os.path.relpath(folder, BASE_FOLDER).replace("\\", "/")
+        course, year = _extract_course_year_from_rel(rel)
+        if not course or not year:
+            continue
+
+        year_domain = f"YEAR__{course.replace(' ', '_')}__{year.replace(' ', '_')}"
+        year_map.setdefault(year_domain, []).append(d)
+        lesson_to_year[d] = year_domain
+
+    # build aggregate indices
+    for year_domain, children in year_map.items():
+        chunks_all = []
+        meta_all = []
+        emb_parts = []
+
+        for child in children:
+            child_info = domain_data.get(child)
+            if not child_info:
+                continue
+            chunks_all.extend(child_info.get("chunks", []))
+            meta_all.extend(child_info.get("meta", []))
+            emb = child_info.get("embeddings")
+            if emb is not None and len(emb) > 0:
+                emb_parts.append(np.asarray(emb, dtype=np.float32))
+
+        if not chunks_all or not emb_parts:
+            continue
+
+        embeddings = np.vstack(emb_parts).astype(np.float32)
+        dim = embeddings.shape[1]
+        index = faiss.IndexFlatIP(dim)
+        index.add(embeddings)
+
+        # derive year folder from first child
+        first_child_folder = domain_data[children[0]].get("folder")
+        year_folder = None
+        if first_child_folder:
+            rel_first = os.path.relpath(first_child_folder, BASE_FOLDER).replace("\\", "/")
+            course, year = _extract_course_year_from_rel(rel_first)
+            if course and year:
+                year_folder = os.path.join(BASE_FOLDER, COURSES_ROOT, course, year)
+                if not os.path.isdir(year_folder):
+                    year_folder = None
+
+        domain_data[year_domain] = {
+            "chunks": chunks_all,
+            "meta": meta_all,
+            "embeddings": embeddings,
+            "index": index,
+            "folder": year_folder,   # used ONLY if you later want year-level file browsing
+            "kind": "year",
+            "children": children,
+        }
+        if year_folder:
+            domain_folders[year_domain] = year_folder
+
+        print(f"🧩 YEAR index '{year_domain}' built from {len(children)} lesson domains.")
+
+
+def load_domains():
+    domain_data.clear()
+    domain_folders.clear()
+    lesson_to_year.clear()
+
+    discovered = discover_domain_folders()
+
+    for domain_id, folder, rel in discovered:
+        build_domain_index(domain_id, folder)
+
+    build_year_aggregates()
+
+
+# =========================
+# LLM
+# =========================
 def query_model(prompt: str) -> str:
-    """Call a vLLM OpenAI-compatible Chat Completions endpoint."""
     full_prompt = f"{PROMPT_LANG}\n\n{prompt}"
-
     payload = {
         "model": VLLM_MODEL,
         "messages": [
@@ -607,25 +620,18 @@ def query_model(prompt: str) -> str:
         "max_tokens": MAX_TOKENS,
         "stream": False,
     }
-
     resp = requests.post(VLLM_URL, json=payload, timeout=VLLM_TIMEOUT)
     resp.raise_for_status()
     data = resp.json()
     return (data.get("choices", [{}])[0].get("message", {}).get("content") or "").strip()
 
+
 def generate_alternate_queries(user_q: str, n: int = NUM_ALTERNATE_QUERIES):
-    """Generate paraphrases to improve recall without broadening the topic or changing language."""
     if n <= 0:
         return [user_q]
-
     prompt = f"""
 Παράφρασε την ερώτηση του χρήστη σε έως {n} εναλλακτικές διατυπώσεις για ΑΝΑΖΗΤΗΣΗ.
-Απαιτήσεις:
-- Διατήρησε το ίδιο νόημα, μην προσθέτεις/αφαιρείς υποθέματα.
-- Χρησιμοποίησε την ΙΔΙΑ γλώσσα με την αρχική ερώτηση.
-- Απόφυγε υπερ-γενικεύσεις και αλλαγές πεδίου.
 - Κάθε παραλλαγή σε ξεχωριστή γραμμή, χωρίς αρίθμηση/περιττό κείμενο.
-
 Ερώτηση: "{user_q}"
 """
     try:
@@ -647,32 +653,10 @@ def generate_alternate_queries(user_q: str, n: int = NUM_ALTERNATE_QUERIES):
     return uniq
 
 
-# --- citations safety net ---
-def ensure_citations_from_quotes(final_answer: str, quotes: str, allowed_labels):
-    """If final_answer has no [n], append the unique labels seen in QUOTES, filtered to allowed."""
-    if re.search(r"\[\d+\]", final_answer):
-        return final_answer
-
-    quoted_labels = [int(n) for n in re.findall(r"\[(\d+)\]", quotes)]
-    if not quoted_labels:
-        return final_answer
-
-    allowed_set = set(int(x) for x in allowed_labels)
-    seen = []
-    for n in quoted_labels:
-        if n in allowed_set and n not in seen:
-            seen.append(n)
-
-    if not seen:
-        return final_answer
-
-    tail = "".join(f"[{n}]" for n in seen)
-    return (final_answer.rstrip() + " " + tail).strip()
-
-
-# --- Text normalization helpers (for robust quote validation) ---
+# =========================
+# Strict citation/extractive logic (same behavior)
+# =========================
 def _norm(s: str) -> str:
-    """Normalize text for resilient matching: casefold, whitespace collapse, unify quotes, unicode normalize."""
     if not s:
         return ""
     s = s.replace("“", '"').replace("”", '"').replace("’", "'").replace("…", "...")
@@ -682,20 +666,9 @@ def _norm(s: str) -> str:
     return s
 
 
-def word_overlap_ratio(a: str, b: str) -> float:
-    """Jaccard-like overlap ratio of unique words of a found in b."""
-    aw = set(_norm(a).split())
-    bw = set(_norm(b).split())
-    if not aw:
-        return 0.0
-    return len(aw & bw) / len(aw)
-
-
 def auto_extract_quotes(question: str, retrieved_chunks: list, max_quotes: int = 4):
-    """Extract short verbatim quotes directly from retrieved text (no model)."""
     qn = _norm(question)
     q_words = set(qn.split())
-
     candidates = []
     for i, ch in enumerate(retrieved_chunks, start=1):
         ch_raw = ch if isinstance(ch, str) else str(ch)
@@ -718,7 +691,6 @@ def auto_extract_quotes(question: str, retrieved_chunks: list, max_quotes: int =
             candidates.append((score, wc, p, i))
 
     candidates.sort(key=lambda x: (x[0], -abs(x[1] - 14)), reverse=True)
-
     out = []
     used = set()
     for score, wc, p, lab in candidates:
@@ -732,14 +704,28 @@ def auto_extract_quotes(question: str, retrieved_chunks: list, max_quotes: int =
     return out
 
 
+def ensure_citations_from_quotes(final_answer: str, quotes: str, allowed_labels):
+    if re.search(r"\[\d+\]", final_answer):
+        return final_answer
+    quoted_labels = [int(n) for n in re.findall(r"\[(\d+)\]", quotes)]
+    if not quoted_labels:
+        return final_answer
+    allowed_set = set(int(x) for x in allowed_labels)
+    seen = []
+    for n in quoted_labels:
+        if n in allowed_set and n not in seen:
+            seen.append(n)
+    if not seen:
+        return final_answer
+    tail = "".join(f"[{n}]" for n in seen)
+    return (final_answer.rstrip() + " " + tail).strip()
+
+
 def messages_to_context_text(messages, max_messages=20, max_chars=6000):
-    """Turn OpenAI-style chat messages into plain-text context."""
     if not isinstance(messages, list):
         return ""
-
     cleaned = []
     tail = messages[-max_messages:] if max_messages else messages
-
     for m in tail:
         if not isinstance(m, dict):
             continue
@@ -747,26 +733,18 @@ def messages_to_context_text(messages, max_messages=20, max_chars=6000):
         content = (m.get("content") or "").strip()
         if not content or role not in ("system", "user", "assistant"):
             continue
-
         tag = {"system": "SYSTEM", "user": "USER", "assistant": "ASSISTANT"}[role]
         cleaned.append(f"{tag}: {content}")
-
     text = "\n".join(cleaned).strip()
     if max_chars and len(text) > max_chars:
         text = text[-max_chars:]
     return text
 
 
-# -----------------------------
+# =========================
 # Retrieval + Answer
-# -----------------------------
+# =========================
 def answer_question(domain, question, top_k=R_TOP_K, chat_messages=None):
-    """
-    Returns:
-      final_answer: str
-      sources_out: list[{"label": int, "file": str|None, "page_start": int|None,
-                         "page_end": int|None, "snippet": str}]
-    """
     if domain not in domain_data:
         return f"Domain '{domain}' not available.", []
 
@@ -794,8 +772,7 @@ def answer_question(domain, question, top_k=R_TOP_K, chat_messages=None):
     if not scored:
         system_prompt = f"""
 Είσαι βοηθός με ειδίκευση στο πεδίο «{domain}».
-Δώσε μια σύντομη, υψηλού επιπέδου εξήγηση για το παρακάτω θέμα.
-Αν δεν σχετίζεται με το πεδίο ή δεν υπάρχουν στοιχεία, απάντησε: "Δεν ξέρω."
+Αν δεν υπάρχουν στοιχεία, απάντησε: "Δεν ξέρω."
 """
         prompt = f"{system_prompt}\n\nΕΡΩΤΗΣΗ: {question}\nΑΠΑΝΤΗΣΗ:"
         return query_model(prompt), []
@@ -805,13 +782,11 @@ def answer_question(domain, question, top_k=R_TOP_K, chat_messages=None):
         best_by_idx[idx] = max(sim, best_by_idx.get(idx, -1.0))
 
     ranked = sorted(best_by_idx.items(), key=lambda x: x[1], reverse=True)
-
     if MIN_SIM_THRESHOLD is not None:
         ranked = [(idx, sim) for idx, sim in ranked if sim >= MIN_SIM_THRESHOLD]
 
     ranked = ranked[:strict_top_k]
     selected_idxs = [idx for idx, _ in ranked]
-
     retrieved = [chunks[i] for i in selected_idxs]
     allowed_labels = [str(i + 1) for i in range(len(retrieved))]
     labels_hint = ", ".join(f"[{x}]" for x in allowed_labels)
@@ -829,56 +804,31 @@ def answer_question(domain, question, top_k=R_TOP_K, chat_messages=None):
             p_start = None
             p_end = None
             snippet = retrieved[n - 1][:240] + "…" if len(retrieved[n - 1]) > 240 else retrieved[n - 1]
-
         sources_out.append({"label": n, "file": file, "page_start": p_start, "page_end": p_end, "snippet": snippet})
 
-    if not sources_out:
-        ranked = sorted(best_by_idx.items(), key=lambda x: x[1], reverse=True)[:top_k]
-        selected_idxs = [idx for idx, _ in ranked]
-        retrieved = [chunks[i] for i in selected_idxs]
-        allowed_labels = [str(i + 1) for i in range(len(retrieved))]
-        labels_hint = ", ".join(f"[{x}]" for x in allowed_labels)
-        sources_out = []
-        for n, idx in enumerate(selected_idxs, start=1):
-            if meta and 0 <= idx < len(meta):
-                m = meta[idx]
-                file = m.get("file")
-                p_start = m.get("page_start")
-                p_end = m.get("page_end")
-                snippet = m.get("snippet") or (retrieved[n - 1][:240] + "…" if len(retrieved[n - 1]) > 240 else retrieved[n - 1])
-            else:
-                file = None
-                p_start = None
-                p_end = None
-                snippet = retrieved[n - 1][:240] + "…" if len(retrieved[n - 1]) > 240 else retrieved[n - 1]
-            sources_out.append({"label": n, "file": file, "page_start": p_start, "page_end": p_end, "snippet": snippet})
-
-    # -------- Pass 1: QUOTES (extractive, deterministic) --------
     extracted = auto_extract_quotes(question, retrieved, max_quotes=4)
     if not extracted:
         return ("Δεν ξέρω.", []) if STRICT_MODE else ("Δεν ξέρω.", [])
 
     quotes = "\n".join([f'- "{q}" [{lab}]' for (q, lab) in extracted])
 
-    # -------- Pass 2: FINAL ANSWER --------
     if EXTRACTIVE_ONLY:
         lines = [ln.strip() for ln in quotes.splitlines() if ln.strip().startswith("- ")]
         final_answer = "Συνοπτικά:\n" + "\n".join(lines[:4]) if lines else "Δεν ξέρω."
     else:
         answer_system = f"""
 Συντάκτης απαντήσεων, αυστηρά βασισμένων στα αποσπάσματα.
-Σύνθεση ΜΟΝΟ από τα ΠΑΡΑΠΑΝΩ QUOTES, χωρίς νέα γνώση.
 
 Κανόνες (αυστηρά):
-- Απάντησε ΜΟΝΟ στην τρέχουσα ΕΡΩΤΗΣΗ. Αγνόησε παλιότερα θέματα.
+- Απάντησε ΜΟΝΟ στην τρέχουσα ΕΡΩΤΗΣΗ.
 - Η ΣΥΝΟΜΙΛΙΑ χρησιμοποιείται ΜΟΝΟ για συμφραζόμενα (coreference), όχι ως πηγή facts.
-- Μήκος: 1–2 προτάσεις το πολύ. Χωρίς εισαγωγές/περιττά.
-- Κάθε πρόταση/κουκκίδα με ισχυρισμό τελειώνει με έγκυρη ετικέτα από: {labels_hint}.
+- Μήκος: 1–2 προτάσεις το πολύ.
+- Κάθε πρόταση με ισχυρισμό τελειώνει με έγκυρη ετικέτα από: {labels_hint}.
 - Μην εικάζεις. Αν τα QUOTES δεν αρκούν: "Δεν ξέρω.".
 """
         final_prompt = f"""{answer_system}
 
-ΣΥΝΟΜΙΛΙΑ (για συμφραζόμενα):
+ΣΥΝΟΜΙΛΙΑ:
 {chat_context if chat_context else "(καμία προηγούμενη συνομιλία)"}
 
 ΕΡΩΤΗΣΗ:
@@ -888,16 +838,14 @@ QUOTES:
 {quotes}
 
 ΤΕΛΙΚΗ ΑΠΑΝΤΗΣΗ:"""
-try:
-        final_answer = query_model(final_prompt).strip()
-except Exception as e:
-        print("⚠️ vLLM call failed; returning extractive answer:", e)
-        lines_ = [ln.strip() for ln in quotes.splitlines() if ln.strip().startswith("- ")]
-        final_answer = "Συνοπτικά:\n" + "\n".join(lines_[:4]) if lines_ else "Δεν ξέρω."
-
+        try:
+            final_answer = query_model(final_prompt).strip()
+        except Exception as e:
+            print("⚠️ vLLM call failed; returning extractive answer:", e)
+            lines_ = [ln.strip() for ln in quotes.splitlines() if ln.strip().startswith("- ")]
+            final_answer = "Συνοπτικά:\n" + "\n".join(lines_[:4]) if lines_ else "Δεν ξέρω."
 
     final_answer = ensure_citations_from_quotes(final_answer, quotes, allowed_labels)
-
     if STRICT_MODE and not re.search(r"\[\d+\]", final_answer):
         final_answer = "Δεν ξέρω."
 
@@ -912,65 +860,31 @@ except Exception as e:
     return final_answer, filtered_sources
 
 
-# -----------------------------
-# File serving (PDFs only)
-# -----------------------------
+# =========================
+# Domain folder resolving for nested folders
+# =========================
+def _resolve_domain_folder(domain: str) -> str | None:
+    if domain in domain_folders:
+        return domain_folders[domain]
+    d2 = next((k for k in domain_folders.keys() if k.lower() == (domain or "").lower()), None)
+    if d2:
+        return domain_folders[d2]
+    return None
+
+
 @app.route("/files/<domain>/<path:filename>", methods=["GET"])
 def serve_file(domain, filename):
     if not filename.lower().endswith(".pdf"):
         abort(403)
-    domain_path = os.path.join(BASE_FOLDER, domain)
-    if not os.path.isdir(domain_path):
+    folder = _resolve_domain_folder(domain)
+    if not folder or not os.path.isdir(folder):
         abort(404)
-    safe_path = safe_join(domain_path, filename)
+    safe_path = safe_join(folder, filename)
     if not safe_path or not os.path.isfile(safe_path):
         abort(404)
-    return send_from_directory(domain_path, filename, as_attachment=False)
+    return send_from_directory(folder, filename, as_attachment=False)
 
 
-# -----------------------------
-# Flask endpoints
-# -----------------------------
-def require_api_key():
-    key = request.headers.get("x-api-key")
-    if not API_KEY or API_KEY == "changeme":
-        print("⚠️ WARNING: API_KEY is default. Set API_KEY env var before public exposure!")
-    elif key != API_KEY:
-        abort(401, description="Unauthorized")
-
-
-@app.route("/health", methods=["GET"])
-def health():
-    return jsonify({
-        "status": "ok",
-        "model": MODEL_NAME,
-        "domains": list(domain_data.keys()),
-        "embedding_device": EMBEDDING_DEVICE,
-        "chunk_tokens": CHUNK_TOKENS,
-        "chunk_overlap": CHUNK_OVERLAP,
-        "embed_batch_size": EMBED_BATCH_SIZE,
-        "parse_workers": PARSE_WORKERS,
-        "cache_dir": INDEX_CACHE_DIR,
-        "cache_admin_enabled": bool(CACHE_ADMIN_KEY)
-    })
-
-
-@app.route("/ask", methods=["POST"])
-def ask():
-    require_api_key()
-    data = request.get_json(force=True)
-    question = (data.get("question") or "").strip()
-    domain_in = data.get("domain", "default")
-    chat_messages = data.get("messages") or []
-    matched_domain = next((d for d in domain_data.keys() if d.lower() == domain_in.lower()), domain_in)
-    print(f"Question for domain [{matched_domain}]: {question}")
-    answer, sources = answer_question(matched_domain, question, chat_messages=chat_messages)
-    return jsonify({"answer": answer, "sources": sources})
-
-
-# -----------------------------
-# DOWNLOAD PDF PAGES (excerpt)
-# -----------------------------
 @app.route("/files/clip", methods=["GET"])
 def serve_pdf_clip():
     domain = request.args.get("domain")
@@ -980,15 +894,14 @@ def serve_pdf_clip():
 
     if not (domain and filename and page_from):
         abort(400, description="Missing domain/file/from")
-
     if not filename.lower().endswith(".pdf"):
         abort(403)
 
-    domain_path = os.path.join(BASE_FOLDER, domain)
-    if not os.path.isdir(domain_path):
+    folder = _resolve_domain_folder(domain)
+    if not folder or not os.path.isdir(folder):
         abort(404)
 
-    safe_path = safe_join(domain_path, filename)
+    safe_path = safe_join(folder, filename)
     if not safe_path or not os.path.isfile(safe_path):
         abort(404)
 
@@ -1014,28 +927,59 @@ def serve_pdf_clip():
         print("Clip error:", e)
         abort(500, description="Failed to clip PDF")
 
-    out_name = f"{os.path.splitext(filename)[0]}_p{start}-p{end}.pdf"
+    out_name = f"{os.path.splitext(os.path.basename(filename))[0]}_p{start}-p{end}.pdf"
     return send_file(buf, mimetype="application/pdf", as_attachment=True, download_name=out_name)
 
 
+# =========================
+# Health + Ask (scope)
+# =========================
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "ok",
+        "model": MODEL_NAME,
+        "embedding_device": EMBEDDING_DEVICE,
+        "domains_count": len(domain_data),
+        "domains": list(domain_data.keys())[:200],  # avoid huge payload
+        "year_domains": [d for d, v in domain_data.items() if v.get("kind") == "year"],
+        "courses_root": COURSES_ROOT,
+    })
 
 
-# -----------------------------
-# Cache admin endpoints
-# -----------------------------
+@app.route("/ask", methods=["POST"])
+def ask():
+    require_api_key()
+    data = request.get_json(force=True) or {}
+
+    question = (data.get("question") or "").strip()
+    domain_in = (data.get("domain") or "").strip()
+    scope = (data.get("scope") or "lesson").strip().lower()  # lesson | year
+    chat_messages = data.get("messages") or []
+
+    if not question:
+        return jsonify({"answer": "Δεν δόθηκε ερώτηση.", "sources": []})
+
+    # match domain case-insensitively
+    matched_domain = next((d for d in domain_data.keys() if d.lower() == domain_in.lower()), domain_in)
+
+    # ✅ scope escalation
+    if scope == "year":
+        yd = lesson_to_year.get(matched_domain)
+        if yd and yd in domain_data:
+            matched_domain = yd
+
+    print(f"Question for domain [{matched_domain}] (scope={scope}): {question}")
+    answer, sources = answer_question(matched_domain, question, chat_messages=chat_messages)
+
+    return jsonify({"answer": answer, "sources": sources, "resolvedDomain": matched_domain})
+
+
+# =========================
+# Cache admin (optional)
+# =========================
 @app.route("/cache/clear", methods=["POST"])
 def cache_clear():
-    """
-    Clear cached embeddings/chunks.
-
-    Body JSON:
-      { "domain": "name" }  -> clears only that domain
-      { "domain": null }    -> clears all cache
-      { "reload": true }    -> rebuilds index(es) after clearing (optional)
-
-    Auth:
-      header: x-cache-admin-key must equal CACHE_ADMIN_KEY (and CACHE_ADMIN_KEY must be set)
-    """
     _require_cache_admin()
     data = request.get_json(force=True, silent=True) or {}
     domain = data.get("domain")
@@ -1044,64 +988,60 @@ def cache_clear():
     summary = clear_cache(domain if isinstance(domain, str) and domain.strip() else None)
 
     if reload_after:
-        if domain and isinstance(domain, str) and domain.strip():
-            # also drop in-memory domain first
-            domain_data.pop(domain, None)
-            reload_domain(domain)
-            summary["reloaded"] = [domain]
-        else:
-            domain_data.clear()
-            load_domains()
-            summary["reloaded"] = list(domain_data.keys())
+        load_domains()
+        summary["reloaded"] = True
     else:
-        summary["reloaded"] = []
+        summary["reloaded"] = False
 
     return jsonify(summary)
 
 
-@app.route("/cache/reload", methods=["POST"])
-def cache_reload():
-    """
-    Rebuild index(es) without clearing cache.
+def clear_cache(domain: str | None = None) -> dict:
+    removed_files = 0
+    removed_bytes = 0
+    removed_domains = 0
 
-    Body JSON:
-      { "domain": "name" }  -> rebuild only that domain
-      { "domain": null }    -> rebuild all domains
+    targets = []
+    if domain:
+        targets = [os.path.join(INDEX_CACHE_DIR, domain)]
+    else:
+        targets = [os.path.join(INDEX_CACHE_DIR, d) for d in os.listdir(INDEX_CACHE_DIR)]
 
-    Auth:
-      header: x-cache-admin-key must equal CACHE_ADMIN_KEY (and CACHE_ADMIN_KEY must be set)
-    """
-    _require_cache_admin()
-    data = request.get_json(force=True, silent=True) or {}
-    domain = data.get("domain")
+    for t in targets:
+        if not os.path.isdir(t):
+            continue
+        removed_domains += 1
+        for root, _, files in os.walk(t):
+            for fn in files:
+                fp = os.path.join(root, fn)
+                try:
+                    st = os.stat(fp)
+                    removed_bytes += int(st.st_size)
+                    os.remove(fp)
+                    removed_files += 1
+                except Exception:
+                    pass
+        try:
+            shutil.rmtree(t, ignore_errors=True)
+        except Exception:
+            pass
 
-    if domain and isinstance(domain, str) and domain.strip():
-        domain_data.pop(domain, None)
-        reload_domain(domain)
-        return jsonify({"reloaded": [domain]})
-
-    domain_data.clear()
-    load_domains()
-    return jsonify({"reloaded": list(domain_data.keys())})
-
-
-def load_domains():
-    if not os.path.isdir(BASE_FOLDER):
-        print(f"⚠️ BASE_FOLDER not found: {BASE_FOLDER}")
-        return
-    found_any = False
-    for domain in os.listdir(BASE_FOLDER):
-        folder = os.path.join(BASE_FOLDER, domain)
-        if os.path.isdir(folder):
-            build_domain_index(domain, folder)
-            found_any = True
-    if not found_any:
-        print(f"⚠️ No domain subfolders found in {BASE_FOLDER}. Create e.g.:")
-        print(os.path.join(BASE_FOLDER, "cybersecurity"))
-        print(os.path.join(BASE_FOLDER, "digitalMarketing"))
+    os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
+    return {
+        "domain": domain or "*",
+        "removed_domains": removed_domains,
+        "removed_files": removed_files,
+        "removed_bytes": removed_bytes,
+    }
 
 
+# =========================
+# Boot
+# =========================
+print("🔄 Loading domains...")
 load_domains()
+print(f"✅ Ready. Loaded {len(domain_data)} domains (including YEAR aggregates).")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.getenv("PORT", "5000"))
+    app.run(host="0.0.0.0", port=port)
