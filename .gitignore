@@ -1,5 +1,6 @@
 node_modules/
 domains/*
 psycho/*
+Courses/*
 .index_cache/
 !domains/.gitkeep
