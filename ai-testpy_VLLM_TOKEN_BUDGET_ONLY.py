@@ -57,7 +57,7 @@ COURSES_ROOT = os.getenv("COURSES_ROOT", "Courses")
 
 # vLLM config
 VLLM_URL = os.getenv("VLLM_URL", "http://localhost:8000/v1/chat/completions")
-VLLM_MODEL = os.getenv("VLLM_MODEL", "llama3")
+VLLM_MODEL = os.getenv("VLLM_MODEL", "llama3.1:8b")
 VLLM_TIMEOUT = int(os.getenv("VLLM_TIMEOUT", "120"))
 
 MODEL_NAME = os.getenv("MODEL_NAME", "vLLM-chat")
