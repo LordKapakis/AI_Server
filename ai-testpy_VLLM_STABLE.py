@@ -73,7 +73,7 @@ VLLM_MODEL = os.getenv("VLLM_MODEL", "llama3.1:8b")
 # Example: meta-llama/Meta-Llama-3.1-8B-Instruct
 VLLM_SERVED_MODEL_ID = os.getenv("VLLM_SERVED_MODEL_ID", "").strip() or None
 
-MODEL_NAME = os.getenv("MODEL_NAME", "llama3.1:8b")
+MODEL_NAME = os.getenv("MODEL_NAME", "meta-llama/Meta-Llama-3.1-8B-Instruct")
 
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
 TOP_P = float(os.getenv("TOP_P", "0.9"))
