@@ -56,7 +56,7 @@ API_KEY = os.getenv("API_KEY", "changeme")
 COURSES_ROOT = os.getenv("COURSES_ROOT", "Courses")
 
 # vLLM config
-VLLM_URL = os.getenv("VLLM_URL", "http://localhost:8000/v1/chat/completions")
+VLLM_URL = os.getenv("VLLM_URL", "http://127.0.0.1:8000/v1/chat/completions")
 VLLM_MODEL = os.getenv("VLLM_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct")
 VLLM_TIMEOUT = int(os.getenv("VLLM_TIMEOUT", "120"))
 
@@ -645,7 +645,8 @@ def query_model(prompt: str) -> str:
         "max_tokens": int(max_completion),
         "stream": False,
     }
-    resp = requests.post(VLLM_URL, json=payload, timeout=VLLM_TIMEOUT)
+    headers = {"Connection": "close"}
+    resp = requests.post(VLLM_URL, json=payload, headers=headers, timeout=(5, VLLM_TIMEOUT))
     resp.raise_for_status()
     data = resp.json()
     return (data.get("choices", [{}])[0].get("message", {}).get("content") or "").strip()
