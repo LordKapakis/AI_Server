@@ -348,20 +348,28 @@ def build_domain_index(domain: str, folder: str):
 
         if cached is not None:
             data, emb = cached
-            chunks = data["chunks"]
-            metas = data["meta"]
-            print(f"  ↪ reused cache for {f}: {len(chunks)} chunks")
-            all_chunks.extend(chunks)
-            all_metas.extend(metas)
-            all_embeddings_parts.append(emb)
+            chunks = data.get("chunks") or []
+            metas = data.get("meta") or []
+
+            if chunks and metas and emb is not None and len(chunks) == emb.shape[0]:
+                print(f"  ↪ reused cache for {f}: {len(chunks)} chunks")
+                all_chunks.extend(chunks)
+                all_metas.extend(metas)
+                all_embeddings_parts.append(emb.astype(np.float32))
+            else:
+                # cache is corrupt or empty, re-index this file
+                misses.append(f)
         else:
-            misses.append((f, path, None, None))
+            misses.append(f)
 
     parsed = []
     if misses:
         print(f"  ↪ indexing {len(misses)} files (no cache)")
-        for f, path, _, _ in misses:
-            fname, path, chunks, metas = parse_file_to_chunks(f, folder)
+        for f in misses:
+            result = parse_file_to_chunks(f, folder)
+            if not result:
+                continue
+            path, chunks, metas = result
             if chunks and metas:
                 parsed.append((path, chunks, metas))
 
@@ -374,37 +382,30 @@ def build_domain_index(domain: str, folder: str):
                 start = cursor
                 flat_chunks.extend(chunks)
                 cursor += len(chunks)
-                boundaries.append(
-                    (
-                        path,
-                        start,
-                        cursor,
-                        metas,
-                    )
-                )
+                boundaries.append((path, start, cursor, metas))
 
             emb = embed_texts(flat_chunks)
-            for path, start, end, metas in boundaries:
-                chunks_slice = flat_chunks[start:end]
-                emb_slice = emb[start:end]
-                all_chunks.extend(chunks_slice)
-                all_metas.extend(metas)
-                all_embeddings_parts.append(emb_slice)
-                # store to cache
-                rel = os.path.relpath(path, folder)
-                fname = os.path.basename(path)
+
+            for (path, start, end, metas) in boundaries:
+                file_chunks = flat_chunks[start:end]
+                file_emb = emb[start:end]
+
+                # save per-file cache
                 save_cached_file(
                     domain,
                     path,
                     CHUNK_TOKENS,
                     CHUNK_OVERLAP,
-                    {"chunks": chunks_slice, "meta": metas},
-                    emb_slice,
+                    {"chunks": file_chunks, "meta": metas},
+                    file_emb,
                 )
-                print(f"  ↪ indexed {fname}: {len(chunks_slice)} chunks")
+
+                all_chunks.extend(file_chunks)
+                all_metas.extend(metas)
+                all_embeddings_parts.append(file_emb.astype(np.float32))
 
     if all_embeddings_parts:
-        embeddings = np.vstack(all_embeddings_parts)
+        embeddings = np.vstack(all_embeddings_parts).astype(np.float32)
         dim = embeddings.shape[1]
         index = faiss.IndexFlatIP(dim)
         index.add(embeddings)
@@ -425,6 +426,7 @@ def build_domain_index(domain: str, folder: str):
 
     dt = time.time() - t0
     print(f"✅ Indexed {len(all_chunks)} chunks for '{domain}' in {dt:.2f}s.")
+
 
 
 def discover_domain_folders():
