@@ -1,4 +1,4 @@
-# ai-testpy_VLLM.py
+# ai-testpy_VLLM_TEACHER_ANS.py
 # Stable server with:
 # - legacy flat domains supported
 # - nested Courses/<Course>/YEAR_X/SEM_Y/<Lesson> supported
@@ -30,27 +30,29 @@ except Exception:
     docx = None
 
 try:
-    import pptx
+    from pptx import Presentation
 except Exception:
-    pptx = None
+    Presentation = None
 
 try:
     import torch
 except Exception:
     torch = None
 
+
 app = Flask(__name__)
 CORS(app)
 
-# ============
-# Config
-# ============
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# === Core Config (keep compatible) ===
+DEFAULT_BASE = os.path.join(SCRIPT_DIR, "domains")
+BASE_FOLDER = os.getenv("BASE_FOLDER", DEFAULT_BASE)
+os.makedirs(BASE_FOLDER, exist_ok=True)
+
 API_KEY = os.getenv("API_KEY", "").strip()
 if not API_KEY:
     print("WARNING: API_KEY is empty. Set it via env for production use.")
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-BASE_FOLDER = os.getenv("BASE_FOLDER", os.path.join(SCRIPT_DIR, "domains"))
 
 VLLM_URL = os.getenv("VLLM_URL", "http://127.0.0.1:8000/v1/chat/completions")
 VLLM_MODEL = os.getenv("VLLM_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct")
@@ -210,10 +212,10 @@ def safe_read_docx_text(path):
 
 
 def safe_read_pptx_text(path):
-    if pptx is None:
+    if Presentation is None:
         return ""
     try:
-        pres = pptx.Presentation(path)
+        pres = Presentation(path)
         texts = []
         for slide in pres.slides:
             for shape in slide.shapes:
@@ -294,70 +296,115 @@ def save_cached_file(domain_id: str, fpath: str, chunk_tokens: int, overlap_toke
         print(f"Failed to save cached file index for {fpath}: {e}")
 
 
-def build_domain_index(domain_id: str, folder: str, kind: str = "lesson", children=None):
+def parse_file_to_chunks(fname: str, folder: str):
     """
-    Build a FAISS index for a domain (folder).
-    Reuses per-file caches stored under INDEX_CACHE_DIR.
+    Parse a single file into chunks and metadata.
     """
+    path = os.path.join(folder, fname)
+    text = read_file_text(path)
+    text = normalize_text(text)
+    if not text:
+        return None, None, None
+
+    words = text.split()
+    if len(words) < MIN_WORDS_TO_INDEX:
+        return None, None, None
+
+    w_chunks = sliding_word_chunks(words, CHUNK_TOKENS, CHUNK_OVERLAP)
+    chunks = []
+    metas = []
+
+    for ch in w_chunks:
+        chunks.append(ch)
+        metas.append(
+            {
+                "file": fname,
+                "rel": os.path.relpath(path, folder),
+                "path": path,
+                "page": None,
+            }
+        )
+
+    return path, chunks, metas
+
+
+def build_domain_index(domain: str, folder: str):
     t0 = time.time()
-    children = children or []
-    print(f"Indexing domain '{domain_id}' (kind={kind}) from folder: {folder}")
+
+    files = [f for f in os.listdir(folder) if f.lower().endswith(SUPPORTED_EXTS)]
+    files.sort()
+    if not files:
+        print(f"⚠️ No usable files for '{domain}' in {folder}")
+        return
+
     all_chunks = []
-    all_meta = []
-    all_embs = []
+    all_metas = []
+    all_embeddings_parts = []
 
-    for root, dirs, files in os.walk(folder):
-        for fname in files:
-            lower = fname.lower()
-            if not lower.endswith(SUPPORTED_EXTS):
-                continue
-            fpath = os.path.join(root, fname)
-            text = read_file_text(fpath)
-            text = normalize_text(text)
-            if not text:
-                continue
-            words = text.split()
-            if len(words) < MIN_WORDS_TO_INDEX:
-                continue
+    misses = []
+    for f in files:
+        path = os.path.join(folder, f)
+        cached = load_cached_file(domain, path, CHUNK_TOKENS, CHUNK_OVERLAP)
 
-            cached = load_cached_file(domain_id, fpath, CHUNK_TOKENS, CHUNK_OVERLAP)
-            if cached is not None:
-                data, emb = cached
-                chunks = data["chunks"]
-                meta_list = data["meta"]
-                print(f"  ↪ reused cache for {fname}: {len(chunks)} chunks")
-            else:
-                # fresh chunking
-                w_chunks = sliding_word_chunks(words, CHUNK_TOKENS, CHUNK_OVERLAP)
-                chunks = []
-                meta_list = []
-                for ch in w_chunks:
-                    chunks.append(ch)
-                    meta_list.append(
-                        {
-                            "file": fname,
-                            "rel": os.path.relpath(fpath, folder),
-                            "path": fpath,
-                            "page": None,
-                        }
+        if cached is not None:
+            data, emb = cached
+            chunks = data["chunks"]
+            metas = data["meta"]
+            print(f"  ↪ reused cache for {f}: {len(chunks)} chunks")
+            all_chunks.extend(chunks)
+            all_metas.extend(metas)
+            all_embeddings_parts.append(emb)
+        else:
+            misses.append((f, path, None, None))
+
+    parsed = []
+    if misses:
+        print(f"  ↪ indexing {len(misses)} files (no cache)")
+        for f, path, _, _ in misses:
+            fname, path, chunks, metas = parse_file_to_chunks(f, folder)
+            if chunks and metas:
+                parsed.append((path, chunks, metas))
+
+        if parsed:
+            flat_chunks = []
+            boundaries = []
+            cursor = 0
+
+            for path, chunks, metas in parsed:
+                start = cursor
+                flat_chunks.extend(chunks)
+                cursor += len(chunks)
+                boundaries.append(
+                    (
+                        path,
+                        start,
+                        cursor,
+                        metas,
                     )
-                emb = embed_texts(chunks)
+                )
+
+            emb = embed_texts(flat_chunks)
+            for path, start, end, metas in boundaries:
+                chunks_slice = flat_chunks[start:end]
+                emb_slice = emb[start:end]
+                all_chunks.extend(chunks_slice)
+                all_metas.extend(metas)
+                all_embeddings_parts.append(emb_slice)
+                # store to cache
+                rel = os.path.relpath(path, folder)
+                fname = os.path.basename(path)
                 save_cached_file(
-                    domain_id,
-                    fpath,
+                    domain,
+                    path,
                     CHUNK_TOKENS,
                     CHUNK_OVERLAP,
-                    {"chunks": chunks, "meta": meta_list},
-                    emb,
+                    {"chunks": chunks_slice, "meta": metas},
+                    emb_slice,
                 )
-                print(f"  ↪ indexed {fname}: {len(chunks)} chunks")
+                print(f"  ↪ indexed {fname}: {len(chunks_slice)} chunks")
 
-            all_chunks.extend(chunks)
-            all_meta.extend(meta_list)
-            all_embs.append(emb)
-
-    if all_embs:
-        embeddings = np.vstack(all_embs)
+    if all_embeddings_parts:
+        embeddings = np.vstack(all_embeddings_parts)
         dim = embeddings.shape[1]
         index = faiss.IndexFlatIP(dim)
         index.add(embeddings)
@@ -365,142 +412,163 @@ def build_domain_index(domain_id: str, folder: str, kind: str = "lesson", childr
         embeddings = np.zeros((0, 384), dtype=np.float32)
         index = faiss.IndexFlatIP(384)
 
-    domain_data[domain_id] = {
+    domain_data[domain] = {
         "chunks": all_chunks,
+        "meta": all_metas,
         "embeddings": embeddings,
         "index": index,
-        "meta": all_meta,
         "folder": folder,
-        "kind": kind,
-        "children": children,
+        "kind": "lesson",
+        "children": [],
     }
-    domain_folders[domain_id] = folder
+    domain_folders[domain] = folder
 
     dt = time.time() - t0
-    print(
-        f"✅ Indexed {len(all_chunks)} chunks for '{domain_id}' "
-        f"(kind={kind}, children={len(children)}) in {dt:.2f}s."
-    )
-    return domain_data[domain_id]
+    print(f"✅ Indexed {len(all_chunks)} chunks for '{domain}' in {dt:.2f}s.")
 
 
-def ensure_domain_index(domain_id: str, folder: str, kind: str = "lesson", children=None):
-    if domain_id in domain_data and domain_data[domain_id].get("index") is not None:
-        return domain_data[domain_id]
-    children = children or []
-    return build_domain_index(domain_id, folder, kind, children)
-
-
-def discover_flat_domains():
+def discover_domain_folders():
     """
-    Legacy flat domains: BASE_FOLDER/<domainId> with PDFs, etc.
+    Discover both:
+    - flat domains: BASE_FOLDER/<domainId>
+    - nested courses: BASE_FOLDER/Courses/<Course>/YEAR_X/SEM_Y/<Lesson>
     """
-    if not os.path.isdir(BASE_FOLDER):
-        return
+    discovered = []
+
+    # 1) flat domains
     for name in os.listdir(BASE_FOLDER):
         if name == "Courses":
             continue
         path = os.path.join(BASE_FOLDER, name)
         if os.path.isdir(path):
-            domain_folders[name] = path
-            print(f"Discovered flat domain: {name} -> {path}")
+            discovered.append((name, path, name))
 
-
-def slugify_course_name(name):
-    # used for YEAR__<CourseName>__YEAR_X
-    return name.replace(" ", "_")
-
-
-def discover_courses_hierarchy():
-    """
-    Discover nested Courses/<Course>/YEAR_X/SEM_Y/<Lesson>.
-    For each leaf lesson, register a domain id:
-      Courses__<Course>__YEAR_X__SEM_Y__<Lesson>
-    Also build a year aggregate domain:
-      YEAR__<Course>__YEAR_X
-    """
+    # 2) nested courses
     courses_root = os.path.join(BASE_FOLDER, "Courses")
-    if not os.path.isdir(courses_root):
-        print(f"No Courses root at {courses_root}")
-        return
-
-    for course_name in os.listdir(courses_root):
-        course_path = os.path.join(courses_root, course_name)
-        if not os.path.isdir(course_path):
-            continue
-
-        for year_name in os.listdir(course_path):
-            if not re.match(r"YEAR_\d+", year_name, re.IGNORECASE):
-                continue
-            year_path = os.path.join(course_path, year_name)
-            if not os.path.isdir(year_path):
+    if os.path.isdir(courses_root):
+        for course_name in os.listdir(courses_root):
+            course_path = os.path.join(courses_root, course_name)
+            if not os.path.isdir(course_path):
                 continue
 
-            course_slug = slugify_course_name(course_name)
-            year_dom = f"YEAR__{course_slug}__{year_name}"
-
-            lesson_domains = []
-
-            for sem_name in os.listdir(year_path):
-                sem_path = os.path.join(year_path, sem_name)
-                if not os.path.isdir(sem_path):
+            for year_name in os.listdir(course_path):
+                if not re.match(r"YEAR_\d+", year_name, re.IGNORECASE):
+                    continue
+                year_path = os.path.join(course_path, year_name)
+                if not os.path.isdir(year_path):
                     continue
 
-                for lesson_name in os.listdir(sem_path):
-                    lesson_path = os.path.join(sem_path, lesson_name)
-                    if not os.path.isdir(lesson_path):
+                for sem_name in os.listdir(year_path):
+                    sem_path = os.path.join(year_path, sem_name)
+                    if not os.path.isdir(sem_path):
                         continue
 
-                    lesson_dom = f"Courses__{course_name}__{year_name}__{sem_name}__{lesson_name}"
-                    domain_folders[lesson_dom] = lesson_path
-                    lesson_domains.append(lesson_dom)
-                    lesson_to_year[lesson_dom] = year_dom
+                    for lesson_name in os.listdir(sem_path):
+                        lesson_path = os.path.join(sem_path, lesson_name)
+                        if not os.path.isdir(lesson_path):
+                            continue
 
-                    print(f"Discovered lesson domain: {lesson_dom} -> {lesson_path}")
+                        domain_id = f"Courses__{course_name}__{year_name}__{sem_name}__{lesson_name}"
+                        discovered.append((domain_id, lesson_path, os.path.relpath(lesson_path, BASE_FOLDER)))
 
-            if lesson_domains:
-                domain_folders[year_dom] = year_path
-                domain_data[year_dom] = {
-                    "folder": year_path,
-                    "kind": "year",
-                    "children": lesson_domains,
-                    "chunks": [],
-                    "embeddings": np.zeros((0, 384), dtype=np.float32),
-                    "index": faiss.IndexFlatIP(384),
-                    "meta": [],
-                }
-                print(
-                    f"Registered year aggregate domain: {year_dom} -> {year_path}, "
-                    f"children={len(lesson_domains)}"
-                )
-
-                alias_key = f"Courses__{course_name}__{year_name}"
-                alias_key = alias_key.replace(" ", "_")
-                year_alias_to_year[alias_key] = year_dom
-                print(f"Alias registered: {alias_key} -> {year_dom}")
+    return discovered
 
 
-def init_domains():
-    discover_flat_domains()
-    discover_courses_hierarchy()
+def build_year_aggregates():
+    """
+    Build YEAR__ indices from existing lesson domains.
+    """
+    lesson_to_year.clear()
+    year_alias_to_year.clear()
+
+    # group lessons by (course, year)
+    grouped = {}  # (course, year) -> [domain_id]
+    for domain_id in list(domain_data.keys()):
+        if not domain_id.startswith("Courses__"):
+            continue
+        parts = domain_id.split("__")
+        if len(parts) < 4:
+            continue
+        _, course_name, year_name, sem_name, *rest = parts
+        key = (course_name, year_name)
+        grouped.setdefault(key, []).append(domain_id)
+
+    for (course_name, year_name), children in grouped.items():
+        course_slug = course_name.replace(" ", "_")
+        year_domain = f"YEAR__{course_slug}__{year_name}"
+
+        # map lessons -> year
+        for lesson_domain in children:
+            lesson_to_year[lesson_domain] = year_domain
+
+        # alias: Courses__Course__YEAR_X -> YEAR__Course__YEAR_X
+        alias_key = f"Courses__{course_name}__{year_name}".replace(" ", "_")
+        year_alias_to_year[alias_key] = year_domain
+
+        # build aggregated index
+        chunks_all = []
+        meta_all = []
+        embeddings_all = []
+
+        for child in children:
+            info = domain_data.get(child)
+            if not info:
+                continue
+            if info["embeddings"].shape[0] == 0:
+                continue
+            childs_chunks = info["chunks"]
+            childs_meta = info["meta"]
+            childs_emb = info["embeddings"]
+            chunks_all.extend(childs_chunks)
+            meta_all.extend(childs_meta)
+            embeddings_all.append(childs_emb)
+
+        if not embeddings_all:
+            continue
+
+        embeddings = np.vstack(embeddings_all)
+        dim = embeddings.shape[1]
+        index = faiss.IndexFlatIP(dim)
+        index.add(embeddings)
+
+        domain_data[year_domain] = {
+            "chunks": chunks_all,
+            "meta": meta_all,
+            "embeddings": embeddings,
+            "index": index,
+            "folder": None,
+            "kind": "year",
+            "children": children,
+        }
+
+        print(f"🧩 YEAR index '{year_domain}' built from {len(children)} lesson domains.")
 
 
-init_domains()
+def load_domains():
+    domain_data.clear()
+    domain_folders.clear()
+    lesson_to_year.clear()
+    year_alias_to_year.clear()
+
+    discovered = discover_domain_folders()
+
+    for domain_id, folder, rel in discovered:
+        build_domain_index(domain_id, folder)
+
+    build_year_aggregates()
 
 
+# =========================
+# Retrieval
+# =========================
 def retrieve_chunks(domain_id: str, query: str, top_k: int = R_TOP_K, alt_queries=None):
     """
     Retrieve top_k chunks for a query (and optional alternate queries) from domain.
     Returns: list of (chunk_text, score, meta)
     """
-    if domain_id not in domain_folders:
-        raise ValueError(f"Unknown domain: {domain_id}")
     info = domain_data.get(domain_id)
     if not info or "index" not in info:
-        folder = domain_folders[domain_id]
-        kind = info.get("kind", "lesson") if info else "lesson"
-        children = info.get("children") if info else None
-        info = ensure_domain_index(domain_id, folder, kind, children)
+        raise ValueError(f"Unknown or unindexed domain: {domain_id}")
 
     index = info["index"]
     embeddings = info["embeddings"]
@@ -540,7 +608,7 @@ def auto_extract_quotes(chunks):
     """
     lines = []
     for ch, _, _ in chunks:
-        for ln in ch.split(". "):
+        for ln in re.split(r"[.?!]\s+", ch):
             ln = ln.strip()
             if not ln:
                 continue
@@ -605,11 +673,32 @@ def build_prompt_from_chunks(question, retrieved, chat_messages=None):
     return full_prompt, sources
 
 
+# =========================
+# LLM
+# =========================
+def _approx_token_count(text: str) -> int:
+    if not text:
+        return 0
+    return max(1, int(len(text) / 4))
+
+
+def _truncate_text_to_token_budget(text: str, max_tokens: int) -> str:
+    """
+    Crude truncation: cut by characters based on 4 chars/token heuristic.
+    """
+    approx_tokens = _approx_token_count(text)
+    if approx_tokens <= max_tokens:
+        return text
+    ratio = max_tokens / float(approx_tokens)
+    n_chars = int(len(text) * ratio)
+    return text[:n_chars]
+
+
 def query_model(prompt: str) -> str:
     """
     Call vLLM chat endpoint with token budgeting.
     """
-    est_prompt_tokens = max(1, int(len(prompt) / 4))
+    est_prompt_tokens = _approx_token_count(prompt)
     max_context = VLLM_MAX_CONTEXT
     safety = VLLM_SAFETY_MARGIN
 
@@ -617,11 +706,14 @@ def query_model(prompt: str) -> str:
     avail_for_completion = max(avail_for_completion, VLLM_MIN_COMPLETION)
     avail_for_completion = min(avail_for_completion, VLLM_MAX_COMPLETION_CAP)
 
+    # Make sure prompt is within context budget
+    prompt_trimmed = _truncate_text_to_token_budget(prompt, max_context - safety - avail_for_completion)
+
     payload = {
         "model": VLLM_MODEL,
         "messages": [
             {"role": "system", "content": "You are a helpful AI tutor that answers in Greek."},
-            {"role": "user", "content": prompt},
+            {"role": "user", "content": prompt_trimmed},
         ],
         "temperature": TEMPERATURE,
         "top_p": TOP_P,
@@ -682,7 +774,10 @@ def answer_question(domain_id: str, question: str, chat_messages=None):
         lines_ = [ln.strip() for ln in quotes.splitlines() if ln.strip().startswith("- ")]
         final_answer = "Συνοπτικά:\n" + "\n".join(lines_[:4]) if lines_ else "Δεν ξέρω."
 
-    return final_answer, sources
+    # Optionally, you might want to filter sources here (unchanged from original)
+    filtered_sources = sources
+
+    return final_answer, filtered_sources
 
 
 def _require_cache_admin():
@@ -693,6 +788,9 @@ def _require_cache_admin():
         abort(403, description="Invalid cache admin key")
 
 
+# =========================
+# Domain folder resolving
+# =========================
 def _resolve_domain_folder(domain: str):
     if domain in domain_folders:
         return domain_folders[domain]
@@ -836,7 +934,7 @@ def maybe_answer_from_teacher(domain: str, question: str):
 
     # Include the teacher's question + answer in the response
     answer_text = (
-        "Ερώτηση (καθηγητή): "
+        "Ερώτηση (μαθητή): "
         + pdf_question.strip()
         + "\n\nΑπάντηση (καθηγητή): "
         + pdf_answer.strip()
@@ -910,7 +1008,7 @@ def ask():
     # match domain case-insensitively
     matched_domain = next((d for d in domain_data.keys() if d.lower() == domain_in.lower()), domain_in)
 
-    # scope escalation (supports BOTH lesson id and year-alias id)
+    # ✅ scope escalation (supports BOTH lesson id and year-alias id)
     if scope == "year":
         # 1) if frontend sends "Courses__Course__YEAR_X", map to year aggregate
         alias_key = domain_in.replace(" ", "_")
@@ -945,84 +1043,94 @@ def ask():
     return jsonify({"answer": answer, "sources": sources, "resolvedDomain": matched_domain})
 
 
+# =========================
+# Cache admin (optional)
+# =========================
 @app.route("/cache/clear", methods=["POST"])
 def cache_clear():
     _require_cache_admin()
-    data = request.get_json(force=True, silent=True) or {}
+    data = request.get_json(force=True) or {}
+
     domain = data.get("domain")
     reload_after = bool(data.get("reload", False))
 
-    summary = clear_index_cache(domain=domain, reload_after=reload_after)
+    summary = {
+        "domain": domain if isinstance(domain, str) and domain.strip() else None,
+        "removed_files": 0,
+        "removed_bytes": 0,
+        "removed_domains": 0,
+    }
+
+    # Clear index cache directory
+    for name in os.listdir(INDEX_CACHE_DIR):
+        folder = os.path.join(INDEX_CACHE_DIR, name)
+        if not os.path.isdir(folder):
+            continue
+        try:
+            shutil.rmtree(folder)
+            summary["removed_files"] += 1
+        except Exception:
+            pass
+    os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
+
+    if isinstance(domain, str) and domain.strip():
+        # Clear specific domain from memory
+        if domain in domain_data:
+            domain_data.pop(domain, None)
+            summary["removed_domains"] += 1
+
+    if reload_after:
+        load_domains()
+        summary["reloaded"] = True
+    else:
+        summary["reloaded"] = False
+
     return jsonify(summary)
 
 
-def clear_index_cache(domain=None, reload_after=False):
-    """
-    Clear index caches from disk and/or memory.
-    If domain is None, clear all.
-    """
+def clear_cache(domain=None):
     removed_files = 0
+    removed_bytes = 0
+    removed_domains = 0
 
-    if domain:
-        pattern = f"{domain}::"
-        for name in os.listdir(INDEX_CACHE_DIR):
-            if not name:
-                continue
-            folder = os.path.join(INDEX_CACHE_DIR, name)
-            meta_path = os.path.join(folder, "meta.json")
-            if not os.path.isfile(meta_path):
-                continue
-            try:
-                with open(meta_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                chunks = data.get("chunks") or []
-                if not chunks:
-                    # domain info not stored here; we stored only file-level keys
-                    # but we used a hash based on domain+relpath, so we cannot
-                    # easily filter by domain now. So for domain-specific clear,
-                    # we simply clear all and re-index.
-                    pass
-            except Exception:
-                pass
+    target = None
+    if isinstance(domain, str) and domain.strip():
+        target = domain.strip()
 
-        # For domain-specific clear, easiest is to clear all caches and re-index as needed.
-        for name in os.listdir(INDEX_CACHE_DIR):
-            folder = os.path.join(INDEX_CACHE_DIR, name)
-            if os.path.isdir(folder):
-                try:
-                    shutil.rmtree(folder)
-                    removed_files += 1
-                except Exception:
-                    pass
-        os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
-
-        if domain in domain_data:
-            domain_data.pop(domain, None)
-        if domain in domain_folders:
-            # we keep domain_folders so that domains are still discoverable
+    # Clear from disk
+    for name in os.listdir(INDEX_CACHE_DIR):
+        folder = os.path.join(INDEX_CACHE_DIR, name)
+        if not os.path.isdir(folder):
+            continue
+        try:
+            shutil.rmtree(folder)
+            removed_files += 1
+        except Exception:
             pass
+    os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
 
-    else:
-        # clear all
-        for name in os.listdir(INDEX_CACHE_DIR):
-            folder = os.path.join(INDEX_CACHE_DIR, name)
-            if os.path.isdir(folder):
-                try:
-                    shutil.rmtree(folder)
-                    removed_files += 1
-                except Exception:
-                    pass
-        os.makedirs(INDEX_CACHE_DIR, exist_ok=True)
+    # Clear from memory
+    if target and target in domain_data:
+        domain_data.pop(target, None)
+        removed_domains += 1
+    elif not target:
         domain_data.clear()
-        # keep domain_folders mapping
+        removed_domains = -1  # signal "all"
 
     return {
-        "domain": domain or "*",
         "removed_files": removed_files,
-        "reloaded": bool(reload_after),
+        "removed_bytes": removed_bytes,
+        "removed_domains": removed_domains,
     }
 
 
+# =========================
+# Boot
+# =========================
+print("🔄 Loading domains...")
+load_domains()
+print(f"✅ Ready. Loaded {len(domain_data)} domains (including YEAR aggregates).")
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "5000"))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port)
