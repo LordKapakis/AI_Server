@@ -102,7 +102,7 @@ SUPPORTED_EXTS = (".pdf", ".txt", ".docx", ".pptx")
 EMBEDDING_DEVICE = os.getenv("EMBEDDING_DEVICE", "").strip().lower()
 if not EMBEDDING_DEVICE:
     if torch is not None and torch.cuda.is_available():
-        EMBEDDING_DEVICE = "cuda"
+        EMBEDDING_DEVICE = "cpu"
     else:
         EMBEDDING_DEVICE = "cpu"
 
