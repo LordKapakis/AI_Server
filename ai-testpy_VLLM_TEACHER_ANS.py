@@ -966,18 +966,52 @@ def maybe_answer_from_teacher(domain: str, question: str):
     return answer_text, sources
 
 
-@app.route("/files/<domain>/<path:filename>", methods=["GET"])
-def serve_file(domain, filename):
+@app.route("/files/clip", methods=["GET"])
+def clip_pdf():
+    domain = (request.args.get("domain") or "").strip()
+    filename = (request.args.get("file") or "").strip()
+
+    try:
+        page_from = int(request.args.get("from") or "1")
+        page_to = int(request.args.get("to") or str(page_from))
+    except ValueError:
+        abort(400, description="from/to must be integers")
+
+    if not domain or not filename:
+        abort(400, description="Missing domain or file")
+
     if not filename.lower().endswith(".pdf"):
         abort(403)
+
     folder = _resolve_domain_folder(domain)
     if not folder or not os.path.isdir(folder):
         abort(404)
-    safe_path = safe_join(folder, filename)
-    if not safe_path or not os.path.isfile(safe_path):
-        abort(404)
-    return send_file(safe_path, as_attachment=False)
 
+    src_path = safe_join(folder, filename)
+    if not src_path or not os.path.isfile(src_path):
+        abort(404)
+
+    reader = PyPDF2.PdfReader(src_path)
+    total = len(reader.pages)
+    if total <= 0:
+        abort(404)
+
+    # Convert to 0-based and clamp
+    start = max(0, min(total - 1, page_from - 1))
+    end = max(0, min(total - 1, page_to - 1))
+    if end < start:
+        start, end = end, start
+
+    writer = PyPDF2.PdfWriter()
+    for i in range(start, end + 1):
+        writer.add_page(reader.pages[i])
+
+    buf = io.BytesIO()
+    writer.write(buf)
+    buf.seek(0)
+
+    out_name = f"clip_{page_from}-{page_to}_{os.path.basename(filename)}"
+    return send_file(buf, mimetype="application/pdf", as_attachment=True, download_name=out_name)
 
 @app.route("/domains", methods=["GET"])
 def list_domains():
