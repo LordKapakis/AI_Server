@@ -54,8 +54,8 @@ API_KEY = os.getenv("API_KEY", "").strip()
 if not API_KEY:
     print("WARNING: API_KEY is empty. Set it via env for production use.")
 
-VLLM_URL = os.getenv("VLLM_URL", "http://127.0.0.1:8000/v1/chat/completions")
-VLLM_MODEL = os.getenv("VLLM_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct")
+VLLM_URL = os.getenv("VLLM_URL", "http://127.0.0.1:11434/v1/chat/completions")
+VLLM_MODEL = os.getenv("VLLM_MODEL", "llama3.1")
 VLLM_TIMEOUT = int(os.getenv("VLLM_TIMEOUT", "120"))
 
 MODEL_NAME = os.getenv("MODEL_NAME", "vLLM-chat")
