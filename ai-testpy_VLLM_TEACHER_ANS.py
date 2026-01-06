@@ -62,7 +62,7 @@ MODEL_NAME = os.getenv("MODEL_NAME", "vLLM-chat")
 
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
 TOP_P = float(os.getenv("TOP_P", "0.9"))
-MAX_TOKENS = int(os.getenv("MAX_TOKENS", "140"))
+MAX_TOKENS = int(os.getenv("MAX_TOKENS", "180"))
 
 # vLLM token budgeting (prevents 400s when prompt is large)
 VLLM_MAX_CONTEXT = int(os.getenv("VLLM_MAX_CONTEXT", "2048"))
@@ -112,6 +112,12 @@ if faiss is None:
     raise RuntimeError("faiss is required")
 
 embedding_model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2", device=EMBEDDING_DEVICE)
+
+try:
+    embedding_model.encode(["warmup"], convert_to_numpy=True, normalize_embeddings=True)
+    print("✅ Embedding model warmup complete.")
+except Exception as e:
+    print("⚠️ Embedding warmup failed: ", e)
 
 PROMPT_LANG = (
     "Απάντησε πάντα στα Ελληνικά, με φυσική και κατανοητή γλώσσα. "
