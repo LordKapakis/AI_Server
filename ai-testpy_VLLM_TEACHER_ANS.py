@@ -723,17 +723,19 @@ def query_model(prompt: str) -> str:
             {"role": "system", "content": "You are a helpful AI tutor that answers in Greek."},
             {"role": "user", "content": prompt_trimmed},
         ],
-        "temperature": TEMPERATURE,
-        "top_p": TOP_P,
-        "max_tokens": avail_for_completion,
-        "keep_alive": "-1",
+        "stream": False,
+        "options": {
+            "temperature": TEMPERATURE,
+            "top_p": TOP_P,
+            "num_predict": avail_for_completion,
+        },
     }
 
     resp = requests.post(VLLM_URL, json=payload, timeout=VLLM_TIMEOUT)
     if resp.status_code != 200:
         raise RuntimeError(f"vLLM HTTP {resp.status_code}: {resp.text[:500]}")
     data = resp.json()
-    content = data["choices"][0]["message"]["content"]
+    content = data["message"]["content"]
     return content.strip() or "Δεν μπόρεσα να παραγάγω απάντηση."
 
 
