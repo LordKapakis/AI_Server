@@ -726,6 +726,7 @@ def query_model(prompt: str) -> str:
         "temperature": TEMPERATURE,
         "top_p": TOP_P,
         "max_tokens": avail_for_completion,
+        "keep_alive": "-1",
     }
 
     resp = requests.post(VLLM_URL, json=payload, timeout=VLLM_TIMEOUT)
