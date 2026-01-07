@@ -62,12 +62,12 @@ MODEL_NAME = os.getenv("MODEL_NAME", "vLLM-chat")
 
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
 TOP_P = float(os.getenv("TOP_P", "0.9"))
-MAX_TOKENS = int(os.getenv("MAX_TOKENS", "180"))
+MAX_TOKENS = int(os.getenv("MAX_TOKENS", "240"))
 
 # vLLM token budgeting (prevents 400s when prompt is large)
 VLLM_MAX_CONTEXT = int(os.getenv("VLLM_MAX_CONTEXT", "2048"))
 VLLM_SAFETY_MARGIN = int(os.getenv("VLLM_SAFETY_MARGIN", "256"))
-VLLM_MIN_COMPLETION = int(os.getenv("VLLM_MIN_COMPLETION", "96"))
+VLLM_MIN_COMPLETION = int(os.getenv("VLLM_MIN_COMPLETION", "180"))
 VLLM_MAX_COMPLETION_CAP = int(os.getenv("VLLM_MAX_COMPLETION_CAP", str(MAX_TOKENS)))
 
 # Retrieval tuning
