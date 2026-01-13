@@ -555,6 +555,15 @@ def build_year_aggregates():
         print(f"🧩 YEAR index '{year_domain}' built from {len(children)} lesson domains.")
 
 
+print("Config:")
+print(f"   STRICT_MODE={STRICT_MODE} (env STRICT_MODE={os.getenv('STRICT_MODE')})")
+print(f"   EXTRACTIVE_ONLY={EXTRACTIVE_ONLY} (env EXTRACTIVE_ONLY={os.getenv('EXTRACTIVE_ONLY')})")
+print(f"   MIN_SIM_THRESHOLD={MIN_SIM_THRESHOLD}")
+print(f"   R_TOP_K={R_TOP_K}, NUM_ALTERNATE_QUERIES={NUM_ALTERNATE_QUERIES}")
+print(f"   TEMPERATURE={TEMPERATURE}, TOP_P={TOP_P}")
+print(f"   VLLM_URL={VLLM_URL}, VLLM_MODEL={VLLM_MODEL}")
+
+
 def load_domains():
     domain_data.clear()
     domain_folders.clear()
@@ -1177,6 +1186,10 @@ def ask():
     # 1) Try teacher answers first (if {domain}_TEACHER_ANSWERS.pdf exists)
     teacher_answer, teacher_sources = maybe_answer_from_teacher(matched_domain, question)
     if teacher_answer is not None:
+        #LOGGING AI ANSWER
+        preview = (teacher_answer[:400] + "…") if len(teacher_answer) > 400 else teacher_answer
+        print(f"Answer (TEACHER) for [{matched_domain}]: {preview}")
+        print(f"Sources (TEACHER) count={len(teacher_sources or [])}")
         return jsonify({
             "answer": teacher_answer,
             "sources": teacher_sources or [],
@@ -1186,6 +1199,11 @@ def ask():
 
     # 2) Fallback to existing retrieval + vLLM + quotes logic (unchanged)
     answer, sources = answer_question(matched_domain, question, chat_messages=chat_messages)
+
+    #LOGGING TO AI ANSWER
+    preview = (answer[:400] + "…") if isinstance(answer, str) and len(answer) > 400 else answer
+    print(f"Answer (QA) for [{matched_domain}]: {preview}")
+    print(f"Sources (QA) count={len(sources or [])}")
 
     return jsonify({"answer": answer, "sources": sources, "resolvedDomain": matched_domain})
 
